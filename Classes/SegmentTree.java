@@ -28,7 +28,7 @@ class SegmentTree{
     public long get(int l, int r){
         return get(l,r,0,0,tree.length/2);
     }
-    public void set(int i, int x){
+    public void set(int i, long x){
         tree[i+tree.length/2]=x;
         i+=tree.length/2;
         while(i>0){
