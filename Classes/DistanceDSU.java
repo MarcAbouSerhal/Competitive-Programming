@@ -13,7 +13,7 @@ class DSU {
         int[] val = find(p[a]);
         return new int[] {p[a]=val[0],dist[a]=dist[a]+val[1]};
     }
-    public void join(int a, int b) {
+    public void join(int a, int b) { //must join endpoints of edge as they were, not their respective parents
         int[] valA = find(a);
         int[] valB = find(b);
         if (valA[0] == valB[0]) {
