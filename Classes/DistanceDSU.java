@@ -16,7 +16,7 @@ class DSU {
     public void join(int a, int b) {
         int[] valA = find(a);
         int[] valB = find(b);
-        if (a == b) {
+        if (valA[0] == valB[0]) {
             return;
         }
         if(-p[valA[0]]>-p[valB[0]]){
