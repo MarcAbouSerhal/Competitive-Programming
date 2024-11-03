@@ -1,5 +1,5 @@
 class FenwickTree {
-    // replace every +/i with ^ to make it a XOR fenwick tree
+    // replace every +/- with ^ to make it a XOR fenwick tree
     private int[] tree;
     public FenwickTree(int size) {
         tree = new int[size];
