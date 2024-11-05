@@ -21,7 +21,7 @@ class SparseTable{
         }
         floorPow= new int[a.length+1];
         floorPow[0]=-1;
-        for(int i=1; i<a.length; ++i){
+        for(int i=1; i<=a.length; ++i){
             floorPow[i]=floorPow[i-1];
             if((i&(i-1))==0) floorPow[i]++;
         }
