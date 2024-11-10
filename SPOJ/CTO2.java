@@ -41,7 +41,7 @@ public class Main {
                 query[i] = new Query(i, l[u], l[v]);
             }
             else{
-                query[i] = new Query(i, r[u], l[v], r[lca]);
+                query[i] = new Query(i, r[u], l[v], l[lca]);
             }
         }
         if(m==0) return;
