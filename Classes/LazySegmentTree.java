@@ -4,9 +4,21 @@ class LazySegmentTree{
     static int none = Integer.MIN_VALUE;
     private void clean(int x, int lx, int rx){
         if(change[x]!=null){
-            // apply what's in change[x] to [lx,rx]
+            
+            // if we care about range queries
+            // apply what's in change[x] to [lx,rx] (tree[x])
             if(rx!=lx){
-                // push down change to tree[2*x+1] and tree[2*x+2]
+                // push down change[x] to change[2*x+1] and change[2*x+2]
+                // either override them or try to merge them
+            }
+            
+            //if we don't care about range queries
+            if(rx!=lx){
+                // push down change[x] to change[2*x+1] and change[2*x+2]
+                // either override them or try to merge them
+            }
+            else{
+                // apply what's in change[x] to a[lx] (tree[x])
             }
             change[x] = null;
         }
@@ -40,18 +52,14 @@ class LazySegmentTree{
     public long get(int l, int r){
         return get(l,r,0,0,tree.length/2);
     }
-    public void set(int i, long x){
-        tree[i+tree.length/2] = x;
-        i+=tree.length/2;
-        while(i>0){
-            i=(i-1)/2;
-            tree[i]=tree[2*i+1]+tree[2*i+2];
-        }
-    }
     private void set(int l, int r, int x, int lx, int rx, long u){
+        if(rx<l || lx>r) return;
         clean(x,lx,rx);
         if(lx>=l && rx<=r){
             // queue change by setting change[x] to ...
+            // if operation isn't the same on every element in [l,r]
+            // something like a staircase
+            // then change[x] will depend of l-lx, r-rx, whatever
             while(x>0){
                 if(x%2==0){
                     lx-=rx-lx+1;
@@ -66,11 +74,28 @@ class LazySegmentTree{
             }
             return;
         }
-        if(rx<l || lx>r) return;
         set(l,r,2*x+1,lx,(rx+lx)/2,u);
         set(l,r,2*x+2,(rx+lx)/2+1,rx,u);
     }
     public void set(int l, int r, long x){
         set(l,r,0,0,tree.length/2,x);
+    }
+    public void set(int x, long u){
+        x += tree.length/2;
+        change[x] = null;
+        tree[x] = u;
+        int lx = x-tree.length/2, rx = x-tree.length/2;
+        while(x>0){
+            if(x%2==0){
+                lx-=rx-lx+1;
+            }
+            else{
+                rx+=rx-lx+1;
+            }
+            x=(x-1)/2;
+            clean(2*x+1,lx, (lx+rx)/2);
+            clean(2*x+2,(rx+lx)/2+1,rx);
+            tree[x] = operation(tree[2*x+1],tree[2*x+2]);
+        }
     }
 }
