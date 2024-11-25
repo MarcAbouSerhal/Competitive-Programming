@@ -1,4 +1,24 @@
-// use this for Mo's algorithm and sort by query.index
+class Mo{
+    public static long[] mo(Query[] queries){
+        Arrays.sort(queries,(x,y)->Long.compare(x.index, y.index));
+        long[] res = new long[queries.length];
+        int curr_l = 0, curr_r = -1;
+        for(Query q: queries){
+            while(curr_r<q.r) add(++curr_r);
+            while(curr_l>q.l) add(--curr_l);
+            while(curr_r>q.r) remove(curr_r--);
+            while(curr_l<q.l) remove(curr_l++);
+            res[query.i] = ; // get answer of this range
+        }
+        return res;
+    }
+    public static void add(int i){
+        // add a[i] to range
+    }
+    public static void remove(int i){
+        // remove a[i] from range
+    }
+}
 class Query{
     int l,r,i,extra=-1;
     long index;
