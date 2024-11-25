@@ -13,7 +13,7 @@ class Query{
         this.extra = extra;
     }
     public static long hilbert_order(int x, int y){
-        int logn = lg2(2*y+1)|1;
+        int logn = lg2(1+(y<<1))|1;
         int maxn = (1<<logn)-1;
         long res = 0;
         for(int s = 1<<(logn-1); s!=0 ; s>>=1){
@@ -29,7 +29,7 @@ class Query{
         return res;
     }
     public static int lg2(int x){
-        for(int i=21; i>=0; --i)
+        for(int i=21; i>0; --i)
             if((x&(1<<i))>0) return i;
         return 0;
     }
