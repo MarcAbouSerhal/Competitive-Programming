@@ -30,7 +30,7 @@ class Tree{
             if(v!=p){
                 depth[v] = depth[u] + 1;
                 dfs(v,u);
-                d[++tick][0] = d[in[u]][0];
+                d[++tick][0] = u;
             }
     }
     public int lca(int a, int b){
