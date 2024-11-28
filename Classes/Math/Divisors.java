@@ -37,8 +37,8 @@ class Divisors{
     private static void f(long x, int i, ArrayList<Pair> pfs,ArrayList<Long> ans){
         if(i>=pfs.size()) return;
         f(x,i+1,pfs);
-        for(int cnt=0; cnt<pfs.get(i).y; ++cnt){
-            x *= pfs.get(i).y;
+        for(int cnt=1; cnt<=pfs.get(i).y; ++cnt){
+            x *= pfs.get(i).x;
             ans.add(x);
             f(x,i+1,pfs,ans);
         }
