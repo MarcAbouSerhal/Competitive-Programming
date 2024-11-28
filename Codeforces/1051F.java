@@ -134,13 +134,15 @@ class Pair{
  
 class Tree{
     int tick = -1;
-    int[][][] d;
+    int[][] d;
+    int[] depth;
     int[] in;
     int[] floorPow;
     ArrayList<Integer>[] adj;
-    private static int[] op(int[] l, int[] r){ return l[1]<r[1] ? l : r; }
+    private int op(int l, int r){ return depth[l]<depth[r] ? l : r; }
     public Tree(ArrayList<Integer>[] adj){
         this.adj = adj;
+        depth = new int[adj.length];
         in = new int[adj.length];
         floorPow= new int[2*adj.length];
         floorPow[0]=-1;
@@ -149,18 +151,19 @@ class Tree{
             if((i&(i-1))==0) floorPow[i]++;
         }
         int log = floorPow[2*adj.length-1]+1;
-        d = new int[2*adj.length-1][log][];
-        dfs(0,-1,0);
+        d = new int[2*adj.length-1][log];
+        dfs(0,-1);
         for(int j=1; j<log; ++j)
             for(int i=0; i+(1<<j)<=2*adj.length-1; ++i)
                 d[i][j] = op(d[i][j-1], d[i+(1<<(j-1))][j-1]);
     }
-    public void dfs(int u, int p, int h){
+    public void dfs(int u, int p){
         in[u] = ++tick;
-        d[tick][0] = new int[] {u,h};
+        d[tick][0] = u;
         for(int v: adj[u])
             if(v!=p){
-                dfs(v,u,h+1);
+                depth[v] = depth[u] + 1;
+                dfs(v,u);
                 d[++tick][0] = d[in[u]][0];
             }
     }
@@ -169,6 +172,6 @@ class Tree{
         b = in[b];
         if(a>b){ a=a^b; b=a^b; a=a^b; }
         int x = floorPow[b-a+1];
-        return op(d[a][x],d[b+1-(1<<x)][x])[0];
+        return op(d[a][x],d[b+1-(1<<x)][x]);
     }
 }
