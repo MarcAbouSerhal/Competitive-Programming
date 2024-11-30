@@ -66,8 +66,3 @@ class XORBasis{
         return res;
     }
 }
-class Edge{
-    int x, i;
-    long y;
-    public Edge(int x,long y,int i){this.x=x;this.y=y;this.i=i;}
-}
