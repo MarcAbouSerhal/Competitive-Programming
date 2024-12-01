@@ -12,11 +12,7 @@ class LinearSieve{
             if(sp[i] == 0)
                 for(int j=1; j<=c/i; ++j)
                     if(sp[i*j] == 0) 
-                        sp[i*j] = i;
-        for(int i=2; i<=c; ++i){
-            pf[i] = pf[i/sp[i]];
-            if(sp[i/sp[i]] != sp[i]) ++pf[i];
-        }
+                        pf[i*j] = sp[j] == (sp[i*j] = i) ? pf[j] : pf[j] + 1;
     }
     public ArrayList<Pair> primeFactors(int x){
         ArrayList<Pair> res = new ArrayList<>();
