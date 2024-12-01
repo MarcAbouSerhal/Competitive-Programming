@@ -1,4 +1,9 @@
 class Divisors{
+    static class Pair{
+        long x;
+        int y;
+        public Pair(long x, int y){ this.x=x; this.y=y; }
+    }
     ArrayList<Long> primes = new ArrayList<>();
     public Divisors(int n){
         BitSet isPrime = new BitSet(n+1);
@@ -12,7 +17,7 @@ class Divisors{
         for(int i=3; i<=n; i+=2)
             if(isPrime.get(i)) primes.add((long)i);
     }
-    public ArrayList<Pair> primeFactors(long x){\
+    public ArrayList<Pair> primeFactors(long x){
         ArrayList<Pair> res = new ArrayList<>();
         for(long y: primes){
             if(y*y>x) break;
@@ -36,16 +41,11 @@ class Divisors{
     }
     private static void f(long x, int i, ArrayList<Pair> pfs,ArrayList<Long> ans){
         if(i>=pfs.size()) return;
-        f(x,i+1,pfs);
+        f(x,i+1,pfs,ans);
         for(int cnt=1; cnt<=pfs.get(i).y; ++cnt){
             x *= pfs.get(i).x;
             ans.add(x);
             f(x,i+1,pfs,ans);
         }
     }
-}
-class Pair{
-    long x;
-    int y;
-    public Pair(long x, int y){ this.x=x; this.y=y; }
 }
