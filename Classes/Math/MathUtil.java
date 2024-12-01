@@ -1,30 +1,66 @@
-class MathUtil{
-    public static int[] mobius(int n){
-        int[] mobius = new int[n+1], sp = new int[n+1];
-        ArrayList<Integer> primes = new ArrayList<>();
-        mobius[1] = 1;
-        for(int i=2; i<=n; ++i){
-            if(sp[i] == 0){
-                sp[i] = i;
-                mobius[i] = -1;
-                primes.add(i);
-            }
-            for(int j=0; i*primes.get(j) <= n; ++j){
-                sp[i*primes.get(j)] = primes.get(j);
-                if(i%primes.get(j)!=0)
-                    mobius[i*primes.get(j)] = mobius[i] * mobius[primes.get(j)];
-                else mobius[i*primes.get(j)] = 0;
-                if(primes.get(j) == sp[i]) break;
-            }
-        }
-        return mobius;
+class LinearSieve{
+    static class Pair{
+        int x,y;
+        public Pair(int x, int y){ this.x=x; this.y=y; }
     }
-    public static ArrayList<Integer>[] divisorsUpTo(int n){
-        ArrayList<Integer>[] div = new ArrayList[n+1];
-        for(int i=1; i<=n; ++i) div[i] = new ArrayList<>();
-        for(int i=1; i<=n; ++i)
-            for(int j=i; j<=n; j+=i)
-                div[j].add(i);
-        return div;
+    int[] sp;
+    int[] pf;
+    public LinearSieve(int c){
+        sp = new int[c+1];
+        pf = new int[c+1];
+        for(int i=2; i<=c; ++i)
+            if(sp[i] == 0)
+                for(int j=1; j<=c/i; ++j)
+                    if(sp[i*j] == 0) 
+                        sp[i*j] = i;
+        for(int i=2; i<=c; ++i){
+            pf[i] = pf[i/sp[i]];
+            if(sp[i/sp[i]] != sp[i]) ++pf[i];
+        }
+    }
+    public ArrayList<Pair> primeFactors(int x){
+        ArrayList<Pair> res = new ArrayList<>();
+        while(x>1){
+            int p = sp[x], cnt = 0;
+            while(sp[x] == p){
+                x /= sp[x];
+                cnt++;
+            }
+            res.add(new Pair(p, cnt));
+        }
+        return res;
+    }
+    public int[] uniquePrimeProductDivisors(int x){
+        ArrayList<Integer> primes = new ArrayList<>();
+        while(x>1){
+            int p = sp[x];
+            while(sp[x] == p)
+                x /= sp[x];
+            primes.add(p);
+        }
+        int[] res = new int[1<<primes.size()];
+        for(int i=0; i<1<<primes.size(); ++i){
+            res[i] = 1;
+            for(int j=0; j<primes.size(); ++j)
+                if((i&(1<<j))>0) res[i] *= primes.get(j);
+        }
+        return res;
+    }
+    public ArrayList<Integer> divisors(int x){
+        ArrayList<Pair> pfs = primeFactors(x);
+        ArrayList<Integer> ans = new ArrayList<>();
+        f(1,0,pfs,ans);
+        ans.add(1);
+        Collections.sort(ans);
+        return ans;
+    }
+    private static void f(int x, int i, ArrayList<Pair> pfs,ArrayList<Integer> ans){
+        if(i>=pfs.size()) return;
+        f(x,i+1,pfs,ans);
+        for(int cnt=1; cnt<=pfs.get(i).y; ++cnt){
+            x *= pfs.get(i).x;
+            ans.add(x);
+            f(x,i+1,pfs,ans);
+        }
     }
 }
