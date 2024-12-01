@@ -33,9 +33,10 @@ class Divisors{
         return res;
     }
     public ArrayList<Long> divisors(long x){
-        ArrayList<Pair> pfs = new ArrayList<>();
+        ArrayList<Pair> pfs = primeFactors(x);
         ArrayList<Long> ans = new ArrayList<>();
         f(1l,0,pfs,ans);
+        ans.add(1l);
         Collections.sort(ans);
         return ans;
     }
