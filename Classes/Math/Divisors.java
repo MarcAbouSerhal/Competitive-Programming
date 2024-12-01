@@ -27,7 +27,7 @@ class Divisors{
                 cnt++;
                 x/=y;
             }
-            res.add(new Pair(x, cnt));
+            res.add(new Pair(y, cnt));
         }
         if(x!=1) res.add(new Pair(x, 1));
         return res;
