@@ -44,3 +44,8 @@ class Divisors{
         }
     }
 }
+class Pair{
+    long x;
+    int y;
+    public Pair(long x, int y){ this.x=x; this.y=y; }
+}
