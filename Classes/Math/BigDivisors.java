@@ -1,11 +1,12 @@
-class Divisors{
+// use this for x>=1e7 
+class BigDivisors{
     static class Pair{
         long x;
         int y;
         public Pair(long x, int y){ this.x=x; this.y=y; }
     }
     ArrayList<Long> primes = new ArrayList<>();
-    public Divisors(int n){
+    public BigDivisors(int n){ // here n is the square root of the max value of x
         BitSet isPrime = new BitSet(n+1);
         isPrime.set(0,n);
         primes.add(2l);
