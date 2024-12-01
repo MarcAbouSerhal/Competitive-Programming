@@ -38,7 +38,6 @@ class BigDivisors{
         ArrayList<Long> ans = new ArrayList<>();
         f(1l,0,pfs,ans);
         ans.add(1l);
-        Collections.sort(ans);
         return ans;
     }
     private static void f(long x, int i, ArrayList<Pair> pfs,ArrayList<Long> ans){
