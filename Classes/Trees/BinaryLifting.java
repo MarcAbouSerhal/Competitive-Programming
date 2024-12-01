@@ -1,13 +1,12 @@
 class Tree{
     // [][] propUp
+    // add any necessary members needed for prop
     int[][] up;
     int[] depth;
     ArrayList<Integer>[] adj;
-    int[] a;
     int log = 0;
-    public Tree(ArrayList<Integer>[] adj, int[] a){
+    public Tree(ArrayList<Integer>[] adj){
         this.adj = adj;
-        this.a=a;
         for(int i=0; ; ++i) 
             if(adj.length<=(1<<i)){
                 log = i+1;
