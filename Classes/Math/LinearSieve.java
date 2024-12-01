@@ -47,7 +47,6 @@ class LinearSieve{
         ArrayList<Integer> ans = new ArrayList<>();
         f(1,0,pfs,ans);
         ans.add(1);
-        Collections.sort(ans);
         return ans;
     }
     private static void f(int x, int i, ArrayList<Pair> pfs,ArrayList<Integer> ans){
