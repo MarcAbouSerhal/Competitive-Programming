@@ -1,10 +1,13 @@
 class Tree{
+    // [][] propUp
     int[][] up;
     int[] depth;
     ArrayList<Integer>[] adj;
+    int[] a;
     int log = 0;
-    public Tree(ArrayList<Integer>[] adj){
+    public Tree(ArrayList<Integer>[] adj, int[] a){
         this.adj = adj;
+        this.a=a;
         for(int i=0; ; ++i) 
             if(adj.length<=(1<<i)){
                 log = i+1;
@@ -16,6 +19,14 @@ class Tree{
         for(int j=1; j<log; ++j)
             for(int i=0; i<adj.length; ++i)
                 up[i][j] = up[i][j-1] == -1 ? -1 : up[up[i][j-1]][j-1];
+        // // propUp = new ...
+        // for(int i=1; i<a.length; ++i){
+        //     // propUp[i][0] = prop(up[i][0])
+        // }
+        // for(int j=1; j<log; ++j)
+        //     for(int i=0; i<adj.length; ++i)
+        //         if(up[i][j]!=-1)
+        //             // propUp[i][j] = merge(propUp[i][j-1],propUp[up[i][j-1]][j-1])
     }
     private void dfs(int u, int p){
         up[u][0] = p; 
@@ -44,4 +55,25 @@ class Tree{
             }
         return up[a][0];
     }
+    // public ... propOfPath(int u, int v){
+    //     if(depth[u]<depth[v]){
+    //         u=u^v; v=u^v; u=u^v;
+    //     }
+    //     int k = depth[u]-depth[v];
+    //     // res = prop(a[u],a[v])
+    //     for(int i=0; i<log; ++i)
+    //         if((k&(1<<i))>0){
+    //             // include propUp[u][i] with res
+    //             u = up[u][i];
+    //         }
+    //     if(u==v) return res;
+    //     for(int i=log-1; i>=0; --i)
+    //         if(up[u][i]!=up[v][i]){
+    //             // include propUo[u][i] and propUp[v][i] with res
+    //             u = up[u][i];
+    //             v = up[v][i];
+    //         }
+    //     // include up[u][0] with res
+    //     return res;
+    // }
 }
