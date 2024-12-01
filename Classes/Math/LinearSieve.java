@@ -30,6 +30,22 @@ class LinearSieve{
         }
         return res;
     }
+    public int[] uniquePrimeProductDivisors(int x){
+        ArrayList<Integer> primes = new ArrayList<>();
+        while(x>1){
+            int p = sp[x];
+            while(sp[x] == p)
+                x /= sp[x];
+            primes.add(p);
+        }
+        int[] res = new int[1<<primes.size()];
+        for(int i=0; i<1<<primes.size(); ++i){
+            res[i] = 1;
+            for(int j=0; j<primes.size(); ++j)
+                if((i&(1<<j))>0) res[i] *= primes.get(j);
+        }
+        return res;
+    }
     public ArrayList<Integer> divisors(int x){
         ArrayList<Pair> pfs = primeFactors(x);
         ArrayList<Integer> ans = new ArrayList<>();
