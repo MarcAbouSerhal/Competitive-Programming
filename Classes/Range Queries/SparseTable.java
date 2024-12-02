@@ -1,17 +1,16 @@
 class SparseTable{
     int[][] table;
-    int log;
     int[] floorPow;
-    static int zero = 0;
     private int operation(int a, int b){
         // define associative operation here (op(op(a,b).c)=op(a,op(b,c)
     }
     public SparseTable(int[] a){
-        log=2; int n=a.length;
-        while(n>0){
-            log++;
-            n>>=1;
-        }
+        int log;
+        for(int i=0; ; ++i) 
+            if(a.length<=(1<<i)){
+                log = i+1;
+                break;
+            }
         table = new int[a.length][log];
         for(int i=0; i<a.length; ++i) table[i][0]=a[i];
         for(int j=1; j<log; ++j){
