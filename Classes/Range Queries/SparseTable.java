@@ -37,6 +37,6 @@ class SparseTable{
             ans = operation(ans, table[l][x]);
             l+=1<<x;
         }
-        return ans; // O(ln(r-l+1).f(x))
+        return ans; // O(lg(r-l+1).f(x))
     }
 }
