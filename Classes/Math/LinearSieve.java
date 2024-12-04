@@ -10,7 +10,7 @@ class LinearSieve{
         pf = new int[c+1];
         for(int i=2; i<=c; ++i)
             if(sp[i] == 0)
-                for(int j=1; j<=c/i; ++j)
+                for(int j=1; i*j<=c; ++j)
                     if(sp[i*j] == 0) 
                         pf[i*j] = sp[j] == (sp[i*j] = i) ? pf[j] : pf[j] + 1;
     }
@@ -19,7 +19,7 @@ class LinearSieve{
         while(x>1){
             int p = sp[x], cnt = 0;
             while(sp[x] == p){
-                x /= sp[x];
+                x /= p;
                 cnt++;
             }
             res.add(new Pair(p, cnt));
@@ -31,7 +31,7 @@ class LinearSieve{
         while(x>1){
             int p = sp[x];
             while(sp[x] == p)
-                x /= sp[x];
+                x /= p;
             primes.add(p);
         }
         int[] res = new int[1<<primes.size()];
