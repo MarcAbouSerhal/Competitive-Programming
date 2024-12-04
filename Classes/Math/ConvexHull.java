@@ -2,7 +2,7 @@
 // adding runs in O(1) amortized, querying runs in O(log(# lines))
 // if m's increasing: it returns [m[i],b[i]] that gives max(m*x+b)
 // if m's decreasing: it returrns [m[i],b[i]] that gives min(m*x+b)
-// Note: if m's order gives the opposite of what we want, insert [-m,-b] instea of [m,b]
+// Note: if m's order gives the opposite of what we want, insert [-m,-b] instead of [m,b]
 class ConvexHull{
     static double inf = Double.MAX_VALUE;
     ArrayList<long[]> lines;
