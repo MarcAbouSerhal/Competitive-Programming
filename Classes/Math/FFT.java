@@ -1,66 +1,58 @@
 class FFT{
-    private static class Complex{
-        double x, y;
-        public Complex(double x, double y){
-            this.x=x; this.y=y;
-        }
-        public Complex(double x){
-            this.x=x;
-        }
-        public Complex(){};
-    }
     private static double pi = Math.PI;
-    private static Complex mul(Complex a, Complex b){
-        return new Complex(a.x*b.x-a.y*b.y,a.x*b.y+a.y*b.x);
-    }
-    private static Complex add(Complex a, Complex b){
-        return new Complex(a.x+b.x,a.y+b.y);
-    }
-    private static Complex minus(Complex a){
-        return new Complex(-a.x,-a.y);
-    }
-    private static Complex[] copy(long[]a , int n){
-        Complex[] b = new Complex[n];
-        for(int i=0; i<a.length; ++i) b[i] = new Complex(a[i]);
-        for(int i=a.length; i<n; ++i) b[i] = new Complex();
-        return b;
-    }
-    private static Complex[] DFT(Complex[] p, int n, boolean inverse){
+    private static void DFT(double[] pRe, double[] pIm, int n, boolean inverse){
+        int bit;
+        double temp;
         for(int i = 1, j = 0; i<n; ++i){
-            int bit = n>>1;
+            bit = n>>1;
             for(;(j & bit)!=0; bit >>= 1) j ^= bit;
             j ^= bit;
             if(i < j){
-                Complex temp = p[i];
-                p[i] = p[j];
-                p[j] = temp;
+                temp = pRe[i];
+                pRe[i] = pRe[j];
+                pRe[j] = temp;
+                temp = pIm[i];
+                pIm[i] = pIm[j];
+                pIm[j] = temp;
             }
         }
         for(int len = 2; len<=n; len <<= 1){
+            int halfLen = len >> 1;
             double ang = inverse ? (-2*pi)/len : (2*pi)/len;
-            Complex w_delta = new Complex(Math.cos(ang),Math.sin(ang));
+            double w_deltaRe = Math.cos(ang), w_deltaIm = Math.sin(ang);
             for(int i=0; i<n; i+=len){
-                Complex w = new Complex(1);
-                for(int j=0; j<len/2; ++j){
-                    Complex u = p[i+j], v = mul(p[i+j+len/2],w);
-                    p[i+j] = add(u,v);
-                    p[i+j+len/2] = add(u,minus(v));
-                    w = mul(w,w_delta);
+                double wRe = 1, wIm = 0;
+                for(int j=0; j<halfLen; ++j){
+                    double uRe = pRe[i+j], uIm = pIm[i+j], vRe = pRe[i+j+halfLen] * wRe - pIm[i+j+halfLen] * wIm, vIm = pRe[i+j+halfLen] * wIm + pIm[i+j+halfLen] * wRe;
+                    pRe[i+j] = uRe + vRe;
+                    pIm[i+j] = uIm + vIm;
+                    pRe[i+j+halfLen] = uRe - vRe;
+                    pIm[i+j+halfLen] = uIm - vIm;
+                    temp = wRe * w_deltaRe - wIm * w_deltaIm;
+                    wIm = wRe * w_deltaIm + wIm * w_deltaRe;
+                    wRe = temp;
                 }
             }
         }
-        return p;
     }
     public static long[] multiply(long[] a, long[] b){
         int n = 1;
-        while(n < a.length + b.length) n<<=1;
-        Complex[] fa = DFT(copy(a,n),n,false);
-        Complex[] fb = DFT(copy(b,n),n,false);
-        for(int i=0; i<n; ++i) fa[i] = mul(fa[i],fb[i]);
-        fa = DFT(fa,n,true);
+        while(n < a.length + b.length) n <<= 1;
+        double[] aRe = new double[n], bRe = new double[n], aIm = new double[n], bIm = new double[n];
+        for(int i=0; i<a.length; ++i) aRe[i] = a[i];
+        for(int i=0; i<b.length; ++i) bRe[i] = b[i];
+        DFT(aRe, aIm, n, false);
+        DFT(bRe, bIm, n, false);
+        double temp;
+        for(int i=0; i<n; ++i){
+            temp = aRe[i] * bRe[i] - aIm[i] * bIm[i];
+            aIm[i] = aIm[i] * bRe[i] + aRe[i] * bIm[i];
+            aRe[i] = temp;
+        }
+        DFT(aRe, aIm, n,true);
         long[] res = new long[n];
         for(int i=0; i<n; ++i){
-            res[i] = Math.round(fa[i].x/n);
+            res[i] = Math.round(aRe[i]/n);
         }
         return res;
     }
