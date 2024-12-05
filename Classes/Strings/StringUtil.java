@@ -50,4 +50,14 @@ class StringUtil{
         }
         return z;
     }  
+    public static boolean isSubsequence(String a, String b){
+        int ap = 0, bp = 0;
+        while (ap < a.length() && bp < b.length()) {
+            if (a.charAt(ap) == b.charAt(bp)) {
+                ++ap;
+            }
+            ++bp;
+        }
+        return ap == a.length(); 
+    } 
 }
