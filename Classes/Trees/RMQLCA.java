@@ -24,8 +24,7 @@ class Tree{
                 d[i][j] = op(d[i][j-1], d[i+(1<<(j-1))][j-1]);
     }
     public void dfs(int u, int p){
-        in[u] = ++tick;
-        d[tick][0] = u;
+        d[in[u] = ++tick][0] = u;
         for(int v: adj[u])
             if(v!=p){
                 depth[v] = depth[u] + 1;
