@@ -21,20 +21,17 @@ class Matrix{
         // ( ck  ck-1 .....   ...   c2  c1 )
         int k = c.length;
         long[][] ans = new long[k][]; 
-        long[] g = new long[k+1];
-        g[k] = 1;
-        for(int i=1; i<=k; ++i) g[k-i] = (-c[i-1]+mod)%mod;
-        ans[0] = xPowNModG(n, g, k, mod);
+        ans[0] = xPowNModG(n, c, k, mod);
         for(int i=1; i<k; ++i){
             ans[i] = new long[k];
             long m = ans[i-1][k-1];
             for(int j=1; j<k; ++j) 
-                ans[i][j] = (ans[i-1][j-1]-m*g[j]+mod)%mod;
-            ans[i][0] = (-m*g[0]+mod)%mod;
+                ans[i][j] = (ans[i-1][j-1]+m*c[k-1-j]+mod)%mod;
+            ans[i][0] = (m*c[k-1]+mod)%mod;
         }
         return ans;
     }
-    public static long[] xPowNModG(long n, long[] g, int k, long mod){
+    private static long[] xPowNModG(long n, long[] g, int k, long mod){
         if(n<k){
             long[] res = new long[k];
             res[(int)n] = 1;
@@ -52,8 +49,8 @@ class Matrix{
         for(int i=(k<<1)-1; i>=k; --i)  
             if(last[i]!=0){
                 long m = last[i];
-                for(int j=0; j<=k; ++j)
-                    last[i-j] = (last[i-j] - m*g[k-j])%mod;
+                for(int j=1; j<=k; ++j)
+                    last[i-j] = (last[i-j] + m*g[j-1])%mod;
             }
         for(int i=0; i<k; ++i) half[i] = (last[i]+mod)%mod;
         return half;
