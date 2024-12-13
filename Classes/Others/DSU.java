@@ -11,7 +11,11 @@ class DSU {
             max[i]=i;
         }
     }
-    public int find(int a) {return p[a] < 0 ? a : (p[a] = find(p[a]));}
+    public int find(int a) {
+        while(p[a] >= 0 && p[p[a]]>=0 )
+            a = p[a] = p[p[a]];
+        return p[a] < 0 ? a : p[a];
+    }
     public void join(int a, int b) {
         a = find(a);
         b = find(b);
@@ -23,7 +27,7 @@ class DSU {
             a=a^b;b=a^b;a=a^b;
         }
         p[b] += p[a];
-        max[b]=Math.max(max[a],max[b]);
+        max[b]= max[a] > max[b] ? max[a] : max[b];
         p[a] = b;
     }
     public int size(int a) {return -p[find(a)];} //returns size of the component containing a
