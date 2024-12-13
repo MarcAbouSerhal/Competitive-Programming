@@ -1,4 +1,4 @@
-// add lines y=m*x+b where m's are strictly monotonic, query x returns [m,b] that max/minimizes m*x+b
+// add lines y=m*x+b where m's are monotonic, query x returns [m,b] that max/minimizes m*x+b
 // adding runs in O(1) amortized, querying runs in O(log(# lines))
 // if m's increasing: it returns [m[i],b[i]] that gives max(m*x+b)
 // if m's decreasing: it returrns [m[i],b[i]] that gives min(m*x+b)
@@ -19,6 +19,14 @@ class ConvexHull{
         else{
             for(int i=lines.size()-1; i>=0; --i){
                 long m2 = lines.get(i)[0], b2 = lines.get(i)[1];
+                if(m == m2){
+                    if(b <= b2) return; 
+                    // make this <= if we don't care about a lower line (slopes are increasing)
+                    // and make it >= if we don't care about a higher line (slopes are decreasing)
+                    ranges.remove(i);
+                    lines.remove(i);
+                    continue;
+                }
                 double x = (b2-b+0.0)/(m-m2);
                 if(ranges.get(i)[0]<x && x<=ranges.get(i)[1]){
                     ranges.get(i)[1]=x;
