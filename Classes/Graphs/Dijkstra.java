@@ -4,25 +4,26 @@ class Dijkstra{
         long[] d;
         int[] rev;
         int size;
-        public PQ(int n, int s, long[] d){
+        public PQ(int s, long[] d){
             this.d = d;
-            v = new int[n];
-            rev = new int[n];
-            size = n;
+            size = d.length;
+            v = new int[size];
+            rev = new int[size];
             v[0] = s;
             int iter = 1;
-            for(int i=0; i<n; ++i)
-                if(i != s){
+            for(int i=0; i<size; ++i)
+                if(i != s)
                     v[rev[i] = iter++] = i;
-                }
+                
         }
-        public void decrease_key(int u){
-            int i = rev[u], j = (i-1)>>1;
-            while(i>0 && d[v[j]] > d[v[i]]){
+        public void decrease_key(int x){
+            int i = rev[x], j = (i-1)/2, y = v[j];
+            while(i!=0 && d[y] > d[x]){
                 v[i] ^= v[j]; v[j] ^= v[i]; v[i] ^= v[j];
-                rev[v[i]] ^= rev[v[j]]; rev[v[j]] ^= rev[v[i]]; rev[v[i]] ^= rev[v[j]];
+                rev[x] ^= rev[y]; rev[y] ^= rev[x]; rev[x] ^= rev[y];
                 i = j;
-                j = (i-1)>>1;
+                j = (i-1)/2;
+                y = v[j];
             }
         }
         public void remove_min(){
@@ -45,12 +46,13 @@ class Dijkstra{
     long[] d;
     int[] p;
     public Dijkstra(int s, ArrayList<Pair>[] adj){
-        d = new long[adj.length];
-        p = new int[adj.length];
+        int n = adj.length;
+        d = new long[n];
+        p = new int[n];
         p[s] = -1;
-        Arrays.fill(d, Long.MAX_VALUE);
-        d[s] = 0;
-        PQ pq = new PQ(adj.length, s, d);
+        for(int i=1; i<n; ++i)
+            d[i] = Long.MAX_VALUE;
+        PQ pq = new PQ(s, d);
         while(pq.size != 0){
             if(d[pq.v[0]] == Long.MAX_VALUE) break;
             int u = pq.v[0];
