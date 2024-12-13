@@ -11,7 +11,9 @@ class DSU {
     public int[] find(int a) { //returns {parent(a),d(a,parent(a))}
         if(p[a]<0) return new int[] {a,0};
         int[] val = find(p[a]);
-        return new int[] {p[a]=val[0],dist[a]=dist[a]+val[1]};
+        p[a] = val[0];
+        dist[a] = val[1] = dist[a] + val[1];
+        return val;
     }
     public void join(int a, int b) { //must join endpoints of edge as they were, not their respective parents
         // remove lines 20->27 if connection is directed (complexity becomes O(log(n)))
