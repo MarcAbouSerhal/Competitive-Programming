@@ -28,7 +28,7 @@ class ConvexHull{
                     continue;
                 }
                 double x = (b2-b+0.0)/(m-m2);
-                if(ranges.get(i)[0]<x && x<=ranges.get(i)[1]){
+                if(ranges.get(i)[0]<x){
                     ranges.get(i)[1]=x;
                     lines.add(new long[] {m,b});
                     ranges.add(new double[] {x,inf});
