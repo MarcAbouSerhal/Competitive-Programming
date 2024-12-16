@@ -1,10 +1,10 @@
 class FenwickTree {
     // replace every +/- with ^ to make it a XOR fenwick tree
-    private int[] tree;
+    private long[] tree;
     public FenwickTree(int size) {
-        tree = new int[size];
+        tree = new long[size];
     }
-    public FenwickTree(int[] a) {
+    public FenwickTree(long[] a) {
         this.tree = a.clone();
         for (int i = 0; i < tree.length; i++) {
             int j = i | (i + 1);
