@@ -30,7 +30,7 @@ class Hash{
         }
     }
     public long get(int l, int r){
-        if(l == 0) return (h1[r]<<31) + h2[r];
-        return ((((h1[r] - h1[l-1] + m1)%m1 * inv_p1_pow[l] + m1)%m1)<<31) + ((h2[r] - h2[l-1] + m2)%m2* inv_p2_pow[l] + m2)%m2; 
+        if(l == 0) return (h1[r]<<32) + h2[r];
+        return ((((h1[r] - h1[l-1] + m1)%m1 * inv_p1_pow[l] + m1)%m1)<<32) + ((h2[r] - h2[l-1] + m2)%m2* inv_p2_pow[l] + m2)%m2; 
     }
 }
