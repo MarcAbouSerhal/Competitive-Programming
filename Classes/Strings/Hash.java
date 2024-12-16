@@ -9,7 +9,7 @@ class Hash{
     long m1, m2;
     long[] inv_p1_pow, inv_p2_pow;
     long[] h1, h2;
-    public Hash(char[] s){ this(s, 47, 31, 3030000073l, 3030000097l); }
+    public Hash(char[] s){ this(s, 29, 31, 3030000073l, 3030000097l); }
     public Hash(char[] s, long p1, long p2, long m1, long m2){
         int n = s.length;
         this.m1 = m1;
