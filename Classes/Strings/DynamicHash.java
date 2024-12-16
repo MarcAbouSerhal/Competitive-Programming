@@ -62,8 +62,8 @@ class DynamicHash{
             inv_p2_pow[i] = (inv_p2_pow[i-1] * inv_p2)%m2;
             p1_pow[i] = (p1_pow[i-1] * p1)%m1;
             p2_pow[i] = (p2_pow[i-1] * p2)%m2;
-            h1[i] = ((s[i] - 'a' + 1)*p1_pow[i] + m1)%m1;
-            h2[i] = ((s[i] - 'a' + 1)*p2_pow[i] + m2)%m2;
+            h1[i] = ((s[i] - 'a' + 1)*p1_pow[i])%m1;
+            h2[i] = ((s[i] - 'a' + 1)*p2_pow[i])%m2;
         }
         this.h1 = new FenwickTree(h1, m1);
         this.h2 = new FenwickTree(h2, m2);
@@ -72,8 +72,8 @@ class DynamicHash{
         return (((h1.get(l,r) * inv_p1_pow[l] + m1)%m1)<<32) + (h2.get(l,r) * inv_p2_pow[l] + m2)%m2; 
     }
     public final void set(int i, char c){
-        h1.add(i, ((c-s[i])*p1_pow[i]+m1)%m1);
-        h2.add(i, ((c-s[i])*p2_pow[i]+m2)%m2);
+        h1.add(i, ((c-s[i])*p1_pow[i])%m1);
+        h2.add(i, ((c-s[i])*p2_pow[i])%m2);
         s[i] = c;
     }
 }
