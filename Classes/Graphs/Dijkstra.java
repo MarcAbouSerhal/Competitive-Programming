@@ -1,5 +1,6 @@
+// O((n+m)log(n)) instead of typical O((n+m)log(m)) because I use decrease_key which keeps pq size <=n 
 class Dijkstra{
-    static class PQ{
+    static class PQ{n
         int[] v;
         long[] d;
         int[] rev;
