@@ -13,13 +13,13 @@ class FenwickTree {
             }
         }
     }
-    public int get(int l, int r) {
+    public long get(int l, int r) {
         if (l > r) { return 0; }
         return get(r) - get(l - 1);
     }
-    private int get(int to) {
+    private long get(int to) {
         to = Math.min(to, tree.length - 1);
-        int result = 0;
+        long result = 0;
         while (to >= 0) {
             result += tree[to];
             to = (to & (to + 1)) - 1;
