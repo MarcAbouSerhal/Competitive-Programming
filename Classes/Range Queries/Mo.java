@@ -1,3 +1,4 @@
+// O(n.sqrt(q))
 class Mo{
     public static long[] mo(Query[] queries){
         Arrays.sort(queries,(x,y)->Long.compare(x.index, y.index));
@@ -48,6 +49,7 @@ class Query{
         }
         return res;
     }
+    // use __lg if you're using cpp, more compiler optimized
     public static int lg2(int x){
         for(int i=21; i>0; --i)
             if((x&(1<<i))>0) return i;
