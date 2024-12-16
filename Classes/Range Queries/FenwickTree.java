@@ -26,7 +26,7 @@ class FenwickTree {
         }
         return result;
     }
-    public void add(int i, int x) {
+    public void add(int i, long x) {
         while (i < tree.length) {
             tree[i] += x;
             i = i | (i + 1);
