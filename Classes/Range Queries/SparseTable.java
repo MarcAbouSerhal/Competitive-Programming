@@ -2,7 +2,7 @@ class SparseTable{
     int[][] table;
     int[] floorPow;
     private int operation(int a, int b){
-        // define associative operation here (op(op(a,b).c)=op(a,op(b,c)
+        // define associative operation here (op(op(a,b).c)=op(a,op(b,c)))
     }
     public SparseTable(int[] a){
         int log;
