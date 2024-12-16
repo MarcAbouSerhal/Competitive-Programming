@@ -45,7 +45,7 @@ class DynamicHash{
     private final long[] inv_p1_pow, inv_p2_pow;
     private final long[] p1_pow, p2_pow;
     private final FenwickTree h1, h2;
-    public DynamicHash(char[] s){ this(s, 47, 31, 3030000073l, 3030000097l); }
+    public DynamicHash(char[] s){ this(s, 29, 31, 3030000073l, 3030000097l); }
     public DynamicHash(char[] s, long p1, long p2, long m1, long m2){
         int n = s.length;
         this.s = s.clone();
