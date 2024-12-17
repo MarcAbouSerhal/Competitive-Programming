@@ -33,4 +33,23 @@ class Hash{
         if(l == 0) return (h1[r]<<32) + h2[r];
         return ((((h1[r] - h1[l-1] + m1)%m1 * inv_p1_pow[l] + m1)%m1)<<32) + ((h2[r] - h2[l-1] + m2)%m2* inv_p2_pow[l] + m2)%m2; 
     }
+    public long get(int l1, int r1, int l2, int r2){
+        return ((((l1 == 0 ? h1[r1] : (h1[r1] - h1[l1-1] + m1)%m1 * inv_p1_pow[l1])%m1 + (h1[r2] - h1[l2-1] + m1) % m1 * inv_p1_pow[l2-(r1+1)])%m1) << 32)  + ((l1 == 0 ? h2[r1] : (h2[r1] - h2[l1-1] +m2)%m2 * inv_p2_pow[l2])%m2 + (h2[r2] - h2[l2-1] + m2)%m2 * inv_p2_pow[l2-(r1+1)])%m2;
+    } 
+    public static char[] listToString(ArrayList<Integer> list){
+        // 'a'->'z' represent digits 0->25 (base 26),  'z'+1 represents a comma
+        StringBuilder res = new StringBuilder(6*list.size()+1);
+        res.append((char)('z'+1));
+        for(int i = 0; i < list.size(); ++i){
+            int x = list.get(i);
+            String base26x = x == 0 ? "a" : "";
+            while(x > 0){
+                base26x = (char)((x%26)+'a')+base26x;
+                x /= 26;
+            }
+            res.append(base26x);
+            res.append((char)('z'+1));
+        }
+        return res.toString().toCharArray();
+    }
 }
