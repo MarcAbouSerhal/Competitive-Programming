@@ -1,4 +1,4 @@
-class Hash{
+class DoubleHash{
     private static long pow(long x, long n, long m){
         if(n == 0) return 1;
         long res = pow(x, n>>1, m);
@@ -6,27 +6,32 @@ class Hash{
         if(n % 2 == 1) res = (res * x)%m;
         return res;
     }
-    long m1, m2;
-    long[] inv_p1_pow, inv_p2_pow;
-    long[] h1, h2;
-    public Hash(char[] s){ this(s, 29, 31, 3030000073l, 3030000097l); }
-    public Hash(char[] s, long p1, long p2, long m1, long m2){
-        int n = s.length;
-        this.m1 = m1;
-        this.m2 = m2;
-        h1 = new long[n]; h2 = new long[n];
-        h1[0] = h2[0] = s[0] - 'a' + 1;
-        inv_p1_pow = new long[n]; inv_p2_pow = new long[n];
-        inv_p1_pow[0] = inv_p2_pow[0] = 1;
+    public static void init(int n){
+        inv_p1_pow = new long[n]; 
+        inv_p2_pow = new long[n];
+        p1_pow = new long[n];
+        p2_pow = new long[n];
+        inv_p1_pow[0] = inv_p2_pow[0] = p1_pow[0] = p2_pow[0] = 1;
         long inv_p1 = pow(p1, m1-2, m1), inv_p2 = pow(p2, m2-2, m2);
-        long p1_pow = 1, p2_pow = 1;
         for(int i = 1; i < n; ++i){
+            p1_pow[i] = (p1_pow[i-1] * p1)%m1;
+            p2_pow[i] = (p2_pow[i-1] * p2)%m2;
             inv_p1_pow[i] = (inv_p1_pow[i-1] * inv_p1)%m1;
             inv_p2_pow[i] = (inv_p2_pow[i-1] * inv_p2)%m2;
-            p1_pow = (p1_pow * p1)%m1;
-            p2_pow = (p2_pow * p2)%m2;
-            h1[i] = (h1[i-1] + (s[i] - 'a' + 1)*p1_pow + m1)%m1;
-            h2[i] = (h2[i-1] + (s[i] - 'a' + 1)*p2_pow + m2)%m2;
+        }
+    }
+    static final long m1 = 3030000073l, m2 = 3030000097l;
+    static final long p1 = 29, p2 = 31;
+    static long[] inv_p1_pow, inv_p2_pow;
+    static long[] p1_pow, p2_pow;
+    long[] h1, h2;
+    public DoubleHash(char[] s){
+        int n = s.length;
+        h1 = new long[n]; h2 = new long[n];
+        h1[0] = h2[0] = s[0] - 'a' + 1;
+        for(int i = 1; i < n; ++i){
+            h1[i] = (h1[i-1] + (s[i] - 'a' + 1)*p1_pow[i] + m1)%m1;
+            h2[i] = (h2[i-1] + (s[i] - 'a' + 1)*p2_pow[i] + m2)%m2;
         }
     }
     public long get(int l, int r){
@@ -53,24 +58,13 @@ class Hash{
         }
         return res.toString().toCharArray();
     }
-    public Hash(ArrayList<Integer> s){ this(s, 29, 31, 3030000073l, 3030000097l); }
-    public Hash(ArrayList<Integer> s, long p1, long p2, long m1, long m2){
+    public DoubleHash(ArrayList<Integer> s){
         int n = s.size();
-        this.m1 = m1;
-        this.m2 = m2;
         h1 = new long[n]; h2 = new long[n];
         h1[0] = h2[0] = s.get(0);
-        inv_p1_pow = new long[n]; inv_p2_pow = new long[n];
-        inv_p1_pow[0] = inv_p2_pow[0] = 1;
-        long inv_p1 = pow(p1, m1-2, m1), inv_p2 = pow(p2, m2-2, m2);
-        long p1_pow = 1, p2_pow = 1;
         for(int i = 1; i < n; ++i){
-            inv_p1_pow[i] = (inv_p1_pow[i-1] * inv_p1)%m1;
-            inv_p2_pow[i] = (inv_p2_pow[i-1] * inv_p2)%m2;
-            p1_pow = (p1_pow * p1)%m1;
-            p2_pow = (p2_pow * p2)%m2;
-            h1[i] = (h1[i-1] + (s.get(i))*p1_pow + m1)%m1;
-            h2[i] = (h2[i-1] + (s.get(i))*p2_pow + m2)%m2;
+            h1[i] = (h1[i-1] + (s.get(i))*p1_pow[i] + m1)%m1;
+            h2[i] = (h2[i-1] + (s.get(i))*p2_pow[i] + m2)%m2;
         }
     }
 }
