@@ -34,15 +34,15 @@ class DoubleHash{
             h2[i] = (h2[i-1] + (s[i] - 'a' + 1)*p2_pow[i])%m2;
         }
     }
-    public long get(int l, int r){
+    public final long get(int l, int r){
         if(l == 0) return (h1[r]<<32) | h2[r];
-        return ((((h1[r] - h1[l-1] + m1)%m1 * inv_p1_pow[l] + m1)%m1)<<32) | ((h2[r] - h2[l-1] + m2)%m2* inv_p2_pow[l] + m2)%m2; 
+        return ((((h1[r] - h1[l-1] + m1)%m1 * inv_p1_pow[l])%m1)<<32) | ((h2[r] - h2[l-1] + m2)%m2* inv_p2_pow[l])%m2; 
     }
-    public long get(int l1, int r1, int l2, int r2){
+    public final long get(int l1, int r1, int l2, int r2){
         return ((((l1 == 0 ? h1[r1] : (h1[r1] - h1[l1-1] + m1)%m1 * inv_p1_pow[l1])%m1 + (h1[r2] - h1[l2-1] + m1) % m1 * inv_p1_pow[l2-(r1+1)])%m1) << 32)  | ((l1 == 0 ? h2[r1] : (h2[r1] - h2[l1-1] +m2)%m2 * inv_p2_pow[l2])%m2 + (h2[r2] - h2[l2-1] + m2)%m2 * inv_p2_pow[l2-(r1+1)])%m2;
     } 
     // this is way more accurate but uses 5x more memory
-    public static char[] listToString(ArrayList<Integer> list){
+    public final static char[] listToString(ArrayList<Integer> list){
         // 'a'->'z' represent digits 0->25 (base 26),  'z'+1 represents a comma
         // note that there's a comma at beginning and end of string (unless list is empty, returns 1 comma)
         StringBuilder res = new StringBuilder(5*list.size()+1);
