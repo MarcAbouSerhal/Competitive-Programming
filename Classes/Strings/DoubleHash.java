@@ -1,12 +1,12 @@
 class DoubleHash{
-    private static long pow(long x, long n, long m){
+    private final static long pow(long x, long n, long m){
         if(n == 0) return 1;
         long res = pow(x, n>>1, m);
         res = (res * res)%m;
         if(n % 2 == 1) res = (res * x)%m;
         return res;
     }
-    public static void init(int n){
+    public final static void init(int n){
         inv_p1_pow = new long[n]; 
         inv_p2_pow = new long[n];
         p1_pow = new long[n];
@@ -24,14 +24,14 @@ class DoubleHash{
     static final long p1 = 29, p2 = 31;
     static long[] inv_p1_pow, inv_p2_pow;
     static long[] p1_pow, p2_pow;
-    long[] h1, h2;
+    final long[] h1, h2;
     public DoubleHash(char[] s){
         int n = s.length;
         h1 = new long[n]; h2 = new long[n];
         h1[0] = h2[0] = s[0] - 'a' + 1;
         for(int i = 1; i < n; ++i){
-            h1[i] = (h1[i-1] + (s[i] - 'a' + 1)*p1_pow[i] + m1)%m1;
-            h2[i] = (h2[i-1] + (s[i] - 'a' + 1)*p2_pow[i] + m2)%m2;
+            h1[i] = (h1[i-1] + (s[i] - 'a' + 1)*p1_pow[i])%m1;
+            h2[i] = (h2[i-1] + (s[i] - 'a' + 1)*p2_pow[i])%m2;
         }
     }
     public long get(int l, int r){
@@ -59,13 +59,15 @@ class DoubleHash{
         }
         return res.toString().toCharArray();
     }
+    // assumes elements of s are positive
+    // if not, make sure h1[i] and h2[i] is always positive
     public DoubleHash(ArrayList<Integer> s){
         int n = s.size();
         h1 = new long[n]; h2 = new long[n];
         h1[0] = h2[0] = s.get(0);
         for(int i = 1; i < n; ++i){
-            h1[i] = (h1[i-1] + (s.get(i))*p1_pow[i] + m1)%m1;
-            h2[i] = (h2[i-1] + (s.get(i))*p2_pow[i] + m2)%m2;
+            h1[i] = (h1[i-1] + (s.get(i))*p1_pow[i])%m1;
+            h2[i] = (h2[i-1] + (s.get(i))*p2_pow[i])%m2;
         }
     }
 }
