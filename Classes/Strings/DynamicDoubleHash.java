@@ -1,34 +1,33 @@
 // supports updates
-class DynamicHash{
+class DynamicDoubleHash{
     private static final class FenwickTree {
         private final long[] tree;
         private final long m;
         public FenwickTree(long[] a, long m) {
             this.m = m;
-            tree = a.clone();
+            tree = a; // note that this uses the same array, not a clone!
             for (int i = 0; i < tree.length; i++) {
                 int j = i | (i + 1);
-                if (j < tree.length) {
-                    tree[j] = (tree[j] + tree[i])%m;
-                }
+                if (j < tree.length) 
+                    tree[j] += tree[i];
             }
         }
         public final long get(int l, int r) {
             long result = 0;
             while (r >= 0) {
-                result = (result + tree[r])%m;
+                result += tree[r];
                 r = (r & (r + 1)) - 1;
             }
             --l;
             while (l >= 0) {
-                result = (result - tree[l] + m)%m;
+                result -= tree[l];
                 l = (l & (l + 1)) - 1;
             }
-            return result;
+            return ((result % m) + m)%m;
         }
         public final void add(int i, long x) {
             while (i < tree.length) {
-                tree[i] = (tree[i] + x + m)%m;
+                tree[i] += x;
                 i = i | (i + 1);
             }
         }
@@ -40,36 +39,41 @@ class DynamicHash{
         if(n % 2 == 1) res = (res * x)%m;
         return res;
     }
-    private final char[] s;
-    private final long m1, m2;
-    private final long[] inv_p1_pow, inv_p2_pow;
-    private final long[] p1_pow, p2_pow;
-    private final FenwickTree h1, h2;
-    public DynamicHash(char[] s){ this(s, 29, 31, 3030000073l, 3030000097l); }
-    public DynamicHash(char[] s, long p1, long p2, long m1, long m2){
-        int n = s.length;
-        this.s = s.clone();
-        this.m1 = m1;
-        this.m2 = m2;
-        long[] h1 = new long[n], h2 = new long[n];
-        h1[0] = h2[0] = s[0] - 'a' + 1;
-        inv_p1_pow = new long[n]; inv_p2_pow = new long[n];
-        p1_pow = new long[n]; p2_pow = new long[n];
+    public final static void init(int n){
+        inv_p1_pow = new long[n]; 
+        inv_p2_pow = new long[n];
+        p1_pow = new long[n];
+        p2_pow = new long[n];
         inv_p1_pow[0] = inv_p2_pow[0] = p1_pow[0] = p2_pow[0] = 1;
         long inv_p1 = pow(p1, m1-2, m1), inv_p2 = pow(p2, m2-2, m2);
         for(int i = 1; i < n; ++i){
-            inv_p1_pow[i] = (inv_p1_pow[i-1] * inv_p1)%m1;
-            inv_p2_pow[i] = (inv_p2_pow[i-1] * inv_p2)%m2;
             p1_pow[i] = (p1_pow[i-1] * p1)%m1;
             p2_pow[i] = (p2_pow[i-1] * p2)%m2;
-            h1[i] = ((s[i] - 'a' + 1)*p1_pow[i])%m1;
-            h2[i] = ((s[i] - 'a' + 1)*p2_pow[i])%m2;
+            inv_p1_pow[i] = (inv_p1_pow[i-1] * inv_p1)%m1;
+            inv_p2_pow[i] = (inv_p2_pow[i-1] * inv_p2)%m2;
+        }
+    }
+    private final char[] s;
+    private final static long p1 = 29, p2 = 31;
+    private final static long m1 = 3030000073l, m2 = 3030000097l;
+    private static long[] inv_p1_pow, inv_p2_pow;
+    private static long[] p1_pow, p2_pow;
+    private final FenwickTree h1, h2;
+    public DynamicDoubleHash(char[] t){
+        int n = t.length;
+        s = new char[n];
+        for(int i = 0; i < n; ++i) s[i] = t[i];
+        long[] h1 = new long[n], h2 = new long[n];
+        h1[0] = h2[0] = s[0] - 'a' + 1;
+        for(int i = 1; i < n; ++i){
+            h1[i] = (s[i] - 'a' + 1)*p1_pow[i];
+            h2[i] = (s[i] - 'a' + 1)*p2_pow[i];
         }
         this.h1 = new FenwickTree(h1, m1);
         this.h2 = new FenwickTree(h2, m2);
     }
     public final long get(int l, int r){
-        return (((h1.get(l,r) * inv_p1_pow[l] + m1)%m1)<<32) + (h2.get(l,r) * inv_p2_pow[l] + m2)%m2; 
+        return (((h1.get(l,r) * inv_p1_pow[l] )%m1)<<32) | (h2.get(l,r) * inv_p2_pow[l])%m2; 
     }
     public final void set(int i, char c){
         h1.add(i, ((c-s[i])*p1_pow[i])%m1);
