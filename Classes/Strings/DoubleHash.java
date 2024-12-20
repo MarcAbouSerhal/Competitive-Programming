@@ -12,7 +12,7 @@ class DoubleHash{
         p1_pow = new long[n];
         p2_pow = new long[n];
         inv_p1_pow[0] = inv_p2_pow[0] = p1_pow[0] = p2_pow[0] = 1;
-        long inv_p1 = pow(p1, m1-2, m1), inv_p2 = pow(p2, m2-2, m2);
+        final long inv_p1 = pow(p1, m1-2, m1), inv_p2 = pow(p2, m2-2, m2);
         for(int i = 1; i < n; ++i){
             p1_pow[i] = (p1_pow[i-1] * p1)%m1;
             p2_pow[i] = (p2_pow[i-1] * p2)%m2;
@@ -30,18 +30,20 @@ class DoubleHash{
         h1 = new long[n]; h2 = new long[n];
         h1[0] = h2[0] = s[0] - 'a' + 1;
         for(int i = 1; i < n; ++i){
-            h1[i] = (h1[i-1] + (s[i] - 'a' + 1)*p1_pow[i])%m1;
-            h2[i] = (h2[i-1] + (s[i] - 'a' + 1)*p2_pow[i])%m2;
+            h1[i] = h1[i-1] + (s[i] - 'a' + 1)*p1_pow[i];
+            h2[i] = h2[i-1] + (s[i] - 'a' + 1)*p2_pow[i];
         }
     }
+    // note that this doesn't make sure that % value is negative because h1 and h2 are positive
+    // because loop doesnt't % the prefix hash
     public final long get(int l, int r){
-        if(l == 0) return (h1[r]<<32) | h2[r];
-        return ((((h1[r] - h1[l-1] + m1)%m1 * inv_p1_pow[l])%m1)<<32) | ((h2[r] - h2[l-1] + m2)%m2* inv_p2_pow[l])%m2; 
+        if(l == 0) return ((h1[r] % m1)<<32) | (h2[r] % m2);
+        return ((((h1[r] - h1[l-1])%m1 * inv_p1_pow[l])%m1)<<32) | ((h2[r] - h2[l-1])%m2* inv_p2_pow[l])%m2; 
     }
     public final long get(int l1, int r1, int l2, int r2){
-        return ((((l1 == 0 ? h1[r1] : (h1[r1] - h1[l1-1] + m1)%m1 * inv_p1_pow[l1])%m1 + (h1[r2] - h1[l2-1] + m1) % m1 * inv_p1_pow[l2-(r1+1)])%m1) << 32)  | ((l1 == 0 ? h2[r1] : (h2[r1] - h2[l1-1] +m2)%m2 * inv_p2_pow[l2])%m2 + (h2[r2] - h2[l2-1] + m2)%m2 * inv_p2_pow[l2-(r1+1)])%m2;
+        return ((((l1 == 0 ? h1[r1] : (h1[r1] - h1[l1-1])%m1 * inv_p1_pow[l1])%m1 + (h1[r2] - h1[l2-1]) % m1 * inv_p1_pow[l2-(r1+1)])%m1) << 32)  | ((l1 == 0 ? h2[r1] : (h2[r1] - h2[l1-1])%m2 * inv_p2_pow[l1])%m2 + (h2[r2] - h2[l2-1])%m2 * inv_p2_pow[l2-(r1+1)])%m2;
     } 
-    // this is way more accurate but uses 5x more memory
+    // this is way more accurate than hashing list itself but uses 5x more memory
     public final static char[] listToString(ArrayList<Integer> list){
         // 'a'->'z' represent digits 0->25 (base 26),  'z'+1 represents a comma
         // note that there's a comma at beginning and end of string (unless list is empty, returns 1 comma)
@@ -58,16 +60,5 @@ class DoubleHash{
             res.append((char)('z'+1));
         }
         return res.toString().toCharArray();
-    }
-    // assumes elements of s are positive
-    // if not, make sure h1[i] and h2[i] is always positive
-    public DoubleHash(ArrayList<Integer> s){
-        int n = s.size();
-        h1 = new long[n]; h2 = new long[n];
-        h1[0] = h2[0] = s.get(0);
-        for(int i = 1; i < n; ++i){
-            h1[i] = (h1[i-1] + (s.get(i))*p1_pow[i])%m1;
-            h2[i] = (h2[i-1] + (s.get(i))*p2_pow[i])%m2;
-        }
     }
 }
