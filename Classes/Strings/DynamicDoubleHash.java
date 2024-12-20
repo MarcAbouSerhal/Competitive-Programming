@@ -40,12 +40,12 @@ class DynamicDoubleHash{
         return res;
     }
     public final static void init(int n){
+        final long p1 = 29, p2 = 31, inv_p1 = pow(p1, m1-2, m1), inv_p2 = pow(p2, m2-2, m2);
         inv_p1_pow = new long[n]; 
         inv_p2_pow = new long[n];
         p1_pow = new long[n];
         p2_pow = new long[n];
         inv_p1_pow[0] = inv_p2_pow[0] = p1_pow[0] = p2_pow[0] = 1;
-        long inv_p1 = pow(p1, m1-2, m1), inv_p2 = pow(p2, m2-2, m2);
         for(int i = 1; i < n; ++i){
             p1_pow[i] = (p1_pow[i-1] * p1)%m1;
             p2_pow[i] = (p2_pow[i-1] * p2)%m2;
@@ -54,8 +54,7 @@ class DynamicDoubleHash{
         }
     }
     private final char[] s;
-    private final static long p1 = 29, p2 = 31;
-    private final static long m1 = 3030000073l, m2 = 3030000097l;
+    private static final long m1 = 3030000073l, m2 = 3030000097l;
     private static long[] inv_p1_pow, inv_p2_pow;
     private static long[] p1_pow, p2_pow;
     private final FenwickTree h1, h2;
