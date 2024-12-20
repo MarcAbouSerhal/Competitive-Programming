@@ -23,7 +23,7 @@ class DynamicDoubleHash{
                 result -= tree[l];
                 l = (l & (l + 1)) - 1;
             }
-            return ((result % m) + m)%m;
+            return result % m;
         }
         public final void add(int i, long x) {
             while (i < tree.length) {
@@ -73,7 +73,7 @@ class DynamicDoubleHash{
         this.h2 = new FenwickTree(h2, m2);
     }
     public final long get(int l, int r){
-        return (((h1.get(l,r) * inv_p1_pow[l] )%m1)<<32) | (h2.get(l,r) * inv_p2_pow[l])%m2; 
+        return (((h1.get(l,r) * inv_p1_pow[l])%m1)<<32) | (h2.get(l,r) * inv_p2_pow[l])%m2; 
     }
     public final void set(int i, char c){
         h1.add(i, ((c-s[i])*p1_pow[i])%m1);
