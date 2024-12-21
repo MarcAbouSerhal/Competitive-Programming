@@ -13,6 +13,7 @@ class SimpleSetDoubleHash{
     static final long p1 = 29, p2 = 31;
     static long[] p1_pow, p2_pow;
     private long h1 = 0, h2 = 0;
+    public SimpleSetDoubleHash(){}
     public SimpleSetDoubleHash(ArrayList<Integer> s){
         for(int i: s){
             h1 += p1_pow[i];
