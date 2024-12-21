@@ -1,5 +1,5 @@
 // uses way less memory than sorting sets and doing normal polynomial hash
-class DoubleSetHash{
+class SimpleSetDoubleHash{
     public final static void init(int n){
         p1_pow = new long[n];
         p2_pow = new long[n];
@@ -13,7 +13,7 @@ class DoubleSetHash{
     static final long p1 = 29, p2 = 31;
     static long[] p1_pow, p2_pow;
     private long h1 = 0, h2 = 0;
-    public DoubleSetHash(ArrayList<Integer> s){
+    public SimpleSetDoubleHash(ArrayList<Integer> s){
         for(int i: s){
             h1 += p1_pow[i];
             h2 += p2_pow[i];
