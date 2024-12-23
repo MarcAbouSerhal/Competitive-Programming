@@ -1,16 +1,52 @@
 class Matrix{
-    public static long[][] mul(long[][] a, long[][] b, long mod){
+    public final static long[][] mul(long[][] a, long[][] b, long mod){
         long[][] c = new long[a.length][b[0].length];
         for(int i=0; i<a.length; ++i)
             for(int k=0; k<b.length; ++k)
                 for(int j=0; j<b[0].length; ++j)
                     c[i][j] = (c[i][j] + a[i][k]*b[k][j])%mod;
-        for(int i=0; i<a.length; ++i)
-            for(int j=0; j<b[0].length; ++j)
-                if(c[i][j]<0) c[i][j] += mod;
         return c;
     }
-    public static long[][] TpowN(long[] c, long n, long mod){
+    public final static long[][] pow(long[][] a, long n, long mod){
+        // finds A^n in k^3.log(n)
+        int k = a.length;
+        long[][] res = new long[k][k];
+        for(int i = 0; i < k; ++i) res[i][i] = 1;
+        while(n > 0){
+            if((n & 1) != 0) res = mul(res, a, mod);
+            a = mul(a, a, mod);
+            n >>= 1;
+        }
+        return res;
+    }
+    public final static long[][] sumPows(long[][] a, long n, long mod){
+        // finds sum(0 <= i <= n){ A^i } in k^3.log(n)
+        return sumPowsHelper(a, n, mod)[0];
+    }
+    private final static long[][][] sumPowsHelper(long[][] a, long n, long mod){
+        int k = a.length;
+        if(n == 0){
+            long[][][] res = new long[2][k][k];
+            for(int i = 0; i < k; ++i) res[0][i][i] = res[1][i][i] = 1;
+            return res; 
+        }
+        long[][][] res = sumPowsHelper(a, n >> 1, mod);
+        for(int i = 0; i < k; ++i) res[1][i][i] = (res[1][i][i] + 1) % mod;
+        res[0] = mul(res[0], res[1], mod);
+        for(int i = 0; i < k; ++i) res[1][i][i] = (res[1][i][i] - 1 + mod) % mod;
+        for(int i = 0; i < k; ++i)
+            for(int j = 0; j < k; ++j)
+                res[0][i][j] = (res[0][i][j] - res[1][i][j] + mod) % mod;;
+        res[1] = mul(res[1], res[1], mod);
+        if(n % 2 == 1){
+            res[1] = mul(res[1], a, mod);
+            for(int i = 0; i < k; ++i)
+                for(int j = 0; j < k; ++j)
+                    res[0][i][j] = (res[0][i][j] + res[1][i][j]) % mod;;
+        }
+        return res;
+    }
+    public final static long[][] TpowN(long[] c, long n, long mod){
         // returns T^n in k^2.log(n) time iff T is of the form
         // (  0   1   0   0   ...   0   0  )
         // (  0   0   1   0   ...   0   0  )
@@ -32,7 +68,7 @@ class Matrix{
         }
         return ans;
     }
-    private static long[] xPowNModG(long n, long[] g, int k, long mod){
+    private final static long[] xPowNModG(long n, long[] g, int k, long mod){
         if(n<k){
             long[] res = new long[k];
             res[(int)n] = 1;
@@ -64,14 +100,14 @@ class Matrix{
         if(n % 2 == 1) res = (res * x) % m;
         return res;
     }
-    public static long[] berlekampMassey(long[] s, long m){
+    public final static long[] berlekampMassey(long[] s, long mod){
         // returns smallest possible recurrence for s
         long[] c = new long[0], oldC = new long[0];
         int f = -1;
         for(int i = 0; i < s.length; ++i){
             long delta = s[i];
             for(int j = 1; j <= c.length; ++j)
-                delta = (delta + m - c[j - 1] * s[i - j]) % m; 
+                delta = ((delta - c[j - 1] * s[i - j]) % mod + mod) % mod; 
             if(delta == 0) continue;
             if(f == -1){
                 c = new long[i + 1];
@@ -81,17 +117,17 @@ class Matrix{
                 long[] d = new long[oldC.length + 1];
                 d[0] = 1;
                 for(int j = 1; j <= oldC.length; ++j)
-                    d[j] = (m - oldC[j - 1]) % m;
+                    d[j] = (mod - oldC[j - 1]) % mod;
                 long df1 = 0;
                 for(int j = 0; j < d.length; ++j)
-                    df1 = (df1 + d[j] * s[f - j]) % m;
-                long coef = (delta * pow(df1, m-2, m)) % m; 
-                for(int j = 0; j < d.length; ++j) d[j] = (d[j] * coef) % m;
+                    df1 = (df1 + d[j] * s[f - j]) % mod;
+                long coef = (delta * pow(df1, mod - 2, mod)) % mod; 
+                for(int j = 0; j < d.length; ++j) d[j] = (d[j] * coef) % mod;
                 long[] temp = c;
                 // imagine there are i - f - 1 zeros to the left of d
                 c = new long[max(c.length, d.length + i - f - 1)];
                 for(int j = 0; j < temp.length; ++j) c[j] = temp[j];
-                for(int j = 0; j < d.length; ++j) c[i - f - 1 + j] = (c[i - f - 1 + j] + d[j] + m) % m;
+                for(int j = 0; j < d.length; ++j) c[i - f - 1 + j] = (c[i - f - 1 + j] + d[j] + mod) % mod;
                 if(i - temp.length > f - oldC.length){
                     oldC = temp;
                     f = i;
