@@ -3,10 +3,21 @@
 // if type is 1, remove the range (l,r)
 // just do .sort(intervals) and it sets up for sweeping line
 class Interval implements Comparable<Interval>{
-    int l, r, type;
+    int l, r, type, index;
+    public Interval(int x, int index){
+        l = x;
+        type = 0;
+        this.index = index;
+    }
     public Interval(int x){
         l = x;
         type = 0;
+    }
+    public Interval(int l,int r, boolean add, int index){ 
+        this.l = l;
+        this.r = r;
+        type = add ? -1 : 1;
+        this.index = index;
     }
     public Interval(int l,int r, boolean add){ 
         this.l = l;
