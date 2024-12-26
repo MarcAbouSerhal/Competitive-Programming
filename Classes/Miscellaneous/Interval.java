@@ -1,7 +1,8 @@
 // if type is -1, add the range (l,r)
 // if type is 0, consider the point at (l)
 // if type is 1, remove the range (l,r)
-class Interval{
+// just do .sort(intervals) and it sets up for sweeping line
+class Interval implements Comparable<Interval>{
     int l, r, type;
     public Interval(int x){
         l = x;
@@ -18,14 +19,13 @@ class Interval{
         Interval i2 = (Interval)other;
         return i2.l == l && i2.r == r;
     }
-    // use this for setting up for sweeping line
-    public static int sweepOrder(Interval i1, Interval i2){
-        if(i1.type <=0 && i2.type <= 0)
-            return i1.l == i2.l ? i1.type - i2.type : i1.l - i2.l;
-        if(i1.type <= 0)
-            return i1.l == i2.r ? -1 : i1.l - i2.r;
+    public int compareTo(Interval i2){
+        if(type <=0 && i2.type <= 0)
+            return l == i2.l ? (type == i2.type ? i2.r - r : type - i2.type ): l - i2.l; // smallest l first, and of those, biggest r first
+        if(type <= 0)
+            return l == i2.r ? -1 : l - i2.r;
         if(i2.type <= 0)
-            return i1.r == i2.l ? 1 : i1.r - i2.l;
-        return i1.r - i2.r;
+            return r == i2.l ? 1 : r - i2.l;
+        return r - i2.r;
     }
 }
