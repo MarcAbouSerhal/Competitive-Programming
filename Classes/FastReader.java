@@ -1,10 +1,10 @@
 class FastReader { 
-    BufferedReader br; 
-    StringTokenizer st; 
+    private final BufferedReader br; 
+    private StringTokenizer st; 
     public FastReader() { 
         br = new BufferedReader(new InputStreamReader(System.in)); 
     } 
-    String next() { 
+    public final String next() { 
         while (st == null || !st.hasMoreElements()) { 
             try { 
                 st = new StringTokenizer(br.readLine()); 
@@ -15,10 +15,28 @@ class FastReader {
         } 
         return st.nextToken(); 
     } 
-    int nextInt() { return Integer.parseInt(next()); } 
-    long nextLong() { return Long.parseLong(next()); } 
-    double nextDouble() { return Double.parseDouble(next()); } 
-    String nextLine() { 
+    public final int nextInt() { 
+        String s = next();
+        int off = s.charAt(0) == '-' ? 0 : -1;
+        int answer = 0, pow = - (off << 1) - 1;
+        for(int i = s.length() - 1; i > off; --i){
+            answer += (s.charAt(i) - '0') * pow;
+            pow *= 10;
+        }
+        return answer;
+    } 
+    public final long nextLong() { 
+        String s = next();
+        int off = s.charAt(0) == '-' ? 0 : -1;
+        long answer = 0, pow = - (off << 1) - 1;
+        for(int i = s.length() - 1; i > off; --i){
+            answer += (s.charAt(i) - '0') * pow;
+            pow *= 10;
+        }
+        return answer;
+    } 
+    public final double nextDouble() { return Double.parseDouble(next()); } 
+    public final String nextLine() { 
         String str = ""; 
         try { 
             if(st.hasMoreTokens()){ 
