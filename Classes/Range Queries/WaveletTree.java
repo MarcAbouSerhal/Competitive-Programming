@@ -1,28 +1,35 @@
 // NOTE: EQ NOT TESTED
 class WaveletTree{
+    private static class List{ // reduce overhead of ArrayList<Integer>
+        int n = 0;
+        int[] get;
+        public List(int n){ get = new int[n]; }
+        public void add(int x){ get[n++] = x; }
+        public void clear() { n = 0; }
+    }
     long[] a;
     private class Node{
         long low, high;
         Node left, right;
         int[] b;
-        public Node(ArrayList<Integer> indices, long low, long high){
-            this.low = low;
-            this.high = high;
-            int n = indices.size();
+        public Node(List indices, long lo, long hi){
+            low = lo;
+            high = hi;
+            int n = indices.n;
             b = new int[n];
             if(n == 0 || low == high) return;
 
             long mid = (low + high) / 2;
-            ArrayList<Integer> leftIndices = new ArrayList<>(n), rightIndices = new ArrayList<>(n);
+            List leftIndices = new List(n), rightIndices = new List(n);
             
-            int i0 = indices.get(0);
+            int i0 = indices.get[0];
             if(a[i0] <= mid){
                 b[0] = 1;
                 leftIndices.add(i0);
             }
             else rightIndices.add(i0);
             for(int i = 1; i < n; ++i){
-                int j = indices.get(i);
+                int j = indices.get[i];
                 b[i] = b[i - 1];
                 if(a[j] <= mid){
                     leftIndices.add(j);
@@ -30,15 +37,43 @@ class WaveletTree{
                 }
                 else rightIndices.add(j);
             }
+            // compressing travels
+            // while this has 1 child, make it that child
+            while((b[n - 1] == 0 || b[n - 1] == n) && low != high){
+                if(b[n - 1] == 0) low = mid + 1;
+                else high = mid;
+                mid = (low + high) / 2;
+                leftIndices.clear();
+                rightIndices.clear();
+                
+                i0 = indices.get[0];
+                if(a[i0] <= mid){
+                    b[0] = 1;
+                    leftIndices.add(i0);
+                }
+                else{
+                    b[0] = 0; // old b[0] value might be 1
+                    rightIndices.add(i0);
+                }
+                for(int i = 1; i < n; ++i){
+                    int j = indices.get[i];
+                    b[i] = b[i - 1];
+                    if(a[j] <= mid){
+                        leftIndices.add(j);
+                        ++b[i];
+                    }
+                    else rightIndices.add(j);
+                }
+            }
             left = new Node(leftIndices, low, mid);
             right = new Node(rightIndices, mid + 1, high);
         }
     }
     Node root;
-    public WaveletTree(long[] a, long min, long max){
+    public WaveletTree(long[] a, int min, int max){
         this.a = a;
         int n = a.length;
-        ArrayList<Integer> indices = new ArrayList<>(n);
+        List indices = new List(n);
         for(int i = 0; i < n; ++i) indices.add(i);
         root = new Node(indices, min, max);
     }
@@ -88,7 +123,7 @@ class WaveletTree{
     }
     public long kthInRange(int l, int r, int k){
         Node node = root;
-        while(node != null){
+        while(true){
             if(node.low == node.high) return node.high;
             int cnt = l == 0 ? node.b[r] : node.b[r] - node.b[l - 1];
             if(cnt >= k){
@@ -102,8 +137,6 @@ class WaveletTree{
                 r = r - node.b[r];
                 node = node.right;
             }
-            if(l < 0) l = 0;
         }
-        return 0;
     }
 }
