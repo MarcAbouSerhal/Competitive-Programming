@@ -32,25 +32,24 @@ class WaveletTree{
                 else high = mid;
                 mid = (low + high) / 2;
             }
-            indices.n = 0; // use indices as leftIndices for better memory usage
-            List rightIndices = new List(n);
+            List leftIndices = new List(n), rightIndices = new List(n);
             
             int i0 = indices.get[0];
             if(a[i0] > mid) rightIndices.add(i0);
             else{
                 b[0] = 1;
-                indices.add(i0);
+                leftIndices.add(i0);
             }
             for(int i = 1; i < n; ++i){
                 int j = indices.get[i];
                 b[i] = b[i - 1];
                 if(a[j] > mid) rightIndices.add(j);
                 else{
-                    indices.add(j);
+                    leftIndices.add(j);
                     ++b[i];
                 }
             }
-            left = new Node(indices, low, mid);
+            left = new Node(leftIndices, low, mid);
             right = new Node(rightIndices, mid + 1, high);
         }
     }
@@ -116,16 +115,16 @@ class WaveletTree{
         while(true){
             if(node.low == node.high) return node.high;
             int cnt = l == 0 ? node.b[r] : node.b[r] - node.b[l - 1];
-            if(cnt >= k){
-                l = node.b[l] - (l == 0 ? node.b[0] : node.b[l] - node.b[l - 1]);
-                r = node.b[r] - 1;
-                node = node.left;
-            }
-            else{
+            if(cnt < k){
                 k -= cnt;
                 l = l - node.b[l] + (l == 0 ? node.b[0] : node.b[l] - node.b[l - 1]);
                 r = r - node.b[r];
                 node = node.right;
+            }
+            else{
+                l = node.b[l] - (l == 0 ? node.b[0] : node.b[l] - node.b[l - 1]);
+                r = node.b[r] - 1;
+                node = node.left;
             }
         }
     }
