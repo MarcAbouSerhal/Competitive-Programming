@@ -33,6 +33,8 @@ class WaveletTree{
                 mid = (low + high) / 2;
             }
             List leftIndices = new List(n), rightIndices = new List(n);
+            // note that you could use indices as leftIndices to reduce time but in my tests it somehow gave worse time
+            // you'd do indices.n = 0 and replace every occurence of leftIndices with indices
             
             int i0 = indices.get[0];
             if(a[i0] > mid) rightIndices.add(i0);
