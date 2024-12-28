@@ -1,4 +1,4 @@
-// NOTE, ONLY TESTED FOR LEQ
+// NOTE: EQ NOT TESTED
 class WaveletTree{
     long[] a;
     private class Node{
@@ -88,20 +88,21 @@ class WaveletTree{
     }
     public long kthInRange(int l, int r, int k){
         Node node = root;
-        while(node != null && r != -1){
+        while(node != null){
             if(node.low == node.high) return node.high;
             int cnt = l == 0 ? node.b[r] : node.b[r] - node.b[l - 1];
             if(cnt >= k){
-                l = node.b[l] - 1;
+                l = node.b[l] - (l == 0 ? node.b[0] : node.b[l] - node.b[l - 1]);
                 r = node.b[r] - 1;
                 node = node.left;
             }
             else{
                 k -= cnt;
-                l = l - node.b[l];
+                l = l - node.b[l] + (l == 0 ? node.b[0] : node.b[l] - node.b[l - 1]);
                 r = r - node.b[r];
                 node = node.right;
             }
+            if(l < 0) l = 0;
         }
         return 0;
     }
