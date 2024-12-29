@@ -35,11 +35,10 @@ class Reroot{
     }
     private static final void dfs2(int u, int p){
         if(u != 0 && adj[u].size() == 1) return;
-        if(adj[u].size() == 1){ // if root is a leaf node
+        else if(adj[u].size() == 1){ // if root is a leaf node
             int v = adj[0].get(0);
             dp[v][p_index[v]] = leaf_prop(0);
             dfs2(v, 0);
-            return;
         }
         else{
             int neighbors = adj[u].size();
