@@ -1,5 +1,5 @@
 class FrequencySegmentTree{
-    int[] sum, min;
+    private final int[] sum, min;
     private final static int min(int x, int y){ return x < y ? x : y; }
     public FrequencySegmentTree(int n, int value){
         int leaves = n;
@@ -30,16 +30,20 @@ class FrequencySegmentTree{
     public final void add(int i){
         i += sum.length >> 1;
         ++sum[i];
+        ++min[i];
         while(i > 0){
             i = (i - 1) >> 1;
+            min[i] = min(min[(i << 1) + 1], min[(i + 1) << 1]);
             sum[i] = sum[(i << 1) + 1] + sum[(i + 1) << 1];
         }
     }
     public final void remove(int i){
         i += sum.length >> 1;
         --sum[i];
+        --min[i];
         while(i > 0){
             i = (i - 1) >> 1;
+            min[i] = min(min[(i << 1) + 1], min[(i + 1) << 1]);
             sum[i] = sum[(i << 1) + 1] + sum[(i + 1) << 1];
         }
     }
