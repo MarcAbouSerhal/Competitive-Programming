@@ -6,6 +6,7 @@ class BinaryTrie{
     }
     private final Node head;
     private final int log;
+    // means all elements are in [0 .. (1 << log) - 1]
     public BinaryTrie(int log){
         this.log = log;
         head = new Node();
@@ -14,7 +15,7 @@ class BinaryTrie{
         Node node = head; ++head.pref;
         boolean foundUnique = false;
         for(int i = log - 1; i >= 0; --i){
-            int bit = (int)((x >> i) & 1);
+            int bit = (x >> i) & 1;
             if(node.children[bit] == null){
                 node.children[bit] = new Node();
                 foundUnique = true;
@@ -25,16 +26,17 @@ class BinaryTrie{
         if(foundUnique){
             node = head; ++head.unique;
             for(int i = log - 1; i >= 0; --i){
-                node = node.children[(int)((x >> i) & 1)];
+                node = node.children[(x >> i) & 1];
                 ++node.unique;
             }
         }
     }
     public final void remove(int x){
+        // assumes x was in the trie
         Node node = head; --head.pref;
         boolean foundUnique = false;
         for(int i = log - 1; i >= 0; --i){
-            int bit = (int)((x >> i) & 1);
+            int bit = (x >> i) & 1;
             if(node.children[bit].pref == 1){
                 node.children[bit] = null;
                 foundUnique = true;
@@ -46,7 +48,7 @@ class BinaryTrie{
         if(foundUnique){
             node = head; --head.unique;
             for(int i = log - 1; i >= 0 && node != null; --i){
-                node = node.children[(int)((x >> i) & 1)];
+                node = node.children[(x >> i) & 1];
                 --node.unique;
             }
         }
