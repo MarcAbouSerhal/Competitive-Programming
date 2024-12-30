@@ -51,6 +51,40 @@ class BinaryTrie{
             }
         }
     }
+    public final int max(int x){
+        // returns s in S that maximizes s ^ x
+        int ans = 0;
+        Node curr = head;
+        for(int i = log - 1; i >= 0; --i){
+            int bit = (x >> i) & 1;
+            if(curr.children[bit ^ 1] != null){
+                ans |= (bit ^ 1) << i;
+                curr = curr.children[bit ^ 1];
+            }
+            else{
+                ans |= bit << i;
+                curr = curr.children[bit];
+            }
+        }
+        return ans;
+    }
+    public final int min(int x){
+        // returns s in S that minimizes s ^ x
+        int ans = 0;
+        Node curr = head;
+        for(int i = log - 1; i >= 0; --i){
+            int bit = (x >> i) & 1;
+            if(curr.children[bit] != null){
+                ans |= bit << i;
+                curr = curr.children[bit];
+            }
+            else{
+                ans |= (bit ^ 1) << i;
+                curr = curr.children[bit ^ 1];
+            }
+        }
+        return ans;
+    }
     public final int mex(int x){ 
         // returns mex( { s ^ x : s in S } )
         int ans = 0;
@@ -66,7 +100,7 @@ class BinaryTrie{
             else if(curr.children[bit ^ 1].unique == 1 << i) 
                 return 1 << (i + 1) - 1;
             else{
-                ans += 1 << i;
+                ans |= 1 << i;
                 curr = curr.children[bit ^ 1];
             }
         }
