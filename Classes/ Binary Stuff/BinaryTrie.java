@@ -46,10 +46,10 @@ class BinaryTrie{
             --node.pref;
         }
         if(foundUnique){
-            node = head; --head.unique;
+            node = head;
             for(int i = log - 1; i >= 0 && node != null; --i){
-                node = node.children[(x >> i) & 1];
                 --node.unique;
+                node = node.children[(x >> i) & 1];
             }
         }
     }
@@ -86,6 +86,21 @@ class BinaryTrie{
             }
         }
         return ans;
+    }
+    public final int getLeq(int x, int y){
+        if(y < 0) return 0;
+        // returns number of elements s in S such that s ^ x <= y
+        int count = 0;
+        Node curr = head;
+        for(int i = log - 1; i >= 0 && curr != null; --i){
+            int xbit = (x >> i) & 1, ybit = (y >> i) & 1;
+            if(ybit == 0) curr = curr.children[xbit];
+            else{
+                if(curr.children[xbit] != null) count += curr.children[xbit].pref;
+                curr = curr.children[xbit ^ 1];
+            }
+        }
+        return curr == null ? count : (count + curr.pref);
     }
     public final int mex(int x){ 
         // returns mex( { s ^ x : s in S } )
