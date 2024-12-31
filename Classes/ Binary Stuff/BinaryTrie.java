@@ -53,6 +53,12 @@ class BinaryTrie{
             }
         }
     }
+    
+    // Note: if we want to query below 3 functions but only for s's that are <= limit
+    // keep isSmaller = false
+    // if !isSmaller and !((limit>>i)&1): can't go towards 1
+    // if !isSmaller and (limit>>i)&1 and we go towards 0: set isSmaller to true
+    
     public final int max(int x){
         // returns s in S that maximizes s ^ x
         int ans = 0;
