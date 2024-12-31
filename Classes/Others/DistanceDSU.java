@@ -16,7 +16,7 @@ class DSU {
         return val;
     }
     public void join(int a, int b) { //must join endpoints of edge as they were, not their respective parents
-        // remove lines 20->27 if connection is directed (complexity becomes O(log(n)))
+        // remove lines 25->29 if connection is directed (complexity becomes O(log(n)))
         int[] valA = find(a);
         int[] valB = find(b);
         if (valA[0] == valB[0]) {
