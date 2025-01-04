@@ -1,6 +1,6 @@
 class BinaryTrie{
     private final static class Node{
-        Node[] children;
+        final Node[] children;
         int pref = 0, unique = 0;
         public Node(){ children = new Node[2]; }
     }
@@ -11,6 +11,7 @@ class BinaryTrie{
         this.log = log;
         head = new Node();
     }
+    // adds x to T (O(log))
     public final void add(int x){
         Node node = head; ++head.pref;
         boolean foundUnique = false;
@@ -31,8 +32,8 @@ class BinaryTrie{
             }
         }
     }
+    // removes x from T (assumes x was there) (O(log))
     public final void remove(int x){
-        // assumes x was in the trie
         Node node = head; --head.pref;
         boolean foundUnique = false;
         for(int i = log - 1; i >= 0; --i){
@@ -59,8 +60,8 @@ class BinaryTrie{
     // if !isSmaller and !((limit>>i)&1): can't go towards 1
     // if !isSmaller and (limit>>i)&1 and we go towards 0: set isSmaller to true
     
+    // returns s in T that maximizes s ^ x (O(log))
     public final int max(int x){
-        // returns s in S that maximizes s ^ x
         int ans = 0;
         Node curr = head;
         for(int i = log - 1; i >= 0; --i){
@@ -76,8 +77,8 @@ class BinaryTrie{
         }
         return ans;
     }
+    // returns s in T that minimizes s ^ x (O(log))
     public final int min(int x){
-        // returns s in S that minimizes s ^ x
         int ans = 0;
         Node curr = head;
         for(int i = log - 1; i >= 0; --i){
@@ -93,9 +94,10 @@ class BinaryTrie{
         }
         return ans;
     }
+    // returns number of elements s in T such that s ^ x <= y (O(log))
+    // this function counts duplicates, change .pref to .unique for it to count a number once
     public final int getLeq(int x, int y){
         if(y < 0) return 0;
-        // returns number of elements s in S such that s ^ x <= y
         int count = 0;
         Node curr = head;
         for(int i = log - 1; i >= 0 && curr != null; --i){
@@ -108,8 +110,8 @@ class BinaryTrie{
         }
         return curr == null ? count : (count + curr.pref);
     }
+    // returns mex( { s ^ x : s in T } ) (O(log))
     public final int mex(int x){ 
-        // returns mex( { s ^ x : s in S } )
         int ans = 0;
         Node curr = head;
         for(int i = log - 1; i >= 0; --i){

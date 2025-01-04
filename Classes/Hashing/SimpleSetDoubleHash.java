@@ -13,7 +13,9 @@ class SimpleSetDoubleHash{
     static final long p1 = 29, p2 = 31;
     static long[] p1_pow, p2_pow;
     private long h1 = 0, h2 = 0;
+    // initializes an empty set
     public SimpleSetDoubleHash(){}
+    // (O(n))
     public SimpleSetDoubleHash(ArrayList<Integer> s){
         for(int i: s){
             h1 += p1_pow[i];
@@ -22,6 +24,7 @@ class SimpleSetDoubleHash{
         h1 %= m1;
         h2 %= m2;
     }
+    // below are all O(1)
     public final long get(){
         return (h1 << 32) | h2;
     }

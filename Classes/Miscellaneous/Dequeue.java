@@ -2,8 +2,7 @@
 // queries [l,r] where both l and r are non-decreasing
 class Dequeue{
     private static final int prop(int x, int y){
-        // define operation here
-        return x > y ? x : y; 
+        // define property here
     }
     private int n1 = 0, n2 = 0;
     private final int[] s1, s2, propS1, propS2;

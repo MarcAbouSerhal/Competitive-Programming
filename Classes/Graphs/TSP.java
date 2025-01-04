@@ -1,10 +1,10 @@
 class TSP{
-    private final static int inf = Integer.MAX_VALUE;
-    private final static int min(int x, int y){ return x < y ? x : y; }
+    private final static long inf = Long.MAX_VALUE;
+    private final static long min(long x, long y){ return x < y ? x : y; }
     // assumes start is 0
-    public static final int tsp(int[][] d){
+    public static final long tsp(long[][] d){
         int n = d.length;
-        int[][] g = new int[1 << (n - 1)][n - 1];
+        long[][] g = new long[1 << (n - 1)][n - 1];
         for(int k = 0; k < n - 1; ++k)
             g[1 << k][k] = d[0][k + 1];
         for(int mask = 3; mask < 1 << (n - 1); ++mask){
@@ -21,7 +21,7 @@ class TSP{
                             g[mask][k] = min(g[mask][k], g[mask ^ (1 << k)][m] + d[m + 1][k + 1]);
                 } 
         }
-        int opt = inf;
+        long opt = inf;
         for(int i = 0; i < n - 1; ++i)
             opt = min(opt, g[(1 << (n - 1)) - 1][i] + d[i + 1][0]);
         return opt;
