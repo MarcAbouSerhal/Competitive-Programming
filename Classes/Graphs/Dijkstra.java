@@ -43,6 +43,7 @@ class Dijkstra{
             }
         }
     }
+    private static final long inf = Long.MAX_VALUE;
     final long[] d;
     final int[] p;
     public Dijkstra(int s, ArrayList<Edge>[] adj){
@@ -50,25 +51,24 @@ class Dijkstra{
         d = new long[n];
         p = new int[n];
         p[s] = -1;
-        for(int i = 1; i < n; ++i)
-            d[i] = Long.MAX_VALUE;
+        for(int i = 1; i < n; ++i) d[i] = inf;
         PQ pq = new PQ(s, d);
         while(pq.size != 0){
-            if(d[pq.v[0]] == Long.MAX_VALUE) break;
+            if(d[pq.v[0]] == inf) break;
             int u = pq.v[0];
             pq.remove_min();
             for(Edge edge: adj[u]){
-                if(d[edge.x] > d[u] + edge.y){
-                    p[edge.x] = u;
-                    d[edge.x] = d[u] + edge.y;
-                    pq.decrease_key(edge.x);
+                if(d[edge.v] > d[u] + edge.w){
+                    p[edge.v] = u;
+                    d[edge.v] = d[u] + edge.w;
+                    pq.decrease_key(edge.v);
                 }        
             }
         }
     }
 }
 class Edge{
-    final int x;
-    final long y;
-    public Edge(int x, long y){ this.x = x; this.y = y; }
+    final int v;
+    final long w;
+    public Edge(int v, long w){ this.v = v; this.w = w; }
 }
