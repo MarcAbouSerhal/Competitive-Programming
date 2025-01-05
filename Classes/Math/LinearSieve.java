@@ -16,7 +16,7 @@ class LinearSieve{
                     if(sp[i * j] == 0) 
                         pf[i * j] = sp[j] == (sp[i * j] = i) ? pf[j] : pf[j] + 1;
     }
-    // (O(lg(x)/lg(lg(x))))
+    // (O(log(x)/log(log(x))))
     public final ArrayList<Pair> primeFactors(int x){
         ArrayList<Pair> res = new ArrayList<>();
         while(x > 1){

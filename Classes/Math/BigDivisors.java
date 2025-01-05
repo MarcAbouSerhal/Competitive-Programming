@@ -19,7 +19,7 @@ class BigDivisors{
         for(int i = 3; i <= n; i += 2)
             if(isPrime.get(i)) primes.add((long)i);
     }
-    // returns list of (p,e) where x = sum(p^e)
+    // returns list of (p,e) where x = sum(p^e) (O(sqrt(x) / log(x)))
     public final ArrayList<Pair> primeFactors(long x){
         ArrayList<Pair> res = new ArrayList<>();
         for(long y: primes){
@@ -35,7 +35,7 @@ class BigDivisors{
         if(x != 1) res.add(new Pair(x, 1));
         return res;
     }
-    // returns unsorted list of all divisors of x
+    // returns unsorted list of all divisors of x (O(sqrt(x) / log(x) + d(x)))
     public final ArrayList<Long> divisors(long x){
         ArrayList<Pair> pfs = primeFactors(x);
         ArrayList<Long> ans = new ArrayList<>();

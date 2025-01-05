@@ -35,7 +35,7 @@ class FFT{
             }
         }
     }
-    // (O(nlg(n)))
+    // (O(nlog(n)))
     public static final long[] multiply(long[] a, long[] b){
         int n = 1;
         while(n < a.length + b.length) n <<= 1;

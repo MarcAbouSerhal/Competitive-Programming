@@ -33,7 +33,7 @@ class MathUtil{
             }
         return phi;
     }
-    // div[i] is sorted list of divisors of i (O(nlg(n)))
+    // div[i] is sorted list of divisors of i (O(nlog(n)))
     public final static ArrayList<Integer>[] divisorsUpTo(int n){
         ArrayList<Integer>[] div = new ArrayList[n + 1];
         for(int i = 1; i <= n; ++i) div[i] = new ArrayList<>();
