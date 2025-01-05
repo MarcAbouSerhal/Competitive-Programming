@@ -7,31 +7,31 @@ class WaveletTree{
     }
     private final long[] a;
     private final class Node{
-        long low, high;
-        Node left, right;
+        final long low, high;
+        final Node left, right;
         final int[] b;
         public Node(List indices, long lo, long hi){
-            low = lo;
-            high = hi;
             int n = indices.n;
             b = new int[n];
-            if(n == 0) return;
-            if(low == high){
-                for(int i = 0; i < n; ++i) b[i] = i + 1;
+            if(n == 0 || lo == hi){
+                if(lo == hi) for(int i = 0; i < n; ++i) b[i] = i + 1;
+                left = right = null;
+                low = lo; high = hi;
                 return;
             }
-            long min = high, max = low;
+            long min = hi, max = lo;
             for(int i: indices.get){
                 min = min < a[i] ? min : a[i];
                 max = max > a[i] ? max : a[i];
             }
-            long mid = (low + high) / 2;
+            long mid = (lo + hi) / 2;
             // compress travels by making sure this node has 2 children or no children
-            while(low != high && (max <= mid || mid < min)){
-                if(mid < min) low = mid + 1;
-                else high = mid;
-                mid = (low + high) / 2;
+            while(lo != hi && (max <= mid || mid < min)){
+                if(mid < min) lo = mid + 1;
+                else hi = mid;
+                mid = (lo + hi) / 2;
             }
+            low = lo; high = hi;
             List leftIndices = new List(n), rightIndices = new List(n);
             // note that you could use indices as leftIndices to reduce time but in my tests it somehow gave worse time
             // you'd do indices.n = 0 and replace every occurence of leftIndices with indices
@@ -63,6 +63,7 @@ class WaveletTree{
         for(int i = 0; i < n; ++i) indices.add(i);
         root = new Node(indices, min, max);
     }
+    // returns number of elements <=x in [l,r] (O(log(n)))
     public final int getLeq(int l, int r, long x){
         Node node = root;
         int count = 0;
@@ -90,6 +91,7 @@ class WaveletTree{
         }
         return count;
     }
+    // returns number of occurences of x in [l,r] (O(log(n)))
     public final int getEq(int l, int r, long x){
         Node node = root;
         while(node != null && l <= r){
@@ -112,6 +114,7 @@ class WaveletTree{
         }
         return 0;
     }
+    // returns kth smallest element in [l,r] (O(log(n)))
     public final long kthInRange(int l, int r, int k){
         Node node = root;
         while(true){

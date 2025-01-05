@@ -1,42 +1,47 @@
+import java.util.*;
 class Tree{
-    int tick = -1;
-    int[][] d;
-    int[] depth;
-    int[] in;
-    int[] floorPow;
-    ArrayList<Integer>[] adj;
-    private int op(int l, int r){ return depth[l]<depth[r] ? l : r; }
+    private int tick = -1;
+    private final int[][] d;
+    private final int[] depth;
+    private final int[] in;
+    private final int[] floorPow;
+    private final ArrayList<Integer>[] adj;
+    private final int op(int l, int r){ return depth[l] < depth[r] ? l : r; }
+    // (O(nlog(n)))
     public Tree(ArrayList<Integer>[] adj){
         this.adj = adj;
-        depth = new int[adj.length];
-        in = new int[adj.length];
-        floorPow= new int[2*adj.length];
-        floorPow[0]=-1;
-        for(int i=1; i<floorPow.length; ++i){
-            floorPow[i]=floorPow[i-1];
-            if((i&(i-1))==0) floorPow[i]++;
+        final int n = adj.length;
+        depth = new int[n];
+        in = new int[n];
+        final int size = (n << 1) - 1;
+        floorPow = new int[size + 1];
+        floorPow[0] = -1;
+        for(int i = 1; i <= size; ++i){
+            floorPow[i] = floorPow[i - 1];
+            if((i & (i - 1)) == 0) ++floorPow[i];
         }
-        int log = floorPow[2*adj.length-1]+1;
-        d = new int[2*adj.length-1][log];
-        dfs(0,-1);
-        for(int j=1; j<log; ++j)
-            for(int i=0; i+(1<<j)<=2*adj.length-1; ++i)
-                d[i][j] = op(d[i][j-1], d[i+(1<<(j-1))][j-1]);
+        final int log = floorPow[size] + 1;
+        d = new int[size][log];
+        dfs(0, -1);
+        for(int j = 1; j < log; ++j)
+            for(int i = 0; i + (1 << j) <= size; ++i)
+                d[i][j] = op(d[i][j - 1], d[i + (1 << (j - 1))][j - 1]);
     }
-    public void dfs(int u, int p){
+    public final void dfs(int u, int p){
         d[in[u] = ++tick][0] = u;
         for(int v: adj[u])
-            if(v!=p){
+            if(v != p){
                 depth[v] = depth[u] + 1;
-                dfs(v,u);
+                dfs(v, u);
                 d[++tick][0] = u;
             }
     }
-    public int lca(int a, int b){
+    // (O(1))
+    public final int lca(int a, int b){
         a = in[a]; 
         b = in[b];
-        if(a>b){ a=a^b; b=a^b; a=a^b; }
-        int x = floorPow[b-a+1];
-        return op(d[a][x],d[b+1-(1<<x)][x]);
+        if(a > b){ a = a ^ b; b = a ^ b; a = a ^ b; }
+        int x = floorPow[b - a + 1];
+        return op(d[a][x], d[b + 1 - (1 << x)][x]);
     }
 }

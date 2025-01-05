@@ -20,9 +20,8 @@ class Manacher{
             }
         }
     }
-    // O(1)
+    // returns whether s[l...r] is a palindrome (O(1))
     public final boolean isPalindrome(int l, int r){
-        // returns whether s[l...r] is a palindrome
         return d[l + r + 2] > r - l;
     }
 }

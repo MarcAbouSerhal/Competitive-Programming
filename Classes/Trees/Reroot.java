@@ -1,30 +1,30 @@
-// replace E with type of property (or Tuple of properties)
+// replace X with type of property (or Tuple of properties)
 class Reroot{
-    static private E[][] dp;
-    // dp[u][i] is property of subtree of adj[u][i] if tree is rooted at u
+    static private X[][] dp;
     static private ArrayList<Integer>[] adj;
     static private int[] p_index;
     // p_index[u] is index of p(u) in adj[u]
 
     // extra stuff here
 
-    public static final E[][] compute(ArrayList<Integer>[] adj){ // pass extra stuff as parameters
+    // dp[u][i] is property of subtree of adj[u][i] if tree is rooted at u (O(n))
+    public static final X[][] compute(ArrayList<Integer>[] adj){ // pass extra stuff as parameters
         Reroot.adj = adj;
         int n = adj.length;
-        dp = new E[n][];
+        dp = new X[n][];
         p_index = new int[n];
 
         // extra stuff here
 
-        for(int i = 0; i < n; ++i) dp[i] = new E[adj[i].size()];
+        for(int i = 0; i < n; ++i) dp[i] = new X[adj[i].size()];
         dfs1(0, -1);
         dfs2(0, -1);
         return dp;
     }
-    private static final E dfs1(int u, int p){
+    private static final X dfs1(int u, int p){
         if(u != 0 && adj[u].size() == 1) return leaf_prop(u);
         int neighbors = adj[u].size();
-        E rest;
+        X rest;
         // rest is property of all child subtrees, set its intial value accordingly
         for(int i = 0; i < neighbors; ++i){
             int v = adj[u].get(i);
@@ -42,7 +42,7 @@ class Reroot{
         }
         else{
             int neighbors = adj[u].size();
-            E[] pref_dp = new E[neighbors - 1], suf_dp = new E[neighbors - 1];
+            E[] pref_dp = new X[neighbors - 1], suf_dp = new X[neighbors - 1];
             pref_dp[0] = dp[u][0]; suf_dp[neighbors - 2] = dp[u][neighbors - 1];
             for(int i = 1; i < neighbors - 1; ++i){
                 pref_dp[i] = merge(pref_dp[i - 1], dp[u][i]);
@@ -58,13 +58,16 @@ class Reroot{
         }
     }
     // CHANGE THESE FUNCTIONS
-    private static final E leaf_prop(int u){
-        // return what property of subtree of u of would be knowing that u is a leaf node
+    // return what property of subtree of u of would be knowing that u is a leaf node
+    private static final X leaf_prop(int u){
+        
     }
-    private static final E merge(E x, E y){
-        // return merging of properties x and y as 1 property
+    // return merging of properties x and y as 1 property
+    private static final X merge(X x, X y){
+        
     }
-    private static final E combine(int u, E rest){
-        // return property of subtree of u knowing that rest is merging of properties of all its child subtrees
+    // return property of subtree of u knowing that rest is merging of properties of all its child subtrees
+    private static final X combine(int u, X rest){
+        
     }
 }

@@ -1,3 +1,5 @@
+// replace X with type of property (or Tuple of properties)
+// replace Y with object with info about update
 class LazySegmentTree{
     private final X[] tree;
     private final Y[] change;
@@ -41,7 +43,7 @@ class LazySegmentTree{
             int mid = (lx + rx) >> 1;
             clean((x << 1) + 1, lx, mid);
             clean((x + 1) << 1, mid + 1, rx);
-            tree[x] = op(tree[(x << 1) + 1],tree[(x + 1) << 1]);
+            tree[x] = op(tree[(x << 1) + 1], tree[(x + 1) << 1]);
         }
     }
     private final X get(int l, int r, int x,int lx, int rx){
@@ -91,5 +93,3 @@ class LazySegmentTree{
         // define associative operation here (f(f(a,b),c)=f(a,f(b,c)))
     }
 }
-class X{}
-class Y{}
