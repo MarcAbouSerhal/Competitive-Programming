@@ -35,12 +35,8 @@ class FastReader {
     public final String nextLine() { 
         String str = ""; 
         try { 
-            if(st.hasMoreTokens()){ 
-                str = st.nextToken("\n"); 
-            } 
-            else{ 
-                str = br.readLine(); 
-            } 
+            if(st.hasMoreTokens()) str = st.nextToken("\n"); 
+            else str = br.readLine(); 
         } 
         catch (IOException e) { } 
         return str; 

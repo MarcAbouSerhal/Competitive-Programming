@@ -13,13 +13,13 @@ class MaxSubarraySegmentTree{
     }
     // find max sum subarray inside [l,r] (O(log(n)))
     public final Node get(int l, int r){
-        return get(l,r,0,0,tree.length/2);
+        return get(l, r, 0, 0, leaves - 1);
     }
     // sets a[x] to v (O(log(n)))
     public final void set(int x, int v){
         x += leaves - 1;
         tree[x]= init(v , x - leaves + 1);
-        while(x > 0){
+        while(x != 0){
             x = (x - 1) >> 1;
             tree[x] = op(tree[(x << 1) + 1],tree[(x + 1) << 1]);
         }

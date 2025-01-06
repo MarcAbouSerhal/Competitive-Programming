@@ -29,7 +29,7 @@ class BoundSegmentTree{
         tree[x] = v <= b[x];
         change[x] = null;
         int lx = x - leaves + 1, rx = x - leaves + 1;
-        while(x > 0){
+        while(x != 0){
             if((x & 1) == 0) lx -= rx - lx + 1;
             else rx += rx - lx + 1;
             x = (x - 1) >> 1;

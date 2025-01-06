@@ -14,22 +14,17 @@ class FrequencySegmentTree{
             min[i] = min(min[(i << 1) + 1], min[(i + 1) << 1]);
         }
     }
-    private final int get(int l, int r, int x,int lx, int rx){
-        if(lx >= l && rx <= r) return sum[x];
-        if(rx < l || lx > r) return 0;
-        int mid = (lx + rx) >> 1;
-        return get(l, r, (x << 1) + 1, lx, mid) + get(l, r, (x + 1) << 1, mid + 1, rx);
-    }
+    
     // returns number of elements in the range [l,r] (O(log(n)))
     public final int elementsInRange(int l, int r){
-        return get(l, r, 0, 0, sum.length >> 1);
+        return get(l, r, 0, 0, leaves - 1);
     }
     // adds i to the multiset (O(log(n)))
     public final void add(int i){
         i += leaves - 1;
         ++sum[i];
         ++min[i];
-        while(i > 0){
+        while(i != 0){
             i = (i - 1) >> 1;
             min[i] = min(min[(i << 1) + 1], min[(i + 1) << 1]);
             sum[i] = sum[(i << 1) + 1] + sum[(i + 1) << 1];
@@ -66,5 +61,11 @@ class FrequencySegmentTree{
             if(min[(i << 1) + 1] == 0) i = (i << 1) + 1;
             else i = (i + 1) << 1;
         return i - leaves + 1;
+    }
+    private final int get(int l, int r, int x,int lx, int rx){
+        if(lx >= l && rx <= r) return sum[x];
+        if(rx < l || lx > r) return 0;
+        int mid = (lx + rx) >> 1;
+        return get(l, r, (x << 1) + 1, lx, mid) + get(l, r, (x + 1) << 1, mid + 1, rx);
     }
 }

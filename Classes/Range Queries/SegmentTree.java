@@ -26,7 +26,7 @@ class LazySegmentTree{
     public final void set(int x, X v){
         x += leaves - 1;
         tree[x] = v;
-        while(x > 0){
+        while(x != 0){
             x = (x - 1) >> 1;
             tree[x] = op(tree[(x << 1) + 1], tree[(x + 1) << 1]);
         }

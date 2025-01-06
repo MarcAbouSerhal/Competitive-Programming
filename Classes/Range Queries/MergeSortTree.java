@@ -22,7 +22,7 @@ class MergeSortTree{
     public final void set(int x, int v){ 
         x += leaves - 1;
         tree[x][0] = v;
-        while(x > 0){
+        while(x != 0){
             x = (x - 1) >> 1;
             tree[x] = merge(tree[(x << 1) + 1],tree[(x + 1) << 1]);
         }
