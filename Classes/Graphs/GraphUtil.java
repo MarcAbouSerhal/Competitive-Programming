@@ -11,8 +11,8 @@ class GraphUtil{
     private static int[] t;
     private static final int min(int a, int b){ return a<b ? a : b; }
     
-    static ArrayList<Edge> bridges;
-    // returns list of bridges in undirected graph
+    private static ArrayList<Edge> bridges;
+    // returns list of bridges in undirected graph (O(n + m))
     public static final ArrayList<Edge> getBridges(ArrayList<Integer>[] adj){
         GraphUtil.adj = adj; tick = 0;
         int n = adj.length;
@@ -36,7 +36,7 @@ class GraphUtil{
     private static int[] id;
     private static Stack s;
     private static int group_id;
-    // returns SCC id for each vertex in directed graph
+    // returns SCC id for each vertex in directed graph (O(n + m))
     // id[u] < id[v] -> surely u can't reach v 
     public static final int[] getSCCs(ArrayList<Integer>[] adj){
         tick = group_id = 0;
@@ -66,7 +66,7 @@ class GraphUtil{
 
     private static ArrayList<Integer> cutpoints;
     private static int[] tin;
-    // returns list of cutpoints in undirected graph
+    // returns list of cutpoints in undirected graph (O(n + m))
     public static final ArrayList<Integer> getCutpoints(ArrayList<Integer>[] adj){
         GraphUtil.adj = adj;
         int n = adj.length;
