@@ -31,11 +31,10 @@ class DisjointSparseTable{
     }
     // returns f(a[l...r]) (O(T(op)))
     public final X get(int l, int r){
-        int level = r - l < 3 ? 0 :  30 - Integer.numberOfLeadingZeros(l ^ r), mod = (2 << level) - 1, segment = r >> (level + 1);
-        if((l >> (level + 1)) == segment)
-            return (l & mod) == 0 ? pref[level][segment][r - l] : suf[level][segment][mod - r + l];
-        else 
-            return op(suf[level][segment - 1][mod - ((segment << (level + 1)) - 1 - l)], pref[level][segment][r - (segment << (level + 1))]);
+        if(r - l < 2)
+            return l == r ? ((l & 1) == 0 ? pref[0][l >> 1][0] : suf[0][l >> 1][1]) : (l & 1) == 0 ? pref[0][l >> 1][1] : op(suf[0][l >> 1][1], pref[0][1 + l >> 1][0]);
+        int level = 30 - Integer.numberOfLeadingZeros(l ^ r), segment = r >> level + 1;
+        return op(suf[level][segment - 1][(2 << level) + l - (segment << level + 1)], pref[level][segment][r - (segment << level + 1)]);
     }
     // CHANGE THESE FUNCTIONS
     private final X op(X a, X b){
