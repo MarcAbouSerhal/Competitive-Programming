@@ -78,12 +78,12 @@ class MergeSortTree{
         if(lx >= l && rx <= r) return countLeq(tree[x], k);
         if(rx < l || lx > r) return 0;
         int mid = (lx + rx) >> 1;
-        return leq(l, r, k, (x << 1) + 1, lx, mid) + leq(l, r, k, (x + 1) << 1, mid + 1, r);
+        return leq(l, r, k, (x << 1) + 1, lx, mid) + leq(l, r, k, (x + 1) << 1, mid + 1, rx);
     }
     private final int eq(int l, int r, int k, int x, int lx, int rx){ 
         if(lx >= l && rx <= r) return countEq(tree[x], k);
         if(rx < l || lx > r) return 0;
         int mid = (lx + rx) >> 1;
-        return eq(l, r, k, (x << 1) + 1, lx, mid) + eq(l, r, k, (x + 1) << 1, mid + 1, r);
+        return eq(l, r, k, (x << 1) + 1, lx, mid) + eq(l, r, k, (x + 1) << 1, mid + 1, rx);
     }
 }

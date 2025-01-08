@@ -1,6 +1,7 @@
 class SparseTable{
     private final X[][] table;
     private final int[] floorPow;
+    // (O(nlog(n)))
     public SparseTable(X[] a){
         final int n = a.length, log = 32 - Integer.numberOfLeadingZeros(n);
         table = new X[n][log];
@@ -16,6 +17,7 @@ class SparseTable{
         }
     }
     // CHANGE THESE FUNCTIONS
+    // returns f(a[l...r])
     public final X get(int l, int r){
         int x = floorPow[r - l + 1];
 

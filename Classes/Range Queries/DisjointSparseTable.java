@@ -1,5 +1,7 @@
+// replace X with type of property (or Tuple of properties)
 class DisjointSparseTable{
     private final X[][][] pref, suf; 
+    // (O(nlog(n)))
     public DisjointSparseTable(X[] a){
         final int n = a.length, log = 31 - Integer.numberOfLeadingZeros(n);
         pref = new X[log][][];
@@ -24,7 +26,10 @@ class DisjointSparseTable{
             pref[i][segments][0] = a[index];
             for(int j = 1; j < len && index + j < n; ++j) pref[i][segments][j] = op(pref[i][segments][j - 1], a[index + j]);
         }
+        // only need to store last element as a suffix for segment of size 2 because without it, querying [n - 1, n - 1] is buggy
+        suf[0][((n + 1) >> 1) - 1] = new X[] {a[n - 1], a[n - 1]};
     }
+    // returns f(a[l...r]) (O(T(op)))
     public final X get(int l, int r){
         int level = r - l < 3 ? 0 :  30 - Integer.numberOfLeadingZeros(l ^ r), mod = (2 << level) - 1, segment = r >> (level + 1);
         if((l >> (level + 1)) == segment)
@@ -35,6 +40,5 @@ class DisjointSparseTable{
     // CHANGE THESE FUNCTIONS
     private final X op(X a, X b){
         // define associative operation here (op(op(a,b).c)=op(a,op(b,c)))
-
     }
 }

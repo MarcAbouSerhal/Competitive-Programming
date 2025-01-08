@@ -1,5 +1,5 @@
 // replace X with type of property (or Tuple of properties)
-class LazySegmentTree{
+class SegmentTree{
     private final X[] tree;
     private int leaves;
     public LazySegmentTree(int n, X v){
@@ -33,9 +33,9 @@ class LazySegmentTree{
     }
     private final X get(int l, int r, int x,int lx, int rx){
         if(rx < l || lx > r) return null;
-        if(lx>=l && rx<=r) return tree[x];
+        if(lx >= l && rx <= r) return tree[x];
         int mid = (lx + rx) >> 1;
-        return op(get(l, r, (x << 1) + 1, lx, mid), get(l, r, (x + 1) << 1, mid + 1, r));
+        return op(get(l, r, (x << 1) + 1, lx, mid), get(l, r, (x + 1) << 1, mid + 1, rx));
     }
     // CHANGE THESE FUNCTIONS
     private static final X op(X a, X b){
