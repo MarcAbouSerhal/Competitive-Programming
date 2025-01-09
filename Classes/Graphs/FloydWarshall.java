@@ -25,7 +25,7 @@ class FloydWarshall{
         }
     }
     // normal floyd warshall (O(n^3))
-    public final static void compute_directed(long[][] d){
+    public final static void compute(long[][] d){
         final int n = d.length;
         int i, j;
         for(int k = 0; k < n; ++k){
