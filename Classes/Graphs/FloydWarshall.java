@@ -8,14 +8,12 @@ class FloydWarshall{
         for(int k = 0; k < n; ++k){
             i = 0;
             for(; i < k; ++i){
-                j = 0;
-                for(; j < i; ++j)
+                for(j = 0; j < i; ++j)
                     if(d[j][i] > d[i][k] + d[j][k])
                         d[j][i] = d[i][k] + d[j][k];
             }
             for(; i < n; ++i){
-                j = 0;
-                for(; j < k; ++j)
+                for(j = 0; j < k; ++j)
                     if(d[j][i] > d[k][i] + d[j][k])
                         d[j][i] = d[k][i] + d[j][k];
                 for(; j < i; ++j)
