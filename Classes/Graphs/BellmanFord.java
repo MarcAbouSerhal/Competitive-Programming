@@ -45,6 +45,34 @@ class BellmanFord{
                 dfs(e.v, adj, reachable);
             }   
     }
+    // returns neg cycle if it exists, null if there is none
+    // stolen from Wxssim <3
+    public static final int[] getNegCycle(ArrayList<Edge>[] adj){
+        final int n = adj.length;
+        long[] d  = new long[n];
+        int[] p = new int[n];
+        int x = -1;
+        for(int i = 0; i < n; ++i){
+            x = -1;
+            for(int u = 0; u < n; ++u)
+                for(Edge e: adj[u])
+                    if(d[u] + e.w < d[e.v]){
+                        p[x = e.v] = u;
+                        d[x] = d[u] + e.w;
+                    }
+        }
+        if(x == -1) return null;
+        for(int i = 0; i < n; ++i) x = p[x];
+        ArrayList<Integer> cycle = new ArrayList<>(); cycle.add(x);
+        for(int u = p[x]; u != x; u = p[u])
+            cycle.add(u);
+        cycle.add(x);
+        int cycleSize = cycle.size();
+        int[] reversed = new int[cycleSize];
+        for(int i = 0; i < cycleSize; ++i)
+            reversed[i] = cycle.get(cycleSize - 1 - i);
+        return reversed;
+    }
 }
 class Edge{
     final int v;
