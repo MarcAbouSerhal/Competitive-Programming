@@ -50,8 +50,10 @@ class Dijkstra{
         int n = adj.length;
         d = new long[n];
         p = new int[n];
+        int i = 0;
+        for(; i < s; ++i) d[i] = inf;
+        for(i = s + 1; i < n; ++i) d[i] = inf;
         p[s] = -1;
-        for(int i = 1; i < n; ++i) d[i] = inf;
         PQ pq = new PQ(s, d);
         int v;
         long w;
@@ -72,13 +74,15 @@ class Dijkstra{
     }
     // use this if there are states
     // node u at state i is at [u + i*n]
-    public Dijkstra(int s, int initiaState, int states, ArrayList<Edge>[] adj){
+    public Dijkstra(int s, int initialState, int states, ArrayList<Edge>[] adj){
         int n = adj.length, n_ = n * states;
-        s += initiaState * n;
+        s += initialState * n;
         d = new long[n_];
         p = new int[n_];
+        int i = 0;
+        for(; i < s; ++i) d[i] = inf;
+        for(i = s + 1; i < n_; ++i) d[i] = inf;
         p[s] = -1;
-        for(int i = 1; i < n_; ++i) d[i] = inf;
         PQ pq = new PQ(s, d);
         int v;
         long w;
