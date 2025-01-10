@@ -1,5 +1,8 @@
 // O((n+m)log(n)) instead of typical O((n+m)log(m)) because decrease_key is used instead of inserting
 // which keeps size of pq at most n 
+
+import java.util.ArrayList;
+
 class Dijkstra{
     private final static class PQ{
         private final int[] v;
@@ -53,17 +56,51 @@ class Dijkstra{
         p[s] = -1;
         for(int i = 1; i < n; ++i) d[i] = inf;
         PQ pq = new PQ(s, d);
+        int v;
+        long w;
         while(pq.size != 0){
             if(d[pq.v[0]] == inf) break;
             int u = pq.v[0];
             pq.remove_min();
             for(Edge edge: adj[u]){
-                if(d[edge.v] > d[u] + edge.w){
-                    p[edge.v] = u;
-                    d[edge.v] = d[u] + edge.w;
-                    pq.decrease_key(edge.v);
+                v = edge.v;
+                w = edge.w;
+                if(d[v] > d[u] + w){
+                    p[v] = u;
+                    d[v] = d[u] + w;
+                    pq.decrease_key(v);
                 }        
             }
+        }
+    }
+    // use this if there are states
+    // node u at state i is at [u + i*n]
+    public Dijkstra(int s, int initiaState, int states, ArrayList<Edge>[] adj){
+        int n = adj.length, n_ = n * states;
+        s += initiaState * n;
+        d = new long[n_];
+        p = new int[n_];
+        p[s] = -1;
+        for(int i = 1; i < n_; ++i) d[i] = inf;
+        PQ pq = new PQ(s, d);
+        int v;
+        long w;
+        while(pq.size != 0){
+            if(d[pq.v[0]] == inf) break;
+            int u = pq.v[0], state = u / n;
+            u %= n;
+            pq.remove_min();
+            // Now do case work depending on state
+            // for(Edge edge: adj[u]){
+            //     v = edge.v;
+            //     w = edge.w;
+            //     if(d[v] > d[u] + w){
+            //         p[v] = u;
+            //         d[v] = d[u] + w;
+            //         pq.decrease_key(v);
+            //     }        
+            // }
+            // Remember to call pq.decrease_key(x) after updating p[x] and d[x]
         }
     }
 }
