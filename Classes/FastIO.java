@@ -102,6 +102,8 @@ class FastIO{
     }
     private static final byte[] TRUE = {'t', 'r', 'u', 'e'}, FALSE = {'f', 'a', 'l', 's', 'e'}, ENDL = "\n".getBytes(), SPACE = {' '}, ZERO = {'0'};
     private static final byte MINUS = '-';
+    public final void print(char c) throws Exception { bos.write(c); }
+    public final void println(char c) throws Exception { bos.write(c); bos.write(ENDL); }
     public final void print(String s) throws Exception { bos.write(bytes(s)); }
     public final void println(String s) throws Exception { bos.write(bytes(s)); bos.write(ENDL); }
     public final void print(int x) throws Exception { bos.write(bytes(x)); }
