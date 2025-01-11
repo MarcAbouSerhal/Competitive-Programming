@@ -14,7 +14,6 @@ class FunctionalGraph{
     final int[] cycle_dist;
     // given a vertex u, returns distance from u to the cycle it leads to
     // cycle_dist[u] = 0 iff u is part of a cycle
-    // tree_id[u] = tree_id[v] != -1 and cycle_dist[u] >= cycle_dist[v] -> u leads to v
     public FunctionalGraph(int[] next){
         final int n = next.length;
         final ArrayList<Integer>[] before = new ArrayList[n];
@@ -25,6 +24,15 @@ class FunctionalGraph{
         for(int u = 0; u < n; ++u){
             before[next[u]].add(u);
             if(cycle_id[u] != -2) continue;
+            // if next[u] = u, vertices incorrectly includes u twice, deal with this seperately
+            if(next[u] == u){
+                ArrayList<Integer> vertices = new ArrayList<>();
+                vertices.add(u);
+                cycle_index[u] = 0;
+                cycle_id[u] = cycles;
+                cycle[cycles++] = vertices;
+                continue;
+            }
             ArrayList<Integer> path = new ArrayList<>();
             path.add(u);
             int at = u;
