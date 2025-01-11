@@ -14,6 +14,7 @@ class FunctionalGraph{
     final int[] cycle_dist;
     // given a vertex u, returns distance from u to the cycle it leads to
     // cycle_dist[u] = 0 iff u is part of a cycle
+    // tree_id[u] = tree_id[v] !+ -1 and cycle_dist[u] >= cycle_dist[v] -> u leads to v
     public FunctionalGraph(int[] next){
         final int n = next.length;
         final ArrayList<Integer>[] before = new ArrayList[n];
