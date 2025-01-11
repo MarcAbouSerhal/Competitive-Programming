@@ -1,6 +1,81 @@
-// O((n+m)log(n)) instead of typical O((n+m)log(m)) because decrease_key is used instead of inserting
-// which keeps size of pq at most n 
 class Dijkstra{
+    private static final long inf = Long.MAX_VALUE;
+    final long[] d;
+    final int[] p;
+    final ArrayList<Edge>[] adj;
+    // (O((n + m)log(n)))
+    public Dijkstra(int s, ArrayList<Edge>[] adj_){
+        adj = adj_;
+        final int n = adj.length;
+        d = new long[n];
+        p = new int[n];
+        int i = 0;
+        for(; i < s; ++i) d[i] = inf;
+        for(i = s + 1; i < n; ++i) d[i] = inf;
+        p[s] = -1;
+        PQ pq = new PQ(s, d);
+        int v;
+        long w;
+        while(pq.size != 0){
+            if(d[pq.v[0]] == inf) break;
+            int u = pq.v[0];
+            pq.remove_min();
+            for(Edge edge: adj[u]){
+                v = edge.v;
+                w = edge.w;
+                if(d[v] > d[u] + w){
+                    p[v] = u;
+                    d[v] = d[u] + w;
+                    pq.decrease_key(v);
+                }        
+            }
+        }
+    }
+    // use this if there are states (O(s(n + m)log(s.n)))
+    // node u at state i is at [u + i*n]
+    public Dijkstra(int s, int initialState, int states, ArrayList<Edge>[] adj_){
+        adj = adj_;
+        final int n = adj.length, n_ = n * states;
+        s += initialState * n;
+        d = new long[n_];
+        p = new int[n_];
+        int i = 0;
+        for(; i < s; ++i) d[i] = inf;
+        for(i = s + 1; i < n_; ++i) d[i] = inf;
+        p[s] = -1;
+        PQ pq = new PQ(s, d);
+        int v;
+        long w;
+        while(pq.size != 0){
+            if(d[pq.v[0]] == inf) break;
+            int u = pq.v[0], state = u / n;
+            u %= n;
+            pq.remove_min();
+            // Now do case work depending on state
+            // for(Edge edge: adj[u]){
+            //     v = edge.v;
+            //     w = edge.w;
+            //     if(d[v] > d[u] + w){
+            //         p[v] = u;
+            //         d[v] = d[u] + w;
+            //         pq.decrease_key(v);
+            //     }        
+            // }
+            // Remember to call pq.decrease_key(x) after updating p[x] and d[x]
+        }
+    }
+    // (O(n + m))
+    public final ArrayList<Integer>[] getDAG(){
+        final int n = adj.length;
+        ArrayList<Integer>[] res = new ArrayList[n];
+        for(int u = 0; u < n; ++u) res[u] = new ArrayList<>();
+        for(int u = 0; u < n; ++u)
+            for(Edge e: adj[u])
+                if(d[u] + e.w == d[e.v])
+                    res[u].add(e.v);
+        return res;
+    }
+    // supports decrease_key
     private final static class PQ{
         private final int[] v;
         private final long[] d;
@@ -41,67 +116,6 @@ class Dijkstra{
                 }
                 else break;
             }
-        }
-    }
-    private static final long inf = Long.MAX_VALUE;
-    final long[] d;
-    final int[] p;
-    public Dijkstra(int s, ArrayList<Edge>[] adj){
-        int n = adj.length;
-        d = new long[n];
-        p = new int[n];
-        int i = 0;
-        for(; i < s; ++i) d[i] = inf;
-        for(i = s + 1; i < n; ++i) d[i] = inf;
-        p[s] = -1;
-        PQ pq = new PQ(s, d);
-        int v;
-        long w;
-        while(pq.size != 0){
-            if(d[pq.v[0]] == inf) break;
-            int u = pq.v[0];
-            pq.remove_min();
-            for(Edge edge: adj[u]){
-                v = edge.v;
-                w = edge.w;
-                if(d[v] > d[u] + w){
-                    p[v] = u;
-                    d[v] = d[u] + w;
-                    pq.decrease_key(v);
-                }        
-            }
-        }
-    }
-    // use this if there are states
-    // node u at state i is at [u + i*n]
-    public Dijkstra(int s, int initialState, int states, ArrayList<Edge>[] adj){
-        int n = adj.length, n_ = n * states;
-        s += initialState * n;
-        d = new long[n_];
-        p = new int[n_];
-        int i = 0;
-        for(; i < s; ++i) d[i] = inf;
-        for(i = s + 1; i < n_; ++i) d[i] = inf;
-        p[s] = -1;
-        PQ pq = new PQ(s, d);
-        int v;
-        long w;
-        while(pq.size != 0){
-            if(d[pq.v[0]] == inf) break;
-            int u = pq.v[0], state = u / n;
-            u %= n;
-            pq.remove_min();
-            // Now do case work depending on state
-            // for(Edge edge: adj[u]){
-            //     v = edge.v;
-            //     w = edge.w;
-            //     if(d[v] > d[u] + w){
-            //         p[v] = u;
-            //         d[v] = d[u] + w;
-            //         pq.decrease_key(v);
-            //     }        
-            // }
-            // Remember to call pq.decrease_key(x) after updating p[x] and d[x]
         }
     }
 }
