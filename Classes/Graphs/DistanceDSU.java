@@ -19,9 +19,7 @@ class DSU {
         // remove lines 25->29 if connection is directed (complexity becomes O(log(n)))
         int[] valA = find(a);
         int[] valB = find(b);
-        if (valA[0] == valB[0]) {
-            return;
-        }
+        if (valA[0] == valB[0]) return;
         if(-p[valA[0]] > -p[valB[0]]){
             int[] temp = valA;
             valA = valB;

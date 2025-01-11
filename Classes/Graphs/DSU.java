@@ -14,9 +14,7 @@ class DSU {
     public final void join(int a, int b) {
         a = find(a);
         b = find(b);
-        if (a == b) {
-            return;
-        }
+        if (a == b) return;
         components--;
         if(-p[a] > -p[b]){
             a = a ^b ; b = a ^ b; a = a ^ b;

@@ -1,3 +1,5 @@
+import java.util.*;
+import java.io.*;
 class FastIO{ 
     private final BufferedOutputStream bos;
     private final BufferedReader br; 
@@ -36,6 +38,12 @@ class FastIO{
         if(st.hasMoreTokens()) return st.nextToken("\n"); 
         else return br.readLine(); 
     } 
+    private static final byte[] bytes(char[] s){
+        final int n = s.length;
+        final byte[] res = new byte[n];
+        for(int i = 0; i < n; ++i) res[i] = (byte)s[i];
+        return res;
+    }
     private static final byte[] bytes(String s){
         final int n = s.length();
         final byte[] res = new byte[n];
@@ -104,6 +112,12 @@ class FastIO{
     public final void println(boolean b) throws Exception { bos.write(b ? TRUE : FALSE); bos.write(ENDL); }
     public final void print(Object obj) throws Exception { print(obj.toString()); }
     public final void println(Object obj) throws Exception { println(obj.toString()); }
+    public final void print(int[] array) throws Exception { for(int i: array){ bos.write(bytes(i)); bos.write(SPACE); } }
+    public final void println(int[] array) throws Exception { for(int i: array){ bos.write(bytes(i)); bos.write(SPACE); } bos.write(ENDL); }
+    public final void print(long[] array) throws Exception { for(long i: array){ bos.write(bytes(i)); bos.write(SPACE); } }
+    public final void println(long[] array) throws Exception { for(long i: array){ bos.write(bytes(i)); bos.write(SPACE); } bos.write(ENDL); }
+    public final void print(char[] s) throws Exception { bos.write(bytes(s)); }
+    public final void println(char[] s) throws Exception { bos.write(bytes(s)); bos.write(ENDL); }
     public final void space() throws Exception { bos.write(SPACE); }
     public final void endl() throws Exception { bos.write(ENDL); }
     public final void flush() throws Exception { bos.flush(); }
