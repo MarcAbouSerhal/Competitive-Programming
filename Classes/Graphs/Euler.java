@@ -37,32 +37,6 @@ class Euler{
         if(tick == m + 1) return result;
         else return null;
     }
-    // gets euler path if it exists (degree[u] is odd for 0 or 2 u's), and null if it doesn't exist  (O(n + m))
-    public final static int[] getPath(ArrayList<Integer>[] adj_, int start){
-        final int n = adj_.length;
-        int m = 0, x = -1, y = -1;
-        for(int u = 0; u < n; ++u){
-            if((adj_[u].size() & 1) == 1){
-                if(x == -1) x = u;
-                else if(y == -1) y = u;
-                else return null;
-            }
-            m += adj_[u].size();
-        }
-        if(x != -1 && y == -1) return null;
-        else{
-            if(x != -1){
-                adj_[x].add(y);
-                adj_[y].add(x);
-            }
-            int[] result = getCycle(adj_, start);
-            if(x != -1){
-                adj_[x].removeLast();
-                adj_[y].removeLast();
-            }
-            return result;
-        }
-    }
     private final static Stack[][] copy(ArrayList<Integer>[] adj_){
         int tick = 0;
         final int n = adj_.length;
