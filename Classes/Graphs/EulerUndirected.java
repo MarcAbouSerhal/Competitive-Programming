@@ -1,6 +1,6 @@
-class Euler{
-    // Note: this class is for undirected multigraphs (could have multiple edges)
+class EulerUndirected{
     // gets euler cycle if it exists (degree[u] is even for every u), and null if it doesn't exist  (O(n + m))
+    // works for multigraphs (graphs with duped edges)
     public final static int[] getCycle(ArrayList<Integer>[] adj_, int start){
         final int n = adj_.length;
         int m = 0;
