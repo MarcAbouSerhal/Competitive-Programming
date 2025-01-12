@@ -9,17 +9,17 @@ class Euler{
             m += adj_[u].size();
         }
         m >>= 1;
-        tick = 0;
-        copy(adj_);
+        final Stack[][] stacks = copy(adj_);
+        final Stack[] adj = stacks[0], index = stacks[1];
         final int[] result = new int[m + 1];
-        tick = 0;
+        int tick = 0;
         final boolean[] removed = new boolean[m];
         Stack st = new Stack(m + 1);
         st.add(start);
         int v, i;
         while(!st.isEmpty()){
             int u = st.top();
-            while(!adj[u].isEmpty() && removed[index[u].top()]){ // remove already removed edges from adj[u]
+            while(!adj[u].isEmpty() && removed[index[u].top()]){
                 adj[u].pop();
                 index[u].pop();
             }
@@ -37,13 +37,37 @@ class Euler{
         if(tick == m + 1) return result;
         else return null;
     }
-    private static int tick;
-    private static Stack[] adj;
-    private static Stack[] index;
-    private final static void copy(ArrayList<Integer>[] adj_){
+    // gets euler path if it exists (degree[u] is odd for 0 or 2 u's), and null if it doesn't exist  (O(n + m))
+    public final static int[] getPath(ArrayList<Integer>[] adj_, int start){
         final int n = adj_.length;
-        adj = new Stack[n];
-        index = new Stack[n];
+        int m = 0, x = -1, y = -1;
+        for(int u = 0; u < n; ++u){
+            if((adj_[u].size() & 1) == 1){
+                if(x == -1) x = u;
+                else if(y == -1) y = u;
+                else return null;
+            }
+            m += adj_[u].size();
+        }
+        if(x != -1 && y == -1) return null;
+        else{
+            if(x != -1){
+                adj_[x].add(y);
+                adj_[y].add(x);
+            }
+            int[] result = getCycle(adj_, start);
+            if(x != -1){
+                adj_[x].removeLast();
+                adj_[y].removeLast();
+            }
+            return result;
+        }
+    }
+    private final static Stack[][] copy(ArrayList<Integer>[] adj_){
+        int tick = 0;
+        final int n = adj_.length;
+        Stack[] adj = new Stack[n];
+        Stack[] index = new Stack[n];
         for(int u = 0; u < n; ++u){
             adj[u] = new Stack(adj_[u].size());
             index[u] = new Stack(adj_[u].size());
@@ -57,6 +81,7 @@ class Euler{
                 index[v].add(tick++);
             }
         }
+        return new Stack[][] {adj, index};
     }
     private static final class Stack{
         private final int[] s;
@@ -67,3 +92,4 @@ class Euler{
         public final int pop(){ return s[--size]; }
         public final boolean isEmpty(){ return size == 0; }
     }
+}
