@@ -23,10 +23,7 @@ class EulerUndirected{
                 adj[u].pop();
                 index[u].pop();
             }
-            if(adj[u].isEmpty()){
-                result[tick++] = u;
-                st.pop();
-            }
+            if(adj[u].isEmpty()) result[tick++] = st.pop();
             else{
                 v = adj[u].pop();
                 i = index[u].pop();
