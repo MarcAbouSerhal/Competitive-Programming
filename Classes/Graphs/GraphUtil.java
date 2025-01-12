@@ -1,4 +1,45 @@
 class GraphUtil{
+    // returns SCC id for each vertex in directed graph (O(n + m))
+    // id[u] < id[v] -> surely u can't reach v 
+    // id[n] is number of SCCs
+    public static final int[] getSCCs(ArrayList<Integer>[] adj){
+        tick = group_id = 0;
+        GraphUtil.adj = adj;
+        final int n = adj.length;
+        id = new int[n + 1]; for(int i = 0; i < n; ++i) id[i] = -1;
+        t = new int[n];
+        s = new Stack(n);
+        for(int i=0; i < n; ++i)
+            if(t[i] == 0)
+                dfs(i);
+        id[n] = group_id;
+        return id;
+    }
+
+    // returns list of bridges in undirected graph (O(n + m))
+    public static final ArrayList<Edge> getBridges(ArrayList<Integer>[] adj){
+        GraphUtil.adj = adj; tick = 0;
+        final int n = adj.length;
+        t = new int[n];
+        bridges = new ArrayList<>();
+        for(int i = 0; i < n; ++i)
+            if(t[i] == 0)
+                dfs(i, -1);
+        return bridges;
+    }
+    
+    // returns list of cutpoints in undirected graph (O(n + m))
+    public static final ArrayList<Integer> getCutpoints(ArrayList<Integer>[] adj){
+        GraphUtil.adj = adj;
+        final int n = adj.length;
+        tick = 0;
+        t = new int[n]; tin = new int[n];
+        cutpoints = new ArrayList<>();
+        for(int i = 0; i < n; ++i)
+            if(t[i] == 0)
+                dfs2(i, -1);
+        return cutpoints;
+    }
     private final static class Stack{
         private final int[] s;
         private int size = 0;
@@ -12,19 +53,8 @@ class GraphUtil{
     private static final int min(int a, int b){ return a<b ? a : b; }
     
     private static ArrayList<Edge> bridges;
-    // returns list of bridges in undirected graph (O(n + m))
-    public static final ArrayList<Edge> getBridges(ArrayList<Integer>[] adj){
-        GraphUtil.adj = adj; tick = 0;
-        int n = adj.length;
-        t = new int[n];
-        bridges = new ArrayList<>();
-        for(int i = 0; i < n; ++i)
-            if(t[i] == 0)
-                dfs(i, -1);
-        return bridges;
-    }
     private static final void dfs(int u, int p){
-        int currentTime = t[u] = ++tick;
+        final int currentTime = t[u] = ++tick;
         for(int v: adj[u]){
             if(v == p) continue;
             if(t[v] == 0) dfs(v, u);
@@ -36,20 +66,6 @@ class GraphUtil{
     private static int[] id;
     private static Stack s;
     private static int group_id;
-    // returns SCC id for each vertex in directed graph (O(n + m))
-    // id[u] < id[v] -> surely u can't reach v 
-    public static final int[] getSCCs(ArrayList<Integer>[] adj){
-        tick = group_id = 0;
-        GraphUtil.adj = adj;
-        int n = adj.length;
-        id = new int[n]; for(int i=0; i<n; ++i) id[i] = -1;
-        t = new int[n];
-        s = new Stack(n);
-        for(int i=0; i < n; ++i)
-            if(t[i] == 0)
-                dfs(i);
-        return id;
-    }
     private static final int dfs(int u){
         int low = t[u] = ++tick;
         s.add(u);
@@ -66,18 +82,6 @@ class GraphUtil{
 
     private static ArrayList<Integer> cutpoints;
     private static int[] tin;
-    // returns list of cutpoints in undirected graph (O(n + m))
-    public static final ArrayList<Integer> getCutpoints(ArrayList<Integer>[] adj){
-        GraphUtil.adj = adj;
-        int n = adj.length;
-        tick = 0;
-        t = new int[n]; tin = new int[n];
-        cutpoints = new ArrayList<>();
-        for(int i = 0; i < n; ++i)
-            if(t[i] == 0)
-                dfs2(i, -1);
-        return cutpoints;
-    }
     private static final void dfs2(int u, int p){
         tin[u] = t[u] = ++tick;
         int children = 0;
@@ -93,52 +97,6 @@ class GraphUtil{
             else t[u] = min(t[u], tin[v]);
         }
         if(p == -1 && children > 1) cutpoints.add(u);
-    }
-
-    // returns a topological sorting of G, null if there is a cycle (O(n + m))
-    public final static ArrayList<Integer> topoSort(ArrayList<Integer>[] adj){
-        final int n = adj.length;
-        int[] indegree = new int[n];
-        for(int u = 0; u < n; ++u)
-            for(int v: adj[u])
-                ++indegree[v];
-        Queue<Integer> q = new LinkedList<>();
-        for(int u = 0; u < n; ++u)
-            if(indegree[u] == 0)
-                q.add(u);
-        ArrayList<Integer> ans = new ArrayList<>();
-        while(!q.isEmpty()){
-            final int u = q.poll();
-            ans.add(u);
-            for(int v: adj[u])
-                if(--indegree[v] == 0)
-                    q.add(v);
-        }
-        if(ans.size() != n) return null;
-        else return ans;
-    }
-
-    // returns the lexicographically minimum topological sorting of G, null if there's a cycle (O(nlog(n)+m))
-    public final static ArrayList<Integer> minimumTopoSort(ArrayList<Integer>[] adj){
-        final int n = adj.length;
-        int[] indegree = new int[n];
-        for(int u = 0; u < n; ++u)
-            for(int v: adj[u])
-                ++indegree[v];
-        PriorityQueue<Integer> q = new PriorityQueue<>();
-        for(int u = 0; u < n; ++u)
-            if(indegree[u] == 0)
-                q.add(u);
-        ArrayList<Integer> ans = new ArrayList<>();
-        while(!q.isEmpty()){
-            final int u = q.poll();
-            ans.add(u);
-            for(int v: adj[u])
-                if(--indegree[v] == 0)
-                    q.add(v);
-        }
-        if(ans.size() != n) return null;
-        else return ans;
     }
 }
 class Edge{
