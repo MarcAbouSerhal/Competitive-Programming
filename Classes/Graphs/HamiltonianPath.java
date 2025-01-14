@@ -1,4 +1,4 @@
-class Hamiltonian{
+class HamiltonianPath{
     // returns some hamiltonian path starting from start, null if there isn't one
     // works for both directed and undirected (O(n!))
     public final static int[] getPath(ArrayList<Integer>[] adj, int start, boolean directed){
