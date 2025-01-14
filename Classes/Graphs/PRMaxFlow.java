@@ -1,5 +1,5 @@
 class PRMaxFlow{
-    // highest-label push-relabel max flow with gap relabeling heuristic (fancy works that idk the meaning of)
+    // highest-label push-relabel max flow with gap relabeling heuristic (fancy words that idk the meaning of)
     private final int n;
     private final ArrayList<Edge>[] adj;
     private long[] excess;
