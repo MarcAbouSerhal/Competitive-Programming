@@ -1,4 +1,4 @@
-class HamiltonianPath{
+class Hamiltonian{
     // returns some hamiltonian path starting from start, null if there isn't one
     // works for both directed and undirected (O(n!))
     public final static int[] getPath(ArrayList<Integer>[] adj, int start, boolean directed){
@@ -32,17 +32,17 @@ class HamiltonianPath{
             found = true;
             return;
         }
+        path[tick++] = u;
         visited[u] = true;
         for(int v: revAdj[u]) --remaining[v];
         // sort possible next vertices by how many remaining neighbors they have
         Collections.sort(adj[u], (x, y) -> remaining[x] - remaining[y]);
         for(int v: adj[u]){
             if(visited[v]) continue;
-            path[tick++] = u;
             dfs(v);
             if(found) return;
-            --tick;
         }
+        --tick;
         visited[u] = false;
         for(int v: revAdj[u]) ++remaining[v];
     }
