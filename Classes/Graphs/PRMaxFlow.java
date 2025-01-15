@@ -51,7 +51,7 @@ class PRMaxFlow{
     public final long getMinCut(int s, int t){
         long ret = getMaxFlow(s, t);
         preflowToFlow(s, t);
-        cut = new int[n]; for(int u = 0; u < n; ++u) cut[u] = -1;
+        cut = new int[n]; for(int u = 0; u < n; ++u) cut[u] = 1;
         final Queue<Integer> q = new LinkedList<>();
 
         q.add(s);
@@ -59,20 +59,9 @@ class PRMaxFlow{
         while(!q.isEmpty()){
             int u = q.poll();
             for(Edge e: adj[u])
-                if(cut[e.to] == -1 && e.cap - e.flow > 0){
+                if(cut[e.to] == 1 && e.cap - e.flow > 0){
                     q.add(e.to);
                     cut[e.to] = 0;
-                }
-        }
-
-        q.add(t);
-        cut[t] = 1;
-        while(!q.isEmpty()){
-            int u = q.poll();
-            for(Edge e: adj[u])
-                if(cut[e.to] == -1 && adj[e.to].get(e.index).cap - adj[e.to].get(e.index).flow > 0){
-                    q.add(e.to);
-                    cut[e.to] = 1;
                 }
         }
         return ret;
