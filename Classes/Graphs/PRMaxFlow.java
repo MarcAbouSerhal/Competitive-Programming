@@ -1,7 +1,7 @@
 class PRMaxFlow{
     // highest-label push-relabel max flow with gap relabeling heuristic (fancy words that idk the meaning of)
     private final int n;
-    private final ArrayList<Edge>[] adj;
+    final ArrayList<Edge>[] adj;
     private long[] excess;
     private int[] dist, count;
     private boolean[] active;
@@ -27,10 +27,9 @@ class PRMaxFlow{
 
         for(int u = 0; u < n; ++u)
             for(Edge e: adj[u])
-                e.flow = 0; //reset all flows to 0
+                e.flow = 0; // reset all flows to 0
 
         for(Edge e: adj[s]) excess[s] += e.cap;
-
         count[0] = n;
         enqueue(s);
         active[t] = true;
@@ -43,14 +42,14 @@ class PRMaxFlow{
             }
             else --b;
         }
-
         return excess[t];
     }
     // returns max-flow and stores minimal cut in .cut where:
     // cut[u] = 0 if u in S and cut[u] = 1 if u in T
+    // calls recoverFlow by itself
     public final long getMinCut(int s, int t){
         long ret = getMaxFlow(s, t);
-        preflowToFlow(s, t);
+        recoverFlow(s, t);
         cut = new int[n]; for(int u = 0; u < n; ++u) cut[u] = 1;
         final Queue<Integer> q = new LinkedList<>();
 
@@ -67,7 +66,10 @@ class PRMaxFlow{
         return ret;
     }
     private final static int WHITE = 0, GREY = 1, BLACK = 2;
-    private final void preflowToFlow(int s, int t){
+    // after having called max-flow, call this function to recover flow of each edge
+    // do for(int u = 0; u < n; ++u) for(PRMaxFlow.Edge edge: g.adj[u]) 
+    // to go through all edges
+    public final void recoverFlow(int s, int t){
         final int[] color = new int[n], prev = new int[n], current = new int[n];
         final Stack st = new Stack();
         for(int u = 0; u < n; ++u) prev[u] = -1;
@@ -189,7 +191,7 @@ class PRMaxFlow{
             else relabel(u);
         }
     }
-    private static final class Edge{
+    static final class Edge{
         int from, to, index;
         long cap, flow;
         public Edge(int from, int to, long cap, long flow, int index) {
