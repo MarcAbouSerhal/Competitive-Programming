@@ -2,7 +2,7 @@
 class SegmentTree{
     private final X[] tree;
     private int leaves;
-    public LazySegmentTree(int n, X v){
+    public SegmentTree(int n, X v){
         leaves = n;
         if((leaves & (leaves - 1)) != 0)
             leaves = Integer.highestOneBit(leaves) << 1;
@@ -10,7 +10,7 @@ class SegmentTree{
         for(int i = 0; i < n; ++i) tree[i + leaves - 1] = v;
         for(int i = leaves - 2; i >= 0; --i) tree[i] = op(tree[(i << 1) + 1], tree[(i + 1) << 1]);
     }
-    public LazySegmentTree(X[] a){
+    public SegmentTree(X[] a){
         leaves = a.length;
         if((leaves & (leaves - 1)) != 0)
             leaves = Integer.highestOneBit(leaves) << 1;
@@ -31,7 +31,7 @@ class SegmentTree{
             tree[x] = op(tree[(x << 1) + 1], tree[(x + 1) << 1]);
         }
     }
-    private final X get(int l, int r, int x,int lx, int rx){
+    private final X get(int l, int r, int x, int lx, int rx){
         if(rx < l || lx > r) return null;
         if(lx >= l && rx <= r) return tree[x];
         int mid = (lx + rx) >> 1;
