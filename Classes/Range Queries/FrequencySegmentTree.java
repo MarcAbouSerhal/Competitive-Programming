@@ -2,6 +2,7 @@ class FrequencySegmentTree{
     private final int[] sum, min;
     private int leaves;
     private final static int min(int x, int y){ return x < y ? x : y; }
+    // (O(n))
     public FrequencySegmentTree(int n, int value){
         leaves = n;
         if((leaves & (leaves - 1)) != 0)

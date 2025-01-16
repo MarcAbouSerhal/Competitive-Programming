@@ -4,6 +4,7 @@ class LazySegmentTree{
     private final X[] tree;
     private final Y[] change;
     private int leaves;
+    // (both O(n*T(op)))
     public LazySegmentTree(int n, X v){
         leaves = n;
         if((leaves & (leaves - 1)) != 0)

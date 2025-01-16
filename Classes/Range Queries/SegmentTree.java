@@ -2,6 +2,7 @@
 class SegmentTree{
     private final X[] tree;
     private int leaves;
+    // (both O(n.T(op)))
     public SegmentTree(int n, X v){
         leaves = n;
         if((leaves & (leaves - 1)) != 0)

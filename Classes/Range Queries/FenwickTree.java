@@ -4,6 +4,7 @@ class FenwickTree {
     public FenwickTree(int size) {
         tree = new long[size];
     }
+    // (O(n))
     public FenwickTree(long[] a) {
         this.tree = a.clone();
         for (int i = 0; i < tree.length; i++) {

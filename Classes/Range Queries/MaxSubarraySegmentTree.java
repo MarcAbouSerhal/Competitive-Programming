@@ -3,6 +3,7 @@
 class MaxSubarraySegmentTree{
     private final Node[] tree;
     private int leaves;
+    // (O(n))
     public MaxSubarraySegmentTree(int[] a){
         leaves = a.length;
         if((leaves & (leaves - 1)) != 0)
