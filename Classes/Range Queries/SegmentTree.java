@@ -1,4 +1,5 @@
 // replace X with type of property (or Tuple of properties)
+// if X is primitive: replace null by value that will be ignored by op
 class SegmentTree{
     private final X[] tree;
     private int leaves;
