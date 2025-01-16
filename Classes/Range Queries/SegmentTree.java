@@ -34,7 +34,7 @@ class SegmentTree{
         }
     }
     private final X get(int l, int r, int x, int lx, int rx){
-        if(rx < l || lx > r) return 0;
+        if(rx < l || lx > r) return null;
         if(lx >= l && rx <= r) return tree[x];
         int mid = (lx + rx) >> 1;
         return op(get(l, r, (x << 1) + 1, lx, mid), get(l, r, (x + 1) << 1, mid + 1, rx));
