@@ -5,7 +5,7 @@ class EnhancedFenwickTree {
         this.size = size;
         b1 = new long[size + 1];
         b2 = new long[size + 1];
-        pref = new long[size + 1];
+        pref = new long[size];
     }
     // (O(n))
     public EnhancedFenwickTree(long[] a) {
