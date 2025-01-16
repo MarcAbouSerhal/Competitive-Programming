@@ -41,6 +41,8 @@ class SegmentTree{
     }
     // CHANGE THESE FUNCTIONS
     private static final X op(X a, X b){
+        if(a == null) return b;
+        if(b == null) return a;
         // define associative operation here (f(f(a,b),c)=f(a,f(b,c)))
     }
 
