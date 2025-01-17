@@ -4,7 +4,7 @@ class PairWaveletTree{
     private final Node root;
     private final long[] a, p;
     // (O(nlog(n)))
-    public PairWaveletTree(long[] a, long min, long max, long[] b){
+    public PairWaveletTree(long[] a, long min, long max, long[] p){
         this.a = a;
         this.p = p;
         int n = a.length;
