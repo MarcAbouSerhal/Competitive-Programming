@@ -44,10 +44,7 @@ class WaveletTree{
             if(m == x && node.low == m)
                 return l == 0 ? node.b[r] : node.b[r] - node.b[l - 1];
             else if(m < x){
-                if(l == 0)
-                    l = l - node.b[l] + node.b[0];
-                else
-                    l = l - node.b[l] + node.b[l] - node.b[l - 1];
+                l = l - node.b[l] + (l == 0 ? node.b[0] : node.b[l] - node.b[l - 1]);
                 r = r - node.b[r];
                 node = node.right;
             }
