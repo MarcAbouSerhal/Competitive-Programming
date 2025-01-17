@@ -26,6 +26,7 @@ class MaxSubarraySegmentTree{
     }
     private static final Node init(long x, int i){
         Node result = new Node();
+        // !: comment this out if you want bounds [l...r] of the max subarray
         // result.l = result.r = result.prefIndex = result.sufIndex = i;
         result.sum = result.bestSum = result.pref = result.suf = x;
         return result;
@@ -38,7 +39,7 @@ class MaxSubarraySegmentTree{
  
         result.sum = a.sum + b.sum;
  
-        // use this if you want bounds [l...r] of the max subarray
+        // !: use this if you want bounds [l...r] of the max subarray
         // if(a.sum + b.pref > a.pref){
         //     result.pref = a.sum + b.pref;
         //     result.prefIndex = b.prefIndex;
@@ -88,7 +89,7 @@ class MaxSubarraySegmentTree{
     }
 }
 class Node{
-    // comment this out if you want bounds [l...r] of the max subarray
+    // !: comment this out if you want bounds [l...r] of the max subarray 
     // int l, r, prefIndex, sufIndex;
     long sum, bestSum, pref, suf;
 }
