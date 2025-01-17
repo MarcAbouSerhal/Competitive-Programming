@@ -1,12 +1,12 @@
 // allows for queries of the form
-// f({b[i]: l <= i <= r, a[i] <= or >= x})
+// f({p[i]: l <= i <= r, a[i] <= or >= x})
 class PairWaveletTree{
     private final Node root;
-    private final long[] a, b;
+    private final long[] a, p;
     // (O(nlog(n)))
     public PairWaveletTree(long[] a, long min, long max, long[] b){
         this.a = a;
-        this.b = b;
+        this.p = p;
         int n = a.length;
         List indices = new List(n);
         for(int i = 0; i < n; ++i) indices.add(i);
@@ -83,7 +83,7 @@ class PairWaveletTree{
         }
     }
     // change X to return type, and implement id, include, setupQueries and query
-    // returns op({b[i]: l <= i <= r, a[i] <= x}) (O(log(n).T(op)))
+    // returns op({p[i]: l <= i <= r, a[i] <= x}) (O(log(n).T(op)))
     public final X opLeq(int l, int r, long x){
         Node node = root;
         X soFar = id();
@@ -106,7 +106,7 @@ class PairWaveletTree{
         }
         return soFar;
     }
-    // returns op({b[i]: l <= i <= r, a[i] >= x}) (O(log(n).T(op)))
+    // returns op({p[i]: l <= i <= r, a[i] >= x}) (O(log(n).T(op)))
     public final X opGeq(int l, int r, long x){
         Node node = root;
         X soFar = id();
@@ -150,7 +150,7 @@ class PairWaveletTree{
             int n = indices.n;
             b = new int[n];
             long[] c = new long[n];
-            for(int i = 0; i < n; ++i) c[i] = b[indices.get[i]];
+            for(int i = 0; i < n; ++i) c[i] = p[indices.get[i]];
             setupQueries(c);
             if(n == 0 || lo == hi){
                 if(lo == hi) for(int i = 0; i < n; ++i) b[i] = i + 1;
