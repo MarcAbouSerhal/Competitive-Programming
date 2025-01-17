@@ -13,7 +13,7 @@ class WaveletTree{
         Node node = root;
         int count = 0;
         while(node != null && l <= r){
-            long m = (node.low + node.high) / 2;
+            long m = node.low + (node.high - node.low) / 2;
             if(m == x)
                 return count + (l == 0 ? node.b[r] : node.b[r] - node.b[l - 1]);
             else if(m < x){
@@ -40,7 +40,7 @@ class WaveletTree{
     public final int getEq(int l, int r, long x){
         Node node = root;
         while(node != null && l <= r){
-            long m = (node.low + node.high) / 2;
+            long m = node.low + (node.high - node.low) / 2;
             if(m == x && node.low == m)
                 return l == 0 ? node.b[r] : node.b[r] - node.b[l - 1];
             else if(m < x){
@@ -100,12 +100,12 @@ class WaveletTree{
                 min = min < a[i] ? min : a[i];
                 max = max > a[i] ? max : a[i];
             }
-            long mid = (lo + hi) / 2;
+            long mid = lo + (hi - lo) / 2;
             // compress travels by making sure this node has 2 children or no children
             while(lo != hi && (max <= mid || mid < min)){
                 if(mid < min) lo = mid + 1;
                 else hi = mid;
-                mid = (lo + hi) / 2;
+                mid = lo + (hi - lo) / 2;
             }
             low = lo; high = hi;
             List leftIndices = new List(n), rightIndices = new List(n);
