@@ -84,7 +84,7 @@ class PairWaveletTree{
     }
     // change X to return type, and implement id, include, setupQueries and query
     // returns op({b[i]: l <= i <= r, a[i] <= x}) (O(log(n).T(op)))
-    public final X opLeq(int l, int r, int x){
+    public final X opLeq(int l, int r, long x){
         Node node = root;
         X soFar = id();
         while(node != null && l <= r){
@@ -107,7 +107,7 @@ class PairWaveletTree{
         return soFar;
     }
     // returns op({b[i]: l <= i <= r, a[i] >= x}) (O(log(n).T(op)))
-    public final X opGeq(int l, int r, int x){
+    public final X opGeq(int l, int r, long x){
         Node node = root;
         X soFar = id();
         while(node != null && l <= r){
