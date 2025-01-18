@@ -5,16 +5,17 @@ class PairMergeSortTree{
     private static int[][] tree2;
     private int leaves;
     // O(nlog(n))
+    // change X to return type, and DS to type of data structure needed to query op
     public PairMergeSortTree(int[] a, int[] p){
         leaves = a.length;
         if((leaves & (leaves - 1)) != 0)
             leaves = Integer.highestOneBit(leaves) << 1;
         tree = new int[(leaves << 1) - 1][];
         tree2 = new int[(leaves << 1) - 1][];
+        ds = new DS[(leaves << 1) - 1];
         for(int i = 0; i < a.length; ++i) init(i + leaves - 1, a[i], p[i]);
         for(int i = leaves - 2; i >= 0; --i) merge(i);
     }
-    // change X to return type, and DS to type of data structure needed to query op
     private final DS[] ds; 
     // and implement id, merge, setupQueries and query
     private static final X id;
