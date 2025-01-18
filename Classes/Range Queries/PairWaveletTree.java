@@ -7,7 +7,7 @@ class PairWaveletTree{
     public PairWaveletTree(long[] a, long min, long max, long[] p){
         this.a = a;
         this.p = p;
-        int n = a.length;
+        final int n = a.length;
         List indices = new List(n);
         for(int i = 0; i < n; ++i) indices.add(i);
         root = new Node(indices, min, max);
@@ -17,7 +17,7 @@ class PairWaveletTree{
         Node node = root;
         int count = 0;
         while(node != null && l <= r){
-            long m = node.low + (node.high - node.low) / 2;
+            long m = node.low + ((node.high - node.low) >> 1);
             if(m == x)
                 return count + (l == 0 ? node.b[r] : node.b[r] - node.b[l - 1]);
             else if(m < x){
@@ -44,7 +44,7 @@ class PairWaveletTree{
     public final int getEq(int l, int r, long x){
         Node node = root;
         while(node != null && l <= r){
-            long m = node.low + (node.high - node.low) / 2;
+            long m = node.low + ((node.high - node.low) >> 1);
             if(m == x && node.low == m)
                 return l == 0 ? node.b[r] : node.b[r] - node.b[l - 1];
             else if(m < x){
@@ -85,7 +85,7 @@ class PairWaveletTree{
         Node node = root;
         X soFar = id();
         while(node != null && l <= r){
-            long m = node.low + (node.high - node.low) / 2;
+            long m = node.low + ((node.high - node.low) >> 1);
             if(m == x)
                 return node.left != null ? include(soFar, node.left.query(node.b[l] - (l == 0 ? node.b[0] : node.b[l] - node.b[l - 1]), node.b[r] - 1)) : soFar;
             else if(m < x){
@@ -107,7 +107,7 @@ class PairWaveletTree{
         Node node = root;
         X soFar = id();
         while(node != null && l <= r){
-            int m = node.low + (node.high - node.low) / 2;
+            int m = node.low + ((node.high - node.low) >> 1);
             if(m + 1 == x)
                 return node.right != null ? soFar = include(soFar, node.right.query(l - node.b[l] + (l == 0 ? node.b[0] : node.b[l] - node.b[l - 1]), r - node.b[r])) : soFar;
             else if(m + 1 < x){
@@ -143,7 +143,7 @@ class PairWaveletTree{
         final Node left, right;
         final int[] b;
         public Node(List indices, long lo, long hi){
-            int n = indices.n;
+            final int n = indices.n;
             b = new int[n];
             int[] c = new int[n];
             for(int i = 0; i < n; ++i) c[i] = p[indices.get[i]];
@@ -158,13 +158,13 @@ class PairWaveletTree{
                 min = min < a[i] ? min : a[i];
                 max = max > a[i] ? max : a[i];
             }
-            int mid = lo + (hi - lo) / 2;
+            int mid = lo + ((hi - lo) >> 1);
             // compress travels by making sure this node has 2 children or no children
 
             while(lo != hi && (max <= mid || mid < min)){
                 if(mid < min) lo = mid + 1;
                 else hi = mid;
-                mid = lo + (hi - lo) / 2;
+                mid = lo + ((hi - lo) >> 1);
             }
             low = lo; high = hi;
             if(low == high){
