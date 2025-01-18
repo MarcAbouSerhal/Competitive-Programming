@@ -12,8 +12,7 @@ class PairWaveletTree{
         for(int i = 0; i < n; ++i) indices.add(i);
         root = new Node(indices, min, max);
     }
-    // returns number of elements <=x in [l,r] (O(log(n)))
-    // returns number of elements <=x in [l,r] (O(log(n)))
+    // returns number of elements a[i] <= x in [l,r] (O(log(n)))
     public final int getLeq(int l, int r, long x){
         Node node = root;
         int count = 0;
@@ -41,7 +40,7 @@ class PairWaveletTree{
         }
         return count;
     }
-    // returns number of occurences of x in [l,r] (O(log(n)))
+    // returns number of occurences of a[i] = x in [l,r] (O(log(n)))
     public final int getEq(int l, int r, long x){
         Node node = root;
         while(node != null && l <= r){
@@ -61,7 +60,7 @@ class PairWaveletTree{
         }
         return 0;
     }
-    // returns kth smallest element in [l,r] (O(log(n)))
+    // returns kth smallest a[i] in [l,r] (O(log(n)))
     public final long kthInRange(int l, int r, int k){
         Node node = root;
         while(true){
@@ -86,13 +85,12 @@ class PairWaveletTree{
         Node node = root;
         X soFar = id();
         while(node != null && l <= r){
-            long m = (node.low + node.high) / 2;
+            long m = node.low + (node.high - node.low) / 2;
             if(m == x)
                 return node.left != null ? include(soFar, node.left.query(node.b[l] - (l == 0 ? node.b[0] : node.b[l] - node.b[l - 1]), node.b[r] - 1)) : soFar;
             else if(m < x){
                 if(node.left != null) soFar = include(soFar, node.left.query(node.b[l] - (l == 0 ? node.b[0] : node.b[l] - node.b[l - 1]), node.b[r] - 1));
-                if(l == 0) l = l - node.b[l] + node.b[0];
-                else l = l - node.b[l] + node.b[l] - node.b[l - 1];
+                l = l - node.b[l] + (l == 0 ? node.b[0] : node.b[l] - node.b[l - 1]);
                 r = r - node.b[r];
                 node = node.right;
             }
