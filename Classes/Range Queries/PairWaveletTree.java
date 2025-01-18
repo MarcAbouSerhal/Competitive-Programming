@@ -147,28 +147,33 @@ class PairWaveletTree{
         public Node(List indices, long lo, long hi){
             int n = indices.n;
             b = new int[n];
-            long[] c = new long[n];
+            int[] c = new int[n];
             for(int i = 0; i < n; ++i) c[i] = p[indices.get[i]];
             setupQueries(c);
-            if(n == 0 || lo == hi){
-                if(lo == hi) for(int i = 0; i < n; ++i) b[i] = i + 1;
+            if(n == 0 || lo > hi){
                 left = right = null;
                 low = lo; high = hi;
                 return;
             }
-            long min = hi, max = lo;
+            int min = hi, max = lo;
             for(int i: indices.get){
                 min = min < a[i] ? min : a[i];
                 max = max > a[i] ? max : a[i];
             }
-            long mid = lo + (hi - lo) / 2;
+            int mid = lo + (hi - lo) / 2;
             // compress travels by making sure this node has 2 children or no children
+
             while(lo != hi && (max <= mid || mid < min)){
                 if(mid < min) lo = mid + 1;
                 else hi = mid;
                 mid = lo + (hi - lo) / 2;
             }
             low = lo; high = hi;
+            if(low == high){
+                for(int i = 0; i < n; ++i) b[i] = i + 1;
+                left = right = null;
+                return;
+            }
             List leftIndices = new List(n), rightIndices = new List(n);
             // note that you could use indices as leftIndices to reduce time but in my tests it somehow gave worse time
             // you'd do indices.n = 0 and replace every occurence of leftIndices with indices
