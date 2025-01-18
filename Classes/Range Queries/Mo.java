@@ -13,7 +13,7 @@ class Mo{
             while(curr_l > q.l) add(--curr_l);
             while(curr_r > q.r) remove(curr_r--);
             while(curr_l < q.l) remove(curr_l++);
-            res[query.i] = ; // get answer of this range
+            res[q.i] = ; // get answer of this range
         }
         return res;
     }
