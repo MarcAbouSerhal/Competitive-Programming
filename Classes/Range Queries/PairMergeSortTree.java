@@ -106,9 +106,9 @@ class PairMergeSortTree{
             c[i + j] = c2[j];
             merged[i + j] = b[j++];
         }
-        tree[i] = merged;
-        tree2[i] = c;
-        ds[i] = setupQueries(c);
+        tree[index] = merged;
+        tree2[index] = c;
+        ds[index] = setupQueries(c);
     }
     private final void init(int i, int x, int y){
         tree[i] = new int[] {x};
