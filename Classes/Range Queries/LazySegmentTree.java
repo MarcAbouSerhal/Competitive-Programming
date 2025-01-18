@@ -1,5 +1,7 @@
 // replace X with type of property (or Tuple of properties)
 // replace Y with object with info about update
+// Note: make function clean all that applies all queued updates and another function that returns array of leaves
+// makes going through updated leaves take O(n) instead of O(nlog(n))
 class LazySegmentTree{
     private final X[] tree;
     private final Y[] change;
