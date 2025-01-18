@@ -2,7 +2,7 @@
 // f({p[i]: l <= i <= r, a[i] <= or >= x})
 class PairMergeSortTree{
     private final int[][] tree;
-    private final static int[][] tree2;
+    private static int[][] tree2;
     private int leaves;
     // O(nlog(n))
     public PairMergeSortTree(int[] a, int[] p){
@@ -10,6 +10,7 @@ class PairMergeSortTree{
         if((leaves & (leaves - 1)) != 0)
             leaves = Integer.highestOneBit(leaves) << 1;
         tree = new int[(leaves << 1) - 1][];
+        tree2 = new int[(leaves << 1) - 1][];
         for(int i = 0; i < a.length; ++i) init(i + leaves - 1, a[i], p[i]);
         for(int i = leaves - 2; i >= 0; --i) merge(i);
     }
