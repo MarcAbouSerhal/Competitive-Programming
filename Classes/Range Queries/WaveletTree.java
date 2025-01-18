@@ -94,12 +94,12 @@ class WaveletTree{
                 low = lo; high = hi;
                 return;
             }
-            int min = hi, max = lo;
+            long min = hi, max = lo;
             for(int i: indices.get){
                 min = min < a[i] ? min : a[i];
                 max = max > a[i] ? max : a[i];
             }
-            int mid = lo + ((hi - lo) >> 1);
+            long mid = lo + ((hi - lo) >> 1);
             // compress travels by making sure this node has 2 children or no children
             while(lo != hi && (max <= mid || mid < min)){
                 if(mid < min) lo = mid + 1;
