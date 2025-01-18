@@ -1,9 +1,10 @@
 class WaveletTree{
     private final Node root;
+    private final long[] a;
     // (O(nlog(n)))
     public WaveletTree(long[] a, long min, long max){
         this.a = a;
-        int n = a.length;
+        final int n = a.length;
         List indices = new List(n);
         for(int i = 0; i < n; ++i) indices.add(i);
         root = new Node(indices, min, max);
@@ -81,13 +82,12 @@ class WaveletTree{
         public List(int n){ get = new int[n]; }
         public final void add(int x){ get[n++] = x; }
     }
-    private final long[] a;
     private final class Node{
         final long low, high;
         final Node left, right;
         final int[] b;
         public Node(List indices, long lo, long hi){
-            int n = indices.n;
+            final int n = indices.n;
             b = new int[n];
             if(n == 0 || lo > hi){
                 left = right = null;
@@ -99,9 +99,8 @@ class WaveletTree{
                 min = min < a[i] ? min : a[i];
                 max = max > a[i] ? max : a[i];
             }
-            int mid = lo + ((hi - lo) >> 1 );
+            int mid = lo + ((hi - lo) >> 1);
             // compress travels by making sure this node has 2 children or no children
-
             while(lo != hi && (max <= mid || mid < min)){
                 if(mid < min) lo = mid + 1;
                 else hi = mid;
