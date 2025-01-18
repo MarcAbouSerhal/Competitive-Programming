@@ -13,7 +13,7 @@ class WaveletTree{
         Node node = root;
         int count = 0;
         while(node != null && l <= r){
-            long m = node.low + (node.high - node.low) / 2;
+            long m = node.low + ((node.high - node.low) >> 1);
             if(m == x)
                 return count + (l == 0 ? node.b[r] : node.b[r] - node.b[l - 1]);
             else if(m < x){
@@ -40,7 +40,7 @@ class WaveletTree{
     public final int getEq(int l, int r, long x){
         Node node = root;
         while(node != null && l <= r){
-            long m = node.low + (node.high - node.low) / 2;
+            long m = node.low + ((node.high - node.low) >> 1);
             if(m == x && node.low == m)
                 return l == 0 ? node.b[r] : node.b[r] - node.b[l - 1];
             else if(m < x){
@@ -99,13 +99,13 @@ class WaveletTree{
                 min = min < a[i] ? min : a[i];
                 max = max > a[i] ? max : a[i];
             }
-            int mid = lo + (hi - lo) / 2;
+            int mid = lo + ((hi - lo) >> 1 );
             // compress travels by making sure this node has 2 children or no children
 
             while(lo != hi && (max <= mid || mid < min)){
                 if(mid < min) lo = mid + 1;
                 else hi = mid;
-                mid = lo + (hi - lo) / 2;
+                mid = lo + ((hi - lo) >> 1 );
             }
             low = lo; high = hi;
             if(low == high){
@@ -113,26 +113,25 @@ class WaveletTree{
                 left = right = null;
                 return;
             }
-            List leftIndices = new List(n), rightIndices = new List(n);
-            // note that you could use indices as leftIndices to reduce time but in my tests it somehow gave worse time
-            // you'd do indices.n = 0 and replace every occurence of leftIndices with indices
+            indices.n = 0;
+            List rightIndices = new List(n);
             
             int i0 = indices.get[0];
             if(a[i0] > mid) rightIndices.add(i0);
             else{
                 b[0] = 1;
-                leftIndices.add(i0);
+                indices.add(i0);
             }
             for(int i = 1; i < n; ++i){
                 int j = indices.get[i];
                 b[i] = b[i - 1];
                 if(a[j] > mid) rightIndices.add(j);
                 else{
-                    leftIndices.add(j);
+                    indices.add(j);
                     ++b[i];
                 }
             }
-            left = new Node(leftIndices, low, mid);
+            left = new Node(indices, low, mid);
             right = new Node(rightIndices, mid + 1, high);
         }
     }
