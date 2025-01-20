@@ -3,12 +3,12 @@ class Mo{
     private static int[] a;
     
     // (O(n.sqrt(q).(T(add or remove or finding answer)))
-    public final static X[] mo(Query[] queries, int[] a){
+    public final static int[] mo(Query[] queries, int[] a){
         //extra stuff here 
         Mo.a = a;
         
-        Arrays.sort(queries, (x,y) -> Long.compare(x.index, y.index));
-        final long[] res = new long[queries.length];
+        Arrays.sort(queries, (x, y) -> Long.compare(x.index, y.index));
+        final int[] res = new int[queries.length];
         int curr_l = 0, curr_r = -1;
         for(Query q: queries){
             while(curr_r < q.r) add(++curr_r);
