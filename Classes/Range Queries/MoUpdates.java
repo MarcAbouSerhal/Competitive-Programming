@@ -1,4 +1,4 @@
-// Note: do queries.add(new Query(l, r, updates.size(), queries.size()));
+// Note: do queries.add(l, r, updates.size(), queries.size());
 class MoUpdates{
     // extra stuff here
     private static int[] a;
@@ -7,6 +7,13 @@ class MoUpdates{
     public final static int[] moUpdates(ArrayList<Query> queries, ArrayList<Update> updates, int[] a){
         //extra stuff here
         MoUpdates.a = a;
+
+        // finding oldX
+        for(Update upd: updates){
+            upd.oldX = a[upd.i];
+            a[upd.i] = upd.x;
+        }
+        for(int i = updates.size() - 1; i >= 0; --i) a[updates.get(i).i] = updates.get(i).oldX;
 
         Collections.sort(queries, (x, y) -> x.lb == y.lb ? (x.rb == y.rb ? x.t - y.t : x.rb - y.rb) : x.lb - y.lb);
         final int[] res = new int[queries.size()];
@@ -28,7 +35,7 @@ class MoUpdates{
             }
             while(t > q.t){
                 --t;
-                int i = updates.get(t).i, x = updates.get(t).x;
+                int i = updates.get(t).i, x = updates.get(t).oldX;
                 if(curr_l <= i && i <= curr_r){
                     remove(i);
                     a[i] = x;
@@ -48,7 +55,7 @@ class MoUpdates{
     }
 }
 class Query{
-    static private final int b = 2000;
+    static private final int b = 2200;
     final int l, r, t, i, lb, rb;
     public Query(int l, int r, int t, int i){
         this.l = l;
@@ -61,6 +68,7 @@ class Query{
 }
 class Update{
     final int i, x;
+    int oldX;
     public Update(int i, int x){
         this.i = i;
         this.x = x;
