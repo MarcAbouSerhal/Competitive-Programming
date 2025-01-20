@@ -1,6 +1,4 @@
-
 class Mo{
-
     // extra stuff here
 
     // (O(n.sqrt(q).(T(add or remove or finding answer)))
@@ -23,6 +21,7 @@ class Mo{
     public final static void remove(int i){
         // removes ith element
     }
+    // Note: if direction from which we're adding/removing matters, add int direction to add/remove functions, (0 for left, 1 for right)
 }
 class Query{
     final int l, r, i;
