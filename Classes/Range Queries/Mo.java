@@ -25,17 +25,12 @@ class Mo{
 }
 class Query{
     final int l, r, i;
-    int extra = -1;
     final long index;
     public Query(int l, int r, int i) {
         this.l = l;
         this.r = r;
         this.i = i;
-        index = hilbert_order(l,r);
-    }
-    public Query(int l, int r, int extra, int i) {
-        this(l,r,i);
-        this.extra = extra;
+        index = hilbert_order(l, r);
     }
     public final static long hilbert_order(int x, int y){
         final int logn = (31 - Integer.numberOfLeadingZeros((y << 1) + 1)) | 1;
