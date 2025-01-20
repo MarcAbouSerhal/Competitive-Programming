@@ -38,6 +38,7 @@ class MoUpdates{
             }
             res[q.i] = ; // get answer of this range
         }
+        return res;
     }
     public final static void add(int i){
         // adds ith element
