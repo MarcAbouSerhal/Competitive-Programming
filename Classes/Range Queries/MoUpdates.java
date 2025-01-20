@@ -1,4 +1,4 @@
-// Note: do queries.add(l, r, updates.size(), queries.size());
+// Note: do queries.add(new Query(l, r, updates.size(), queries.size()));
 class MoUpdates{
     // extra stuff here
     private static int[] a;
