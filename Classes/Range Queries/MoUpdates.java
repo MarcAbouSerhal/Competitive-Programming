@@ -55,7 +55,9 @@ class MoUpdates{
     }
 }
 class Query{
-    static private final int b = 2200;
+    // this is a good block size for 1e5
+    // generally try (2*n*n)^(1/3) then n^(2/3) or something in between
+    static private final int b = 2714;
     final int l, r, t, i, lb, rb;
     public Query(int l, int r, int t, int i){
         this.l = l;
