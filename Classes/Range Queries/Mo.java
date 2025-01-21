@@ -36,7 +36,7 @@ class Query{
         this.i = i;
         index = hilbert_order(l, r);
     }
-    public final static long hilbert_order(int x, int y){
+    private final static long hilbert_order(int x, int y){
         final int logn = (31 - Integer.numberOfLeadingZeros((y << 1) + 1)) | 1;
         final int maxn = (1 << logn) - 1;
         long res = 0;
