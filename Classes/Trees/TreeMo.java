@@ -43,6 +43,7 @@ class TreeMo{
             while(curr_l < q.l) handle(curr_l++, false);
             handle(q.extra, true);
             res[q.i] = ; // get answer of this range
+            // Note: id[q.extra] = lca(u, v)
             handle(q.extra, false);
         }
         return res;
