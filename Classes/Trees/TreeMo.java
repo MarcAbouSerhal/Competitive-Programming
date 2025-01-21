@@ -135,8 +135,9 @@ class TreeMo{
 class Query{
     int l, r, i, extra;
     long index;
-    public Query(int u, int v){
+    public Query(int u, int v, int i){
         l = u;
         r = v;
+        this.i = i;
     }
 }
