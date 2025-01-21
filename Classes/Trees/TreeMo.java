@@ -7,7 +7,7 @@ class TreeMo{
     private static int tick = 0;
     
     // (O(n.sqrt(q).(T(add or remove or finding answer)))
-    public final static long[] solve(ArrayList<Integer>[] adj, Query[] queries, int[] a){
+    public final static int[] solve(ArrayList<Integer>[] adj, Query[] queries, int[] a){
         //extra stuff here 
         TreeMo.a = a;
 
@@ -34,7 +34,7 @@ class TreeMo{
             q.index = hilbert_order(q.l, q.r);
         }
         Arrays.sort(queries, (x, y) -> Long.compare(x.index, y.index));
-        final long[] res = new long[queries.length];
+        final int[] res = new int[queries.length];
         int curr_l = 0, curr_r = 0;
         for(Query q: queries){
             while(curr_r < q.r) handle(curr_r++, true);
