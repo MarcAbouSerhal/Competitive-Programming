@@ -1,4 +1,5 @@
 // replace X with type of property (or Tuple of properties)
+// Note: this will throw an exception if the tree has 1 vertex
 class Reroot{
     static private X[][] dp;
     static private ArrayList<Integer>[] adj;
@@ -42,7 +43,7 @@ class Reroot{
         }
         else{
             int neighbors = adj[u].size();
-            E[] pref_dp = new X[neighbors - 1], suf_dp = new X[neighbors - 1];
+            X[] pref_dp = new X[neighbors - 1], suf_dp = new X[neighbors - 1];
             pref_dp[0] = dp[u][0]; suf_dp[neighbors - 2] = dp[u][neighbors - 1];
             for(int i = 1; i < neighbors - 1; ++i){
                 pref_dp[i] = merge(pref_dp[i - 1], dp[u][i]);
