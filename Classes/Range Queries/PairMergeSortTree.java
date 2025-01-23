@@ -23,7 +23,7 @@ class PairMergeSortTree{
         // merge answers X and Y
     }
     private static final X query(DS ds, int l, int r){
-        // return op([l...r]) 
+        // return op([l...r]) using ds
     }
     private static final DS setupQueries(int[] c){
         // setup queries for c and return the data structure (don't alter c)

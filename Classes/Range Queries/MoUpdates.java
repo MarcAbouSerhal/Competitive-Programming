@@ -4,7 +4,7 @@ class MoUpdates{
     private static int[] a;
 
     // O(q.n^(2/3).(T(add or remove or finding answer) + T(update)))
-    public final static int[] moUpdates(ArrayList<Query> queries, ArrayList<Update> updates, int[] a){
+    public final static int[] solve(ArrayList<Query> queries, ArrayList<Update> updates, int[] a){
         //extra stuff here
         MoUpdates.a = a;
 
