@@ -50,10 +50,9 @@ class FastIO{
     }
     private static final byte[] bytes(int x){ 
         if(x == 0) return ZERO;
-        final boolean negative = x < 0;
-        final byte[] temp = new byte[10];
         int size = 0;
-        if(negative){
+        if(x < 0){
+            final byte[] temp = new byte[10];
             while(x != 0){
                 temp[size++] = (byte)('0' - (x % 10));
                 x /= 10;
@@ -64,6 +63,7 @@ class FastIO{
             return res;
         }
         else{
+            final byte[] temp = new byte[9];
             while(x != 0){
                 temp[size++] = (byte)('0' + (x % 10));
                 x /= 10;
@@ -75,10 +75,9 @@ class FastIO{
     }
     private static final byte[] bytes(long x){ 
         if(x == 0) return ZERO;
-        final boolean negative = x < 0;
-        final byte[] temp = new byte[19];
         int size = 0;
-        if(negative){
+        if(x < 0){
+            final byte[] temp = new byte[19];
             while(x != 0){
                 temp[size++] = (byte)('0' - (x % 10));
                 x /= 10;
@@ -89,6 +88,7 @@ class FastIO{
             return res;
         }
         else{
+            final byte[] temp = new byte[18];
             while(x != 0){
                 temp[size++] = (byte)('0' + (x % 10));
                 x /= 10;
@@ -98,7 +98,7 @@ class FastIO{
             return res;
         }
     }
-    private static final byte[] TRUE = {'t', 'r', 'u', 'e'}, FALSE = {'f', 'a', 'l', 's', 'e'}, ENDL = "\n".getBytes(), SPACE = {' '}, ZERO = {'0'};
+    private static final byte[] TRUE = {'t', 'r', 'u', 'e'}, FALSE = {'f', 'a', 'l', 's', 'e'}, NULL = {'n', 'u', 'l', 'l'}, ENDL = "\n".getBytes(), SPACE = {' '}, ZERO = {'0'};
     private static final byte MINUS = '-';
     public final void print(char c) throws Exception { bos.write(c); }
     public final void println(char c) throws Exception { bos.write(c); bos.write(ENDL); }
@@ -108,10 +108,12 @@ class FastIO{
     public final void println(int x) throws Exception { bos.write(bytes(x)); bos.write(ENDL); }
     public final void print(long x) throws Exception { bos.write(bytes(x)); }
     public final void println(long x) throws Exception { bos.write(bytes(x)); bos.write(ENDL); }
+    public final void print(double x) throws Exception { bos.write(bytes(Double.toString(x))); }
+    public final void println(double x) throws Exception { bos.write(bytes(Double.toString(x))); bos.write(ENDL); }
     public final void print(boolean b) throws Exception { bos.write(b ? TRUE : FALSE); }
     public final void println(boolean b) throws Exception { bos.write(b ? TRUE : FALSE); bos.write(ENDL); }
-    public final void print(Object obj) throws Exception { print(obj.toString()); }
-    public final void println(Object obj) throws Exception { println(obj.toString()); }
+    public final void print(Object obj) throws Exception { if(obj == null) print(NULL); else print(obj.toString()); }
+    public final void println(Object obj) throws Exception { if(obj == null) println(NULL); else println(obj.toString()); }
     public final void print(int[] array) throws Exception { for(int i: array){ bos.write(bytes(i)); bos.write(SPACE); } }
     public final void println(int[] array) throws Exception { for(int i: array){ bos.write(bytes(i)); bos.write(SPACE); } bos.write(ENDL); }
     public final void print(long[] array) throws Exception { for(long i: array){ bos.write(bytes(i)); bos.write(SPACE); } }
