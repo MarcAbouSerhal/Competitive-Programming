@@ -22,7 +22,7 @@ class TwoDFenwickTree {
                 if(k < n) tree[k][j] += tree[i][j];
             }
     }
-    // returns sum(a[x1...x2][y1...y2]) (O(log^2(n)))
+    // returns sum(a[x1...x2][y1...y2]) (O(log(n).log(m)))
     public final long get(int x1, int x2, int y1, int y2) {
         long result = 0;
         int i = x2;
@@ -63,7 +63,7 @@ class TwoDFenwickTree {
         }
         return result;
     }
-    // adds v to a[x][y] (or xors a[x][y] with v) (O(log^2(n)))
+    // adds v to a[x][y] (or xors a[x][y] with v) (O(log(n).log(m)))
     public void add(int x, int y, long v) {
         final int n = tree.length, m = tree[0].length;
         while (x < n) {
