@@ -15,7 +15,6 @@ class TwoDFenwickTree {
                 int k = j | (j + 1);
                 if(k < m) tree[i][k] += tree[i][j];
             }
-        // now every row is good
         for(int j = 0; j < m; ++j)
             for(int i = 0; i < n; ++i){
                 int k = i | (i + 1);
