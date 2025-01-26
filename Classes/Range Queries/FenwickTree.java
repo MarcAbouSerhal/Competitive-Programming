@@ -1,6 +1,7 @@
 class FenwickTree {
     // replace every +/- with ^ to make it a XOR fenwick tree
     private final long[] tree;
+    // (O(n))
     public FenwickTree(int size) {
         tree = new long[size];
     }
@@ -13,7 +14,7 @@ class FenwickTree {
                 tree[j] += tree[i];
         }
     }
-    // returns prop(a[l...r]) (O(log(n)))
+    // returns sum(a[l...r]) (O(log(n)))
     public final long get(int l, int r) {
         long result = 0;
         while (r >= 0) {
@@ -27,7 +28,7 @@ class FenwickTree {
         }
         return result;
     }
-    // adds v to a[x] (or xors v with a[x]) (O(log(n)))
+    // adds v to a[x] (or xors a[x] with v) (O(log(n)))
     public void add(int x, long v) {
         while (x < tree.length) {
             tree[x] += v;
