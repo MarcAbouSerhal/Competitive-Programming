@@ -62,6 +62,7 @@ class LazySegmentTree{
         if(rx < l || lx > r) return;
         if(lx >= l && rx <= r){
             // apply u to change[x] which represents [lx, rx] knowing that u is applied on [l, r]
+            // assume there are no pending changes for [lx, rx]
             clean(x, lx, rx);
             return;
         }
