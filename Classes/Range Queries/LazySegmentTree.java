@@ -58,8 +58,8 @@ class LazySegmentTree{
     }
     // CHANGE THESE FUNCTIONS
     private final void update(int l, int r, int x, int lx, int rx, Y u){
-        if(rx < l || lx > r) return;
         clean(x, lx, rx);
+        if(rx < l || lx > r) return;
         if(lx >= l && rx <= r){
             // apply u to change[x] which represents [lx, rx] knowing that u is applied on [l, r]
             clean(x, lx, rx);
