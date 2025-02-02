@@ -33,6 +33,24 @@ class Tree{
                 dfs(v, u);
             }     
     }
+    // returns ith vertex on the simple path from u to v (0-indexed) (O(log(n)))
+    public final int ithOnPath(int u, int v, int i){
+        int sz = 1 + depth[u] + depth[v] + (depth[lca(u, v)] << 1);
+        if(depth[u] < depth[v]){
+            u ^= v; v ^= u; u ^= v; i = sz - i - 1;
+        }
+        int w = kthAncestor(u, depth[u] - depth[v]);
+        if(w == v) return kthAncestor(u, i); // lca(u, v) = v
+        int x = w, y = v;
+        for(int l = log - 1; l >= 0; --l)
+            if(up[x][l] != up[y][l]){
+                x = up[x][l];
+                y = up[y][l];
+            }
+        x = up[x][0];
+        int d1 = depth[u] - depth[x], d2 = sz - d1;
+        return i < d1 ? kthAncestor(u, i) : kthAncestor(v, d2 - 1 - i + d1); 
+    }
     // (O(log(n)))
     public final int kthAncestor(int u, int k){
         for(int i = 0; i < log; ++i)
