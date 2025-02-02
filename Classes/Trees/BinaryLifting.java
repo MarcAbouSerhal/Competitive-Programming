@@ -48,7 +48,7 @@ class Tree{
                 y = up[y][l];
             }
         x = up[x][0];
-        int d1 = depth[u] - depth[x], d2 = sz - d1;
+        int d1 = depth[u] - depth[x] + 1, d2 = sz - d1;
         return i < d1 ? kthAncestor(u, i) : kthAncestor(v, d2 - 1 - i + d1); 
     }
     // (O(log(n)))
