@@ -1,3 +1,5 @@
+// replace X with type of property (or Tuple of properties)
+// if X is primitive: replace null by value that will be ignored by op
 class PersistentSegmentTree{
     private final ArrayList<Vertex> roots;
     private final int n;
@@ -55,6 +57,5 @@ class PersistentSegmentTree{
         if(a == null) return b;
         if(b == null) return a;
         // define associative operation here (f(f(a,b),c)=f(a,f(b,c)))
-        return null;
     }
 }
