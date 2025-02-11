@@ -10,13 +10,13 @@ class PersistentSegmentTree{
     public final X get(int l, int r, int v){
         return get(l, r, roots.get(v), 0, n);
     }
-    // creates new version of a[v] with a[v][pos] = val (O(log(n)*T(op)))
-    public final void update(int pos, X val, int v){
-        roots.add(update(roots.get(v), 0, n, pos, val));
-    }
     // sets a[v][pos] to val (O(log(n)*T(op)))
     public final void set(int pos, X val, int v){
         roots.set(v, update(roots.get(v), 0, n, pos, val));
+    }
+    // creates new version of a[v] with a[v][pos] = val (O(log(n)*T(op)))
+    public final void update(int v, int pos, X val){
+        roots.add(update(roots.get(v), 0, n, pos, val));
     }
     // copies a[v]
     public final void copy(int v){
