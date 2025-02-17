@@ -52,7 +52,7 @@ class FastIO{
         if(x == 0) return ZERO;
         int size = 0;
         if(x < 0){
-            final byte[] temp = new byte[10];
+            final byte[] temp = new byte[11];
             while(x != 0){
                 temp[size++] = (byte)('0' - (x % 10));
                 x /= 10;
@@ -63,7 +63,7 @@ class FastIO{
             return res;
         }
         else{
-            final byte[] temp = new byte[9];
+            final byte[] temp = new byte[10];
             while(x != 0){
                 temp[size++] = (byte)('0' + (x % 10));
                 x /= 10;
