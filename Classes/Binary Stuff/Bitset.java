@@ -44,10 +44,10 @@ class Bitset{
         final int m = b.word.length;
         int count = 0;
         final Bitset res = new Bitset(b.n);
-        int i = 0;
-        for(; i < m - 1; ++i)
-            count += Long.bitCount(res.word[i] = ~b.word[i]);
-        res.count = count + Long.bitCount((res.word[i] = ~b.word[i]) & res.tail);
+        for(int i = 0; i < m - 1; ++i)
+            res.word[i] = ~b.word[i])
+        res.word[m - 1] = (~b.word[m - 1] & res.tail);
+        res.count = b.n - b.count; 
         return res;
     }
     public final static Bitset or(Bitset b1, Bitset b2){
