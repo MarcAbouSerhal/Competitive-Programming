@@ -1,4 +1,4 @@
-// use this for x >= 1e7 
+// use this for x > 1e7
 class BigDivisors{
     final static class Pair{
         final int x, y;

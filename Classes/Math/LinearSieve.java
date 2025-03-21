@@ -1,4 +1,4 @@
-import java.util.*;
+// use this for divisors of numbers <= 1e7
 class LinearSieve{
     static final class Pair{
         int x,y;

@@ -1,4 +1,3 @@
-import java.util.*;
 class MathUtil{
     // (O(n))
     public final static int[] mobius(int n){
