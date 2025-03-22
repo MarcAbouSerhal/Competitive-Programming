@@ -37,8 +37,8 @@ class FFT{
     }
     // (O(nlog(n)))
     public static final long[] multiply(long[] a, long[] b){
-        int n = 1;
-        while(n < a.length + b.length) n <<= 1;
+        int n = 1, d = a.length + b.length - 1;
+        while(n <= d) n <<= 1;
         double[] aRe = new double[n], bRe = new double[n], aIm = new double[n], bIm = new double[n];
         for(int i = 0; i < a.length; ++i) aRe[i] = a[i];
         for(int i = 0; i < b.length; ++i) bRe[i] = b[i];
@@ -51,8 +51,8 @@ class FFT{
             aRe[i] = temp;
         }
         DFT(aRe, aIm, n,true);
-        long[] res = new long[n];
-        for(int i = 0; i < n; ++i){
+        long[] res = new long[d];
+        for(int i = 0; i < d; ++i){
             res[i] = Math.round(aRe[i] / n);
         }
         return res;

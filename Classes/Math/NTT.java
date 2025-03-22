@@ -46,13 +46,12 @@ class NTT{
     public final static long[] multiply(long[] a, long[] b){
         int n = 1;
         while(n < a.length + b.length) n <<= 1;
-        long[] fa = DFT(copy(a,n), n, false);
-        long[] fb = DFT(copy(b,n), n, false);
+        long[] fa = DFT(copy(a, n), n, false);
+        long[] fb = DFT(copy(b, n), n, false);
         for(int i = 0; i < n; ++i) fa[i] = (fa[i] * fb[i]) % mod;
         fa = DFT(fa, n, true);
-        long[] res = new long[n];
         long inv = inv(n);
-        for(int i = 0; i < n; ++i) res[i] = (fa[i] * inv ) % mod;
-        return res;
+        for(int i = 0; i < d; ++i) fb[i] = (fa[i] * inv) % mod;
+        return fb;
     }
 }
