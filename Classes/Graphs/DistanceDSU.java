@@ -7,7 +7,7 @@ class DSU {
         for (int i = 0; i < n; ++i) p[i] = -1;
     }
     // Both functions are O(log*(n))
-    //returns {parent(a),d(a,parent(a))}
+    // returns {parent(a),d(a,parent(a))}
     public final int[] find(int a) {
         if(p[a] < 0) return new int[] {a, 0};
         int[] val = find(p[a]);
@@ -16,7 +16,7 @@ class DSU {
         return val;
     }
     public final void join(int a, int b) { //must join endpoints of edge as they were, not their respective parents
-        // remove lines 25->29 if connection is directed (complexity becomes O(log(n)))
+        // remove lines 23->27 if connection is directed (complexity becomes O(log(n)))
         int[] valA = find(a);
         int[] valB = find(b);
         if (valA[0] == valB[0]) return;
