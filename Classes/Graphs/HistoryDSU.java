@@ -23,12 +23,12 @@ class HistoryDSU {
         components--;
         int sizeA = -p[a].top(), sizeB = -p[b].top();
         if(sizeA < sizeB){
-            a ^= b ; b ^= b; a ^= b;
+            a ^= b ; b ^= a; a ^= b;
             sizeA ^= sizeB; sizeB ^= sizeA; sizeA ^= sizeB;
         }
-        p[b].add(sizeA + sizeB, lastVersion + 1);
-        p[a].add(b, lastVersion + 1);
-        d[b] += sizeA;
+        p[a].add(-(sizeA + sizeB), lastVersion + 1);
+        p[b].add(a, lastVersion + 1);
+        d[b] = sizeA;
     }
     // returns size of components containing u, in the specified version of the graph
     public final int size(int u, int version) { return -p[find(u, version)].get(version); }
