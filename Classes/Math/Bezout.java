@@ -2,7 +2,7 @@ class Bezout{
     public static long gcd;
     // returns {x, y} such that ax + by = gcd(a, b) (O(log(min(a,b))))
     public static final long[] extendedEuclidean(long a, long b){
-        long x = 1, y = 0, x1 = 0, y1 = 0, temp;
+        long x = 1, y = 0, x1 = 0, y1 = 1, temp;
         while(b != 0){
             long q = a / b;
             temp = x;
@@ -11,14 +11,14 @@ class Bezout{
             temp = y;
             y = y1;
             y1 = temp - q * y1;
-            temp = b;
+            temp = a;
             a = b;
-            b = temp - q * b;
+            b = temp % b;
         }
         gcd = a;
         return new long[] {x, y};
     }
-    // return x such that a[0]x[0] + a[1]x[1] + ... + a[n - 1]x[n - 1] = gcd(a)
+    // returns x such that a[0]x[0] + a[1]x[1] + ... + a[n - 1]x[n - 1] = gcd(a)
     public static final long[] linearEquation(long[] a){
         int n = a.length;
         if(n == 1) return new long[] {a[0] > 0 ? 1 : -1};
@@ -38,6 +38,34 @@ class Bezout{
                 leftProduct[i] *= leftProduct[i + 1];
             x[0] *= leftProduct[0];
             for(int i = 1; i < n - 1; ++i) x[i] *= leftProduct[i - 1];
+            return x;
+        }
+    }
+    // returns x such that (a[0]x[0] + a[1]x[1] + ... + a[n - 1]x[n - 1])%m = gcd(a)
+    // where 0 <= a[i], x[i] < m
+    public static final long[] linearEquationModuloM(long[] a, long m){
+        int n = a.length;
+        if(n == 1) return new long[] {a[0] > 0 ? 1 : -1};
+        else if(n == 2){
+            long[] xy = extendedEuclidean(a[0], a[1]);
+            xy[0] %= m; xy[1] %= m;
+            return xy;
+        }
+        else{
+            long[] x = new long[n];
+            long[] xy = extendedEuclidean(a[0], a[1]);
+            x[0] = xy[0] % m;
+            x[1] = xy[1] % m;
+            long[] leftProduct = new long[n - 2];
+            for(int i = 2; i < n; ++i){
+                xy = extendedEuclidean(gcd, a[i]);
+                leftProduct[i - 2] = xy[0] % m;
+                x[i] = xy[1] % m;
+            }
+            for(int i = n - 4; i >= 0; --i) 
+                leftProduct[i] = (leftProduct[i] * leftProduct[i + 1]) % m;
+            x[0] = (x[0] * leftProduct[0]) % m;
+            for(int i = 1; i < n - 1; ++i) x[i] = (x[i] * leftProduct[i - 1]) % m;
             return x;
         }
     }
