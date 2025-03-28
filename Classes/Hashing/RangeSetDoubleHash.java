@@ -1,5 +1,5 @@
 // can query hash of set of elements in range [l,r] or [l1,r1] U [l2,r2]
-class SetDoubleHash{
+class RangeSetDoubleHash{
     public final static void init(int n){
         p1_pow = new long[n];
         p2_pow = new long[n];
@@ -15,7 +15,7 @@ class SetDoubleHash{
     static long[] p1_pow, p2_pow;
     private final long[] h1, h2;
     // (O(n))
-    public SetDoubleHash(ArrayList<Integer> s){
+    public RangeSetDoubleHash(ArrayList<Integer> s){
         int n = s.size();
         h1 = new long[n]; h2 = new long[n];
         h1[0] = p1_pow[s.get(0)];
