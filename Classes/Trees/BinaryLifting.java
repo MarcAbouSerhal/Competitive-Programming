@@ -1,5 +1,5 @@
 class Tree{
-    // X[][] propUp
+    // X[][] opUp
     // add any necessary members needed for prop
     private final int[][] up;
     private final int[] depth;
@@ -16,14 +16,10 @@ class Tree{
         for(int j = 1; j < log; ++j)
             for(int i = 0; i < n; ++i)
                 up[i][j] = up[i][j - 1] == -1 ? -1 : up[up[i][j - 1]][j - 1];
-        // // propUp = new ...
-        // for(int i=1; i<a.length; ++i){
-        //     // propUp[i][0] = prop(up[i][0])
-        // }
-        // for(int j=1; j<log; ++j)
-        //     for(int i=0; i<adj.length; ++i)
-        //         if(up[i][j]!=-1)
-        //             // propUp[i][j] = merge(propUp[i][j-1],propUp[up[i][j-1]][j-1])
+        // if we're finding op(vertices): 
+        // opUp[u][i] is op(vertices on u -> up[u][i] excluding up[u][i])
+        // if we're finding op(edges):
+        // opUp[u][i] is op(edges on u -> up[u][i])
     }
     private final void dfs(int u, int p){
         up[u][0] = p; 
@@ -60,9 +56,7 @@ class Tree{
     }
     // (O(log(n)))
     public final int lca(int a, int b){
-        if(depth[a] < depth[b]){
-            a = a ^ b; b = a ^ b; a = a ^ b;
-        }
+        if(depth[a] < depth[b]){ a ^= b; b ^= a; a ^= b; }
         a = kthAncestor(a, depth[a] - depth[b]);
         if(a == b) return a;
         for(int i = log - 1; i >= 0; --i)
@@ -72,25 +66,27 @@ class Tree{
             }
         return up[a][0];
     }
-    // public ... propOfPath(int u, int v){
-    //     if(depth[u]<depth[v]){
-    //         u=u^v; v=u^v; u=u^v;
-    //     }
-    //     int k = depth[u]-depth[v];
-    //     // res = prop(a[u],a[v])
-    //     for(int i=0; i<log; ++i)
-    //         if((k&(1<<i))>0){
-    //             // include propUp[u][i] with res
+    // (O(T(op).log(n)))
+    // public final ... opOfPath(int u, int v){
+    //     if(depth[u] < depth[v]){ u ^= v; v ^= u; u ^= v; }
+    //     int k = depth[u] - depth[v];
+    //     res = identity;
+    //     for(int i = 0; i < log; ++i)
+    //         if((k & (1 << i)) != 0){
+    //             res = op(res, opUp[u][i]);
     //             u = up[u][i];
     //         }
-    //     if(u==v) return res;
-    //     for(int i=log-1; i>=0; --i)
+    //     if(u == v){
+    //         // if we're finding op(vertices), include u
+    //         return res;
+    //     }
+    //     for(int i = log - 1; i >= 0; --i)
     //         if(up[u][i]!=up[v][i]){
-    //             // include propUo[u][i] and propUp[v][i] with res
+    //             res = op(res, op(opUp[u][i], opUp[v][i]));
     //             u = up[u][i];
     //             v = up[v][i];
     //         }
-    //     // include up[u][0] with res
+    //     // if we're finding op(vertices), include up[u][0]
     //     return res;
     // }
 }
