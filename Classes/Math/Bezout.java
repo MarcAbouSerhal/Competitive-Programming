@@ -1,6 +1,5 @@
 class Bezout{
-    public static long gcd;
-    // returns {x, y} such that ax + by = gcd(a, b) (O(log(min(a,b))))
+    // returns {x, y, gcd(a, b)} such that ax + by = gcd(a, b) (O(log(min(a,b))))
     public static final long[] extendedEuclidean(long a, long b){
         long x = 1, y = 0, x1 = 0, y1 = 1, temp;
         while(b != 0){
@@ -15,14 +14,16 @@ class Bezout{
             a = b;
             b = temp % b;
         }
-        gcd = a;
-        return new long[] {x, y};
+        return new long[] {x, y, a};
     }
     // returns x such that a[0]x[0] + a[1]x[1] + ... + a[n - 1]x[n - 1] = gcd(a)
     public static final long[] linearEquation(long[] a){
         int n = a.length;
         if(n == 1) return new long[] {a[0] > 0 ? 1 : -1};
-        else if(n == 2) return extendedEuclidean(a[0], a[1]);
+        else if(n == 2){
+            long[] xy = extendedEuclidean(a[0], a[1]);
+            return new long[] {xy[0], xy[1]};
+        }
         else{
             long[] x = new long[n];
             long[] xy = extendedEuclidean(a[0], a[1]);
@@ -30,7 +31,7 @@ class Bezout{
             x[1] = xy[1];
             long[] leftProduct = new long[n - 2];
             for(int i = 2; i < n; ++i){
-                xy = extendedEuclidean(gcd, a[i]);
+                xy = extendedEuclidean(xy[2], a[i]);
                 leftProduct[i - 2] = xy[0];
                 x[i] = xy[1];
             }
@@ -48,8 +49,7 @@ class Bezout{
         if(n == 1) return new long[] {a[0] > 0 ? 1 : -1};
         else if(n == 2){
             long[] xy = extendedEuclidean(a[0], a[1]);
-            xy[0] %= m; xy[1] %= m;
-            return xy;
+            return new long[] {xy[0] % m, xy[1] % m};
         }
         else{
             long[] x = new long[n];
@@ -58,7 +58,7 @@ class Bezout{
             x[1] = xy[1] % m;
             long[] leftProduct = new long[n - 2];
             for(int i = 2; i < n; ++i){
-                xy = extendedEuclidean(gcd, a[i]);
+                xy = extendedEuclidean(xy[2], a[i]);
                 leftProduct[i - 2] = xy[0] % m;
                 x[i] = xy[1] % m;
             }
