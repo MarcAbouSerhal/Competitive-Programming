@@ -61,7 +61,7 @@ class PersistentDeque<E>{
         depth[u] = depth[end] = 1;
         for(int i = 1; i < log; ++i) up[u][i] = up[up[u][i - 1]][i - 1];
     }
-    // adds [e] + version[v][l ... r] 
+    // adds version[v][l ... r] + [e]
     // if r < l, adds [e]
     public final void addToRight(int v, int l, int r, E e){
         int start = r < l ? 0 : ith(first[v], last[v], size[v], l), end = r < l ? 0 : ith(first[v], last[v], size[v], r), u = element.size();
