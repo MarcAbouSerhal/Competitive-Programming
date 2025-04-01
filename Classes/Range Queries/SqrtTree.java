@@ -10,9 +10,10 @@ class SqrtTree{
     public SqrtTree(X[] arr){
         a = arr;
         n = a.length;
-        floorLog = new int[n + 1];
-        for(int i = 1; i <= n; ++i) floorLog[i] = 1 + floorLog[i >> 1];
-        onLayer = new int[(lg = floorLog[n]) + 1];
+        lg = 32 - Integer.numberOfLeadingZeros(n);
+        floorLog = new int[1 << lg];
+        for(int i = 1; i < floorLog.length; ++i) floorLog[i] = 1 + floorLog[i >> 1];
+        onLayer = new int[lg + 1];
         int tlg = lg;
         while(tlg > 1) {
             onLayer[tlg] = layers.size();
@@ -23,6 +24,7 @@ class SqrtTree{
         pref = new X[layers.size()][n];
         suf = new X[layers.size()][n];
         between = new X[layers.size()][1 << lg];
+        build(0, 0, n);
     }
     // (O(1))
     public final X get(int l, int r) {
