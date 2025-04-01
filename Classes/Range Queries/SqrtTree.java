@@ -1,5 +1,4 @@
 // replace X with type of property (or Tuple of properties)
-// if X is primitive: replace null by value that will be ignored by op
 class SqrtTree{
     private final int n, lg;
     private final X[] a;
@@ -30,10 +29,10 @@ class SqrtTree{
     public final X get(int l, int r) {
         if(l == r) return a[l];
         else if(l + 1 == r) return op(a[l], a[r]);
-        int layer = onLayer[floorLog[l ^ r]];
-        int bSzLog = (layers.get(layer) + 1) >> 1;
-        int bCntLog = layers.get(layer) >> 1;
-        int lBound = (l >> layers.get(layer)) << layers.get(layer);
+        int layer = onLayer[floorLog[l ^ r]], layerSz = layers.get(layer);
+        int bSzLog = (layerSz + 1) >> 1;
+        int bCntLog = layerSz >> 1;
+        int lBound = (l >> layerSz) << layerSz;
         int lBlock = ((l - lBound) >> bSzLog) + 1;
         int rBlock = ((r - lBound) >> bSzLog) - 1;
         X ans = suf[layer][l];
@@ -52,25 +51,19 @@ class SqrtTree{
             int r = min(l + bSz, rBound);
             pref[layer][l] = a[l];
             for (int i = l + 1; i < r; ++i) pref[layer][i] = op(pref[layer][i - 1], a[i]);
-            suf[layer][r-1] = a[r-1];
+            suf[layer][r - 1] = a[r - 1];
             for (int i = r - 2; i >= l; --i) suf[layer][i] = op(a[i], suf[layer][i + 1]);
             build(layer + 1, l, r);
         }
         for (int i = 0; i < bCnt; ++i) {
-            X ans = id();
-            for (int j = i; j < bCnt; ++j) {
-                X add = suf[layer][lBound + (j << bSzLog)];
-                ans = (i == j) ? add : op(ans, add);
-                between[layer][lBound + (i << bCntLog) + j] = ans;
-            }
+            int shift = lBound + (i << bCntLog);
+            between[layer][shift + i] = suf[layer][lBound + (i << bSzLog)];
+            for(int j = i + 1; j < bCnt; ++j) between[layer][shift + j] = op(between[layer][shift + j - 1], suf[layer][lBound + (j << bSzLog)]);
         }
     }
     private static final int max(int a, int b) { return a > b ? a : b; }
     private static final int min(int a, int b) { return a < b ? a : b; }
-    private static final X id() {
-        // return identity here, such that op(id, x) = op(x, id) = x
-        return null;
-    }
+    // CHANGE THESE FUNCTIONS
     private static final X op(X a, X b) {
         if(a == null) return b;
         if(b == null) return a;
