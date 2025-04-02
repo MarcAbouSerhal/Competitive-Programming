@@ -55,6 +55,5 @@ class SlidingDeque<E>{
         if(n2 == 0) return (E)opS1[n1 - 1];
         return op((E)opS1[n1 - 1], (E)opS2[n2 - 1]);
     }
-    // CHANGE THESE FUNCTIONS
     private final E op(E x, E y) { return operator.apply(x, y); }
 }
