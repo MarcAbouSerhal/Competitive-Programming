@@ -1,4 +1,3 @@
-import java.util.*;
 class DoubleHash{
     private final static long pow(long x, long n, long m){
         if(n == 0) return 1;
