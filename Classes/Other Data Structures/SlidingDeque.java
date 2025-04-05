@@ -1,18 +1,18 @@
-// Use:
-// import java.util.function.BinaryOperator
-// SlidingDeque<Integer> maxdq = new SlidingDeque<>(k, (x, y) -> x > y ? x : y);
+// Use: SlidingDeque<Integer> maxdq = new SlidingDeque<>(k, (x, y) -> x > y ? x : y);
 // use this for sliding window, queries [l,r] where both l and r are non-decreasing
 class SlidingDeque<E>{
-    private final BinaryOperator<E> operator;
+    @FunctionalInterface
+    static interface Operation<F> { F apply(F a, F b); }
+    private final Operation<E> operation;
     private int n1 = 0, n2 = 0;
     private final Object[] s1, s2, opS1, opS2;
     // k is max size of window, op is lambda function
-    public SlidingDeque(int k, BinaryOperator<E> op){ 
+    public SlidingDeque(int k, Operation<E> op){ 
         s1 = new Object[k];
         s2 = new Object[k];
         opS1 = new Object[k];
         opS2 = new Object[k];
-        operator = op;
+        operation = op;
     }
     // clears the dq (O(1))
     public final void clear(){
@@ -55,5 +55,5 @@ class SlidingDeque<E>{
         if(n2 == 0) return (E)opS1[n1 - 1];
         return op((E)opS1[n1 - 1], (E)opS2[n2 - 1]);
     }
-    private final E op(E x, E y) { return operator.apply(x, y); }
+    private final E op(E x, E y) { return operation.apply(x, y); }
 }
