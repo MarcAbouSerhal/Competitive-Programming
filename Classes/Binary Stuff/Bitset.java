@@ -40,73 +40,73 @@ class Bitset{
         else --count;
         word[i >>> shift] ^= 1 << (i & offset);
     }
-    public final static Bitset not(Bitset b){
-        final int m = b.word.length;
-        int count = 0;
-        final Bitset res = new Bitset(b.n);
+    // below functions return copies and do not alter this
+    public final Bitset not(){
+        final int m = word.length;
+        final Bitset res = new Bitset(n);
         for(int i = 0; i < m - 1; ++i)
-            res.word[i] = ~b.word[i])
-        res.word[m - 1] = (~b.word[m - 1] & res.tail);
-        res.count = b.n - b.count; 
+            res.word[i] = ~word[i];
+        res.word[m - 1] = (~word[m - 1] & res.tail);
+        res.count = n - count; 
         return res;
     }
-    public final static Bitset or(Bitset b1, Bitset b2){
-        final int m = b1.word.length;
+    public final Bitset or(Bitset b){
+        final int m = word.length;
         int count = 0;
-        final Bitset res = new Bitset(b1.n);
+        final Bitset res = new Bitset(n);
         for(int i = 0; i < m; ++i)
-            count += Long.bitCount(res.word[i] = b1.word[i] | b2.word[i]);
+            count += Long.bitCount(res.word[i] = word[i] | b.word[i]);
         res.count = count;
         return res;
     }
-    public final static Bitset xor(Bitset b1, Bitset b2){
-        final int m = b1.word.length;
+    public final Bitset xor(Bitset b){
+        final int m = word.length;
         int count = 0;
-        final Bitset res = new Bitset(b1.n);
+        final Bitset res = new Bitset(n);
         for(int i = 0; i < m; ++i)
-            count += Long.bitCount(res.word[i] = b1.word[i] ^ b2.word[i]);
+            count += Long.bitCount(res.word[i] = word[i] ^ b.word[i]);
         res.count = count;
         return res;
     }
-    public final static Bitset and(Bitset b1, Bitset b2){
-        final int m = b1.word.length;
+    public final Bitset and(Bitset b){
+        final int m = word.length;
         int count = 0;
         final Bitset res = new Bitset(m << shift);
         for(int i = 0; i < m; ++i)
-            count += Long.bitCount(res.word[i] = b1.word[i] & b2.word[i]);
+            count += Long.bitCount(res.word[i] = word[i] & b.word[i]);
         res.count = count;
         return res;
     }
-    public final static Bitset shiftUp(Bitset b, int x){
-        final int m = b.word.length, diff = x >>> shift, off = x & offset;
+    public final Bitset shiftUp(int x){
+        final int m = word.length, diff = x >>> shift, off = x & offset;
         int count = 0;
-        final Bitset res = new Bitset(b.n);
+        final Bitset res = new Bitset(n);
         if(off != 0){
             final int off2 = (offset ^ off) + 1;
             for(int i = 0; i + diff + 1 < m; ++i)
-                count += Long.bitCount(res.word[i + diff + 1] = (b.word[i + 1] << off) | (b.word[i] >>> off2));
-            count += Long.bitCount(res.word[diff] = b.word[0] << off);
+                count += Long.bitCount(res.word[i + diff + 1] = (word[i + 1] << off) | (word[i] >>> off2));
+            count += Long.bitCount(res.word[diff] = word[0] << off);
         }
         else
             for(int i = 0; i + diff < m; ++i)
-                count += Long.bitCount(res.word[i + diff] = b.word[i]);
+                count += Long.bitCount(res.word[i + diff] = word[i]);
         count -= Long.bitCount(res.word[m - 1]);
         res.count = count + Long.bitCount(res.word[m - 1] = res.word[m - 1] & res.tail);
         return res;
     }
-    public final static Bitset shiftDown(Bitset b, int x){
-        final int m = b.word.length, diff = x >>> shift, off = x & offset;
+    public final Bitset shiftDown(int x){
+        final int m = word.length, diff = x >>> shift, off = x & offset;
         int count = 0;
-        final Bitset res = new Bitset(b.n);
+        final Bitset res = new Bitset(n);
         if(off != 0){
             final int off2 = (offset ^ off) + 1;
             for(int i = 1; i + diff < m; ++i)
-                count += Long.bitCount(res.word[i] = (b.word[i + diff] << off) | (b.word[i + diff - 1] >>> off2));
-            count += Long.bitCount(res.word[0] = b.word[diff] << off);
+                count += Long.bitCount(res.word[i] = (word[i + diff] << off) | (word[i + diff - 1] >>> off2));
+            count += Long.bitCount(res.word[0] = word[diff] << off);
         }
         else
             for(int i = 0; i + diff < m; ++i)
-                count += Long.bitCount(res.word[i] = b.word[i + diff]);
+                count += Long.bitCount(res.word[i] = word[i + diff]);
         res.count = count;
         return res;
     }
