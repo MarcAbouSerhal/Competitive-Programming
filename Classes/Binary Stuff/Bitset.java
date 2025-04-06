@@ -13,6 +13,7 @@ class Bitset{
         int m = b.word.length;
         word = new long[m];
         for(int i = 0; i < m; ++i) word[i] = b.word[i];
+        count = b.count;
     }
     public Bitset(int n){
         this.n = n;
@@ -20,8 +21,8 @@ class Bitset{
         if((n & offset) == 0) tail = ones;
         else tail = (1 << (n & offset)) - 1;
     }
-    public final int get(int i){
-        return (int)((word[i >>> shift] >>> (i & offset)) & 1);
+    public final boolean on(int i){
+        return ((word[i >>> shift] >>> (i & offset)) & 1) != 0;
     }
     public final void set(int i){
         if(((word[i >>> shift] >>> (i & offset)) & 1) == 0){
