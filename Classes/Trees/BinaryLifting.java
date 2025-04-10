@@ -71,10 +71,8 @@ class Tree{
         return depth[u] <= depth[v] && kthAncestor(u, depth[v] - depth[u]) == v;
     }
     // returns whether w is on the path from u to v O(log(n))
-    public final boolean isOnPath(int u, int v, int w) {
-        int l  = lca(u, v);
-        return (isAncestor(w, u) && isAncestor(l, w)) ||
-                (isAncestor(w, v) && isAncestor(l, w));
+     public final boolean isOnPath(int u, int v, int w) {
+        return depth[w] >= depth[lca(u, v)] && (isAncestor(w, u) || isAncestor(w, v));
     }
     // (O(T(op).log(n)))
     // public final ... opOfPath(int u, int v) {
