@@ -6,7 +6,7 @@ class Tree{
     private final ArrayList<Integer>[] adj;
     private final int log;
     // (O(nlog(n)))
-    public Tree(ArrayList<Integer>[] adj){
+    public Tree(ArrayList<Integer>[] adj) {
         this.adj = adj;
         final int n = adj.length;
         log = 32 - Integer.numberOfLeadingZeros(n);
@@ -21,7 +21,7 @@ class Tree{
         // if we're finding op(edges):
         // opUp[u][i] is op(edges on u -> up[u][i])
     }
-    private final void dfs(int u, int p){
+    private final void dfs(int u, int p) {
         up[u][0] = p; 
         for(int v: adj[u])
             if(v != p){
@@ -30,7 +30,7 @@ class Tree{
             }     
     }
     // returns ith vertex on the simple path from u to v (0-indexed) (O(log(n)))
-    public final int ithOnPath(int u, int v, int i){
+    public final int ithOnPath(int u, int v, int i) {
         int sz = 1 + depth[u] + depth[v] + (depth[lca(u, v)] << 1);
         if(depth[u] < depth[v]){
             u ^= v; v ^= u; u ^= v; i = sz - i - 1;
@@ -47,15 +47,15 @@ class Tree{
         int d1 = depth[u] - depth[x] + 1, d2 = sz - d1;
         return i < d1 ? kthAncestor(u, i) : kthAncestor(v, d2 - 1 - i + d1); 
     }
-    // (O(log(n)))
-    public final int kthAncestor(int u, int k){
+    // returns kth ancestor of u (O(log(n)))
+    public final int kthAncestor(int u, int k) {
         for(int i = 0; i < log; ++i)
             if((k & (1 << i)) != 0)
                 u = up[u][i];
         return u;
     }
-    // (O(log(n)))
-    public final int lca(int a, int b){
+    // returns lca(u, v) (O(log(n)))
+    public final int lca(int a, int b) {
         if(depth[a] < depth[b]){ a ^= b; b ^= a; a ^= b; }
         a = kthAncestor(a, depth[a] - depth[b]);
         if(a == b) return a;
@@ -66,8 +66,18 @@ class Tree{
             }
         return up[a][0];
     }
+    // returns whether u is an ancestor of v (or u == v) O(log(n))
+    public final boolean isAncestor(int u, int v) {
+        return depth[u] <= depth[v] && kthAncestor(u, depth[v] - depth[u]) == v;
+    }
+    // returns whether w is on the path from u to v O(log(n))
+    public final boolean isOnPath(int u, int v, int w) {
+        int l  = lca(u, v);
+        return (isAncestor(w, u) && isAncestor(l, w)) ||
+                (isAncestor(w, v) && isAncestor(l, w));
+    }
     // (O(T(op).log(n)))
-    // public final ... opOfPath(int u, int v){
+    // public final ... opOfPath(int u, int v) {
     //     if(depth[u] < depth[v]){ u ^= v; v ^= u; u ^= v; }
     //     int k = depth[u] - depth[v];
     //     res = identity;
