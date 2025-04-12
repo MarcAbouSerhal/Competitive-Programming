@@ -70,7 +70,7 @@ class Tree{
     public final boolean isAncestor(int u, int v) {
         return depth[u] <= depth[v] && kthAncestor(u, depth[v] - depth[u]) == v;
     }
-    // returns whether w is on the path from u to v O(log(n))
+    // returns whether w is on the path from u to v (O(log(n)))
      public final boolean isOnPath(int u, int v, int w) {
         return depth[w] >= depth[lca(u, v)] && (isAncestor(w, u) || isAncestor(w, v));
     }

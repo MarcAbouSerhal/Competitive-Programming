@@ -2,7 +2,7 @@
 // use this for sliding window, queries [l,r] where both l and r are non-decreasing
 class SlidingDeque<E>{
     @FunctionalInterface
-    static interface Operation<F> { F apply(F a, F b); }
+    private static interface Operation<F> { F apply(F a, F b); }
     private final Operation<E> operation;
     private int n1 = 0, n2 = 0;
     private final Object[] s1, s2, opS1, opS2;
@@ -25,13 +25,13 @@ class SlidingDeque<E>{
     public final void addBack(E e){
         s1[n1] = e;
         if(n1 == 0) opS1[n1++] = e;
-        else opS1[n1] = op((E)opS1[n1++ - 1], e);
+        else opS1[n1] = operation.apply((E)opS1[n1++ - 1], e);
     }
     // adds to the front of the dq (O(1))
     public final void addFront(E e){
         s2[n2] = e;
         if(n2 == 0) opS2[n2++] = e;
-        else opS2[n2] = op((E)opS2[n2++ - 1], e);
+        else opS2[n2] = operation.apply((E)opS2[n2++ - 1], e);
     }
     // removes from the back of the dq and returns it (O(1) amortized)
     public final E removeBack(){
@@ -53,7 +53,6 @@ class SlidingDeque<E>{
     public final E getOp(){
         if(n1 == 0) return (E)opS2[n2 - 1];
         if(n2 == 0) return (E)opS1[n1 - 1];
-        return op((E)opS1[n1 - 1], (E)opS2[n2 - 1]);
+        return operation.apply((E)opS1[n1 - 1], (E)opS2[n2 - 1]);
     }
-    private final E op(E x, E y) { return operation.apply(x, y); }
 }
