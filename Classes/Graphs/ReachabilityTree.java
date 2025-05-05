@@ -1,13 +1,12 @@
 class ReachabilityTree{
-    private final int[] dsu, leftChild, rightChild, inVertex, outVertex, inEdge, outEdge, vertexPermutation, edgePermutation, vertexIndex;
+    // outVertex, outEdge work as leftChild and rightChild before building, saving memory
+    private final int[] dsu, inVertex, outVertex, inEdge, outEdge, vertexPermutation, edgePermutation, vertexIndex;
     private final int[][] up;
     private final int n, m, log;
-    private int next, vertexTick = 0, edgeTick = 0;
+    private int next = 0, vertexTick = 0, edgeTick = 0;
     public ReachabilityTree(int n, int  m) {
         dsu = new int[n + m];
         up = new int[log = 32 - Integer.numberOfLeadingZeros(n + m)][n + m];
-        leftChild = new int[n + m];
-        rightChild = new int[n + m];
         vertexPermutation = new int[n];
         edgePermutation = new int[m];
         vertexIndex = new int[n];
@@ -17,22 +16,23 @@ class ReachabilityTree{
         outEdge = new int[m];
         this.n = n;
         this.m = m;
-        next = n;
-        for (int i = 0; i < n + m; ++i) 
-            leftChild[i] = rightChild[i] = dsu[i] = up[0][i] = -1;
+        for(int i = 0; i < m; ++i)
+            outVertex[i] = outEdge[i] = -1;
+        for(int i = 0; i < n + m; ++i) 
+            dsu[i] = up[0][i] = -1;
     }
     // adds edge (u,v) (O(log(m + n)))
     public final void addEdge(int u, int v) {
         u = find(u);
         v = find(v);
         if(u == v) {
-            dsu[u] = up[0][u] = next;
-            leftChild[next++] = u;
+            dsu[u] = up[0][u] = next + n;
+            outVertex[next++] = u;
         }
         else {
-            dsu[u] = dsu[v] = up[0][u] = up[0][v] = next;
-            leftChild[next] = u;
-            rightChild[next++] = v;
+            dsu[u] = dsu[v] = up[0][u] = up[0][v] = next + n;
+            outVertex[next] = u;
+            outEdge[next++] = v;
         }
     }
     // returns last edge connected to u up to edge e
@@ -69,12 +69,12 @@ class ReachabilityTree{
     // returns range [l,r] of edges in the permutation
     // that are connected to u up to edge e 
     // or null if there are none (O(log(n + m)))
-    public final int[] edgeRange(int u,int e) {
+    public final int[] edgeRange(int u, int e) {
         e = lastEdgeBefore(u, e);
         if(e == -1) return null;
         return new int[] {inEdge[e], outEdge[e]};
     }
-    // builds permutations and sets up queries
+    // builds permutations and sets up queries (O((n + m)log(n + m)))
     public final void build() {
         for(int j = 1; j < log; ++j)
             for(int i = 0; i < n + m; ++i)
@@ -89,23 +89,26 @@ class ReachabilityTree{
     public final int[] getVertexIndex() { return vertexIndex; }
     // returns permutation of edges
     public final int[] getEdgePermutation() {return edgePermutation; }
+    // returns index of edges in the permutation
+    public final int[] getEdgeIndex() { return inEdge; }
     // private methods
     private final int find(int a) {
-        while(dsu[a] >= 0 && dsu[dsu[a]] >= 0)
+        while(dsu[a] != -1 && dsu[dsu[a]] != -1)
             a = dsu[a] = dsu[dsu[a]];
         return dsu[a] < 0 ? a : dsu[a];
     }
     private final void dfs(int u) {
-        if(leftChild[u] == -1) {
+        if(u < n) {
             vertexPermutation[vertexIndex[u] = vertexTick++] = u;  
         }
         else {
-            inVertex[u - n] = vertexTick;
-            edgePermutation[inEdge[u - n] = edgeTick++] = u - n;
-            dfs(leftChild[u]);
-            if(rightChild[u] != -1) dfs(rightChild[u]);
-            outVertex[u - n] = vertexTick - 1;
-            outEdge[u - n] = edgeTick - 1;
+            int e = u - n;
+            inVertex[e] = vertexTick;
+            edgePermutation[inEdge[e] = edgeTick++] = e;
+            dfs(outVertex[e]);
+            if(outEdge[e] != -1) dfs(outEdge[e]);
+            outVertex[e] = vertexTick - 1;
+            outEdge[e] = edgeTick - 1;
         }
     }
 }
