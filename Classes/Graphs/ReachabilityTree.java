@@ -3,7 +3,7 @@ class ReachabilityTree{
     private final int[] dsu, inVertex, outVertex, inEdge, outEdge, vertexPermutation, edgePermutation, vertexIndex;
     private final int[][] up;
     private final int n, m, log;
-    private int next = 0, vertexTick = 0, edgeTick = 0;
+    private int vertexTick = 0, edgeTick = 0;
     public ReachabilityTree(int n, int  m) {
         dsu = new int[n + m];
         up = new int[log = 32 - Integer.numberOfLeadingZeros(n + m)][n + m];
@@ -26,13 +26,13 @@ class ReachabilityTree{
         u = find(u);
         v = find(v);
         if(u == v) {
-            dsu[u] = up[0][u] = next + n;
-            outVertex[next++] = u;
+            dsu[u] = up[0][u] = edgeTick + n;
+            outVertex[edgeTick++] = u;
         }
         else {
-            dsu[u] = dsu[v] = up[0][u] = up[0][v] = next + n;
-            outVertex[next] = u;
-            outEdge[next++] = v;
+            dsu[u] = dsu[v] = up[0][u] = up[0][v] = edgeTick + n;
+            outVertex[edgeTick] = u;
+            outEdge[edgeTick++] = v;
         }
     }
     // returns last edge connected to u up to edge e
@@ -79,6 +79,7 @@ class ReachabilityTree{
         for(int j = 1; j < log; ++j)
             for(int i = 0; i < n + m; ++i)
                 up[j][i] = up[j - 1][i] == -1 ? -1 : up[j - 1][up[j - 1][i]];
+        edgeTick = 0;
         for(int i = 0; i < n + m; ++i)
             if(up[0][i] == -1)
                 dfs(i);
