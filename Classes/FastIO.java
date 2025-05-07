@@ -7,7 +7,7 @@ class FastIO{
         bos = new BufferedOutputStream(System.out);
     } 
     private byte read() throws IOException {
-        if(pointer >+ bytesRead) {
+        if(pointer >= bytesRead) {
             pointer = 0;
             if((bytesRead = in.read(buffer)) == -1) return -1;
         }
