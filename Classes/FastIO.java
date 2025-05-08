@@ -1,11 +1,16 @@
 class FastIO{ 
     private final BufferedOutputStream bos;
-    private final InputStream in = System.in;
+    private final InputStream in;
     private final byte[] buffer = new byte[1 << 16];
     private int pointer = 0, bytesRead = 0;
-    public FastIO() { 
+    public FastIO() {
         bos = new BufferedOutputStream(System.out);
+        in = System.in;
     } 
+    public FastIO(OutputStream out, InputStream in) {
+        bos = new BufferedOutputStream(out);
+        this.in = in;
+    }
     private byte read() throws IOException {
         if(pointer >= bytesRead) {
             pointer = 0;
@@ -66,7 +71,7 @@ class FastIO{
         } while ((b = read()) >= '0' && b <= '9');
         return neg ? -num : num;
     } 
-    public final double nextDouble() throws Exception { return Double.parseDouble(new String(next())); } 
+    public final double nextDouble() throws IOException { return Double.parseDouble(new String(next())); } 
     public final char[] nextLine() throws IOException { 
         byte b = read();
         if(b == -1) return new char[0];
@@ -173,5 +178,6 @@ class FastIO{
     public final void println(char[] s) throws IOException { bos.write(bytes(s)); bos.write(ENDL); }
     public final void space() throws IOException { bos.write(SPACE); }
     public final void endl() throws IOException { bos.write(ENDL); }
+    public final void println() throws IOException { bos.write(ENDL); }
     public final void flush() throws IOException { bos.flush(); }
 }
