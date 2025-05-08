@@ -43,18 +43,31 @@ class Reroot{
         }
         else{
             int neighbors = adj[u].size();
-            X[] pref_dp = new X[neighbors - 1], suf_dp = new X[neighbors - 1];
-            pref_dp[0] = dp[u][0]; suf_dp[neighbors - 2] = dp[u][neighbors - 1];
-            for(int i = 1; i < neighbors - 1; ++i){
-                pref_dp[i] = merge(pref_dp[i - 1], dp[u][i]);
-                suf_dp[neighbors - 2 - i] = merge(suf_dp[neighbors - 1 - i], dp[u][neighbors - 1 - i]);
+            X[] pref_dp = new X[neighbors - 1];
+            pref_dp[0] = dp[u][0];
+            for(int i = 1; i < neighbors - 1; ++i) pref_dp[i] = merge(pref_dp[i - 1], dp[u][i]);
+
+            // rightmost
+            int v = adj[u].get(neighbors - 1);
+            if(v != p) {
+                dp[v][p_index[v]] = combine(u, pref_dp[neighbors - 2]);
+                dfs2(v, u);
             }
-            for(int i = 0; i < neighbors; ++i){
-                int v = adj[u].get(i);
+            // middle
+            X suf_dp = dp[u][neighbors - 1];
+            for(int i = neighbors - 2; i > 0; --i){
+                v = adj[u].get(i);
                 if(v != p){
-                    dp[v][p_index[v]] = combine(u, i == 0 ? suf_dp[0] : i == neighbors - 1 ? pref_dp[neighbors - 2] : merge(pref_dp[i - 1], suf_dp[i]));
+                    dp[v][p_index[v]] = combine(u, merge(pref_dp[i - 1], suf_dp));
                     dfs2(v, u);
                 }
+                suf_dp = merge(dp[u][i], suf_dp);
+            }
+            // leftmost
+            v = adj[u].get(0);
+            if(v != p) {
+                dp[v][p_index[v]] = combine(u, suf_dp);
+                dfs2(v, u);
             }
         }
     }
