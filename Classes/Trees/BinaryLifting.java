@@ -21,34 +21,10 @@ class Tree{
         // if we're finding op(edges):
         // opUp[u][i] is op(edges on u -> up[u][i])
     }
-    private final void dfs(int u, int p) {
-        up[u][0] = p; 
-        for(int v: adj[u])
-            if(v != p){
-                depth[v] = depth[u] + 1;
-                dfs(v, u);
-            }     
-    }
-    // returns ith vertex on the simple path from u to v (0-indexed) (O(log(n)))
-    public final int ithOnPath(int u, int v, int i) {
-        int sz = 1 + depth[u] + depth[v] + (depth[lca(u, v)] << 1);
-        if(depth[u] < depth[v]){
-            u ^= v; v ^= u; u ^= v; i = sz - i - 1;
-        }
-        int w = kthAncestor(u, depth[u] - depth[v]);
-        if(w == v) return kthAncestor(u, i); // lca(u, v) = v
-        int x = w, y = v;
-        for(int l = log - 1; l >= 0; --l)
-            if(up[x][l] != up[y][l]){
-                x = up[x][l];
-                y = up[y][l];
-            }
-        x = up[x][0];
-        int d1 = depth[u] - depth[x] + 1, d2 = sz - d1;
-        return i < d1 ? kthAncestor(u, i) : kthAncestor(v, d2 - 1 - i + d1); 
-    }
-    // returns kth ancestor of u (O(log(n)))
+    // returns kth ancestor of u
+    // or -1 if there's no such node (O(log(n)))
     public final int kthAncestor(int u, int k) {
+        if(depth[u] < k) return -1;
         for(int i = 0; i < log; ++i)
             if((k & (1 << i)) != 0)
                 u = up[u][i];
@@ -71,8 +47,32 @@ class Tree{
         return depth[u] <= depth[v] && kthAncestor(u, depth[v] - depth[u]) == v;
     }
     // returns whether w is on the path from u to v (O(log(n)))
-     public final boolean isOnPath(int u, int v, int w) {
+    public final boolean isOnPath(int u, int v, int w) {
         return depth[w] >= depth[lca(u, v)] && (isAncestor(w, u) || isAncestor(w, v));
+    }
+    // returns ith vertex on the simple path from u to v (0-indexed) (O(log(n)))
+    public final int ithOnPath(int u, int v, int i) {
+        int sz = 1 + depth[u] + depth[v] + (depth[lca(u, v)] << 1);
+        if(depth[u] < depth[v]){
+            u ^= v; v ^= u; u ^= v; i = sz - i - 1;
+        }
+        int w = kthAncestor(u, depth[u] - depth[v]);
+        if(w == v) return kthAncestor(u, i); // lca(u, v) = v
+        int x = w, y = v;
+        for(int l = log - 1; l >= 0; --l)
+            if(up[x][l] != up[y][l]){
+                x = up[x][l];
+                y = up[y][l];
+            }
+        x = up[x][0];
+        int d1 = depth[u] - depth[x] + 1, d2 = sz - d1;
+        return i < d1 ? kthAncestor(u, i) : kthAncestor(v, d2 - 1 - i + d1); 
+    }
+    // returns distance between u and v (O(log(n)))
+    public final int distance(int u, int v) {
+        if(u == 0) return depth[v];
+        if(v == 0) return depth[u];
+        return depth[u] + depth[v] - (depth[lca(u, v)] << 1);
     }
     // (O(T(op).log(n)))
     // public final ... opOfPath(int u, int v) {
@@ -97,4 +97,13 @@ class Tree{
     //     // if we're finding op(vertices), include up[u][0]
     //     return res;
     // }
+    // private methods
+    private final void dfs(int u, int p) {
+        up[u][0] = p; 
+        for(int v: adj[u])
+            if(v != p){
+                depth[v] = depth[u] + 1;
+                dfs(v, u);
+            }     
+    }
 }
