@@ -1,6 +1,6 @@
+// once m edges are added, it will automatically build the permutations and setup queries in O((n + m)log(n + m))
 class ReachabilityTree{
-    // outVertex, outEdge work as leftChild and rightChild before building, saving memory
-    private final int[] dsu, inVertex, outVertex, inEdge, outEdge, vertexPermutation, edgePermutation, vertexIndex;
+    private final int[] dsu, inVertex, outVertex, inEdge, outEdge, vertexPermutation, edgePermutation, vertexIndex; // outVertex, outEdge work as leftChild and rightChild before building, saving memory
     private final int[][] up;
     private final int n, m, log;
     private int vertexTick = 0, edgeTick = 0;
@@ -34,6 +34,7 @@ class ReachabilityTree{
             outVertex[edgeTick] = u;
             outEdge[edgeTick++] = v;
         }
+        if(edgeTick == m) build();
     }
     // returns last edge connected to u up to edge e
     // or -1 if there is none (O(log(n + m)))
@@ -74,16 +75,6 @@ class ReachabilityTree{
         if(e == -1) return null;
         return new int[] {inEdge[e], outEdge[e]};
     }
-    // builds permutations and sets up queries (O((n + m)log(n + m)))
-    public final void build() {
-        for(int j = 1; j < log; ++j)
-            for(int i = 0; i < n + m; ++i)
-                up[j][i] = up[j - 1][i] == -1 ? -1 : up[j - 1][up[j - 1][i]];
-        edgeTick = 0;
-        for(int i = 0; i < n + m; ++i)
-            if(up[0][i] == -1)
-                dfs(i);
-    }
     // returns permutation of vertices
     public final int[] getVertexPermutation() { return vertexPermutation; }
     // returns index of vertices in the permutation
@@ -97,6 +88,16 @@ class ReachabilityTree{
         while(dsu[a] != -1 && dsu[dsu[a]] != -1)
             a = dsu[a] = dsu[dsu[a]];
         return dsu[a] < 0 ? a : dsu[a];
+    }
+    // builds permutations and sets up queries (O((n + m)log(n + m)))
+    private final void build() {
+        for(int j = 1; j < log; ++j)
+            for(int i = 0; i < n + m; ++i)
+                up[j][i] = up[j - 1][i] == -1 ? -1 : up[j - 1][up[j - 1][i]];
+        edgeTick = 0;
+        for(int i = 0; i < n + m; ++i)
+            if(up[0][i] == -1)
+                dfs(i);
     }
     private final void dfs(int u) {
         if(u < n) {
