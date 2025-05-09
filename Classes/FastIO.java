@@ -1,3 +1,4 @@
+import java.io.*;
 class FastIO{ 
     private final BufferedOutputStream bos;
     private final InputStream in;
@@ -18,6 +19,7 @@ class FastIO{
         }
         return buffer[pointer++];
     }
+    public final char nextChar() throws IOException { return (char)read(); }
     public final char[] next() throws IOException { 
         byte b;
         while((b = read()) <= ' ' && b != -1);
@@ -92,6 +94,11 @@ class FastIO{
             return resizedToken;
         }
     } 
+    public final void skipToken() throws IOException {
+        byte b;
+        while((b = read()) <= ' ' && b != -1);
+        while((b = read()) > ' ');
+    }
     private static final byte[] bytes(char[] s){
         final int n = s.length;
         final byte[] res = new byte[n];

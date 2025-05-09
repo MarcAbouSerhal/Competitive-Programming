@@ -31,7 +31,7 @@ class HeavyLightDecomposition{
     }
     // sets a[u] to x (O(T(DS)))
     public final void set(int u, X x) { ds[root[u]].set(idx[u], x); }
-    // returns property f the path from u to v (O(log(n)T(DS)))
+    // returns property of the path from u to v (O(log(n)T(DS)))
     public final X get(int u, int v) {
         X ans = null;
         while(root[u] != root[v]) {
@@ -42,6 +42,16 @@ class HeavyLightDecomposition{
         if(u == v && edgeProp == 1) return ans;
         return op(ans, ds[root[u]].get(min(idx[u], idx[v]) + edgeProp, max(idx[u], idx[v])));
     }
+    // applies update path from u to v (O(log(n)T(DS)))
+    // public final void get(int u, int v, X x) {
+    //     while(root[u] != root[v]) {
+    //         if(d[root[u]] < d[root[v]]) { u ^= v; v ^= u; u ^= v; }
+    //         ds[root[u]].update(0, idx[u], x);
+    //         u = p[root[u]];
+    //     }
+    //     if(u == v && edgeProp == 1) return;
+    //     ds[root[u]].update(min(idx[u], idx[v]) + edgeProp, max(idx[u], idx[v]), x);
+    // }
     // CHANGE THESE FUNCTIONS
     private static final X op(X a, X b){
         if(a == null) return b;
