@@ -1,3 +1,4 @@
+import java.util.*;
 class HeavyLightDecomposition{
     private final int[] p, d, idx, root;
     private final DS[] ds;
@@ -42,22 +43,25 @@ class HeavyLightDecomposition{
         if(u == v && edgeProp == 1) return ans;
         return op(ans, ds[root[u]].get(min(idx[u], idx[v]) + edgeProp, max(idx[u], idx[v])));
     }
-    // applies update path from u to v (O(log(n)T(DS)))
-    // public final void get(int u, int v, X x) {
-    //     while(root[u] != root[v]) {
-    //         if(d[root[u]] < d[root[v]]) { u ^= v; v ^= u; u ^= v; }
-    //         ds[root[u]].update(0, idx[u], x);
-    //         u = p[root[u]];
-    //     }
-    //     if(u == v && edgeProp == 1) return;
-    //     ds[root[u]].update(min(idx[u], idx[v]) + edgeProp, max(idx[u], idx[v]), x);
-    // }
     // CHANGE THESE FUNCTIONS
     private static final X op(X a, X b){
-        if(a == null) return b;
-        if(b == null) return a;
         // define associative operation here (f(f(a,b),c)=f(a,f(b,c)))
     }
+
+    // applies update on path from u to v (O(log(n)T(DS)))
+    // same as get(u, v) but with update(l, r, x) instead of get(l, r)
+    
+    // applies update on subtree of u (O(log(n) + T(DS)))
+    // lazy: ds with range updates
+    // find euler tour of tree
+    // to update subtree(u):
+    //   lazy.update(in[u], out[u], x)
+    //   if u != root[u]: ds[root[u]].update(idx[u], end, x)
+    // before querying ds[root[u]]:
+    //   ds[root[u]].update(all, lazy[root[u]]) 
+    //   reset it lazy[root[u]]
+
+    // private methods
     private final int dfs1(int u, int par) {
         p[u] = par;
         int size = 1, heavySize = 0;
