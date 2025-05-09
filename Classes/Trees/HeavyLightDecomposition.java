@@ -30,9 +30,9 @@ class HeavyLightDecomposition{
         heavyChild = null; // trash unused arrays
     }
     // sets a[u] to x (O(T(DS)))
-    private final void set(int u, X x) { ds[root[u]].set(idx[u], x); }
+    public final void set(int u, X x) { ds[root[u]].set(idx[u], x); }
     // returns property f the path from u to v (O(log(n)T(DS)))
-    private final X get(int u, int v) {
+    public final X get(int u, int v) {
         X ans = null;
         while(root[u] != root[v]) {
             if(d[root[u]] < d[root[v]]) { u ^= v; v ^= u; u ^= v; }

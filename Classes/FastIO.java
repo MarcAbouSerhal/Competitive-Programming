@@ -104,55 +104,65 @@ class FastIO{
         for(int i = 0; i < n; ++i) res[i] = (byte)s.charAt(i);
         return res;
     }
+    private static final long[] power = 
+    {   1L, 10L, 100L, 1000L, 10000L, 100000L, 1000000L, 10000000L, 100000000L, 1000000000L, 10000000000L, 100000000000L,
+        1000000000000L, 10000000000000L, 100000000000000L, 1000000000000000L, 10000000000000000L, 100000000000000000L, 1000000000000000000L
+    };
     private static final byte[] bytes(int x){ 
         if(x == 0) return ZERO;
-        int size = 0;
-        if(x < 0){
-            final byte[] temp = new byte[11];
-            while(x != 0){
-                temp[size++] = (byte)('0' - (x % 10));
+        else if(x > 0) {
+            int size = 0;
+            for(; power[size + 1] <= x; ++size);
+            byte[] res = new byte[size + 1];
+            while(x != 0) {
+                res[size--] = (byte)('0' + (x % 10));
                 x /= 10;
             }
-            final byte[] res = new byte[size + 1];
-            res[0] = MINUS;
-            for(int i = 1; i <= size; ++i) res[i] = temp[size - i];
             return res;
         }
-        else{
-            final byte[] temp = new byte[10];
-            while(x != 0){
-                temp[size++] = (byte)('0' + (x % 10));
+        else {
+            int size = 0;
+            for(; -power[size + 1] >= x; ++size);
+            byte[] res = new byte[size + 2];
+            while(x != 0) {
+                res[1 + size--] = (byte)('0' - (x % 10));
                 x /= 10;
             }
-            final byte[] res = new byte[size];
-            for(int i = 0; i < size; ++i) res[i] = temp[size - i - 1];
+            res[0] = MINUS;
             return res;
         }
     }
     private static final byte[] bytes(long x){ 
         if(x == 0) return ZERO;
-        int size = 0;
-        if(x < 0){
-            final byte[] temp = new byte[19];
-            while(x != 0){
-                temp[size++] = (byte)('0' - (x % 10));
+        else if(x > 0) {
+            int l = 0, r = 18;
+            while(l < r) {
+                int mid = (l + r + 1) >> 1;
+                if(power[mid] <= x) l = mid;
+                else r = mid - 1;
+            }
+            byte[] res = new byte[l + 1];
+            while(x != 0) {
+                res[l--] = (byte)('0' + (x % 10));
                 x /= 10;
             }
-            final byte[] res = new byte[size + 1];
+            return res;
+        }
+        else {
+            int l = 0, r = 18;
+            while(l < r) {
+                int mid = (l + r + 1) >> 1;
+                if(power[mid] >= x) l = mid;
+                else r = mid - 1;
+            }
+            byte[] res = new byte[l + 2];
+            while(x != 0) {
+                res[1 + l--] = (byte)('0' + (x % 10));
+                x /= 10;
+            }
             res[0] = MINUS;
-            for(int i = 1; i <= size; ++i) res[i] = temp[size - i];
             return res;
-        }
-        else{
-            final byte[] temp = new byte[18];
-            while(x != 0){
-                temp[size++] = (byte)('0' + (x % 10));
-                x /= 10;
-            }
-            final byte[] res = new byte[size];
-            for(int i = 0; i < size; ++i) res[i] = temp[size - i - 1];
-            return res;
-        }
+        } 
     }
     private static final byte[] TRUE = {'t', 'r', 'u', 'e'}, FALSE = {'f', 'a', 'l', 's', 'e'}, NULL = {'n', 'u', 'l', 'l'}, ENDL = "\n".getBytes(), SPACE = {' '}, ZERO = {'0'};
     private static final byte MINUS = '-';

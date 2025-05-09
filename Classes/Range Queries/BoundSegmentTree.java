@@ -6,7 +6,7 @@ class BoundSegmentTree{
     private final boolean[] tree;
     private final Integer[] change;
     private final int[] b;
-    private int leaves;
+    private final int leaves;
     private final MinSparseTable query;
     public BoundSegmentTree(int[] a, int[] b){
         this.b = b;
