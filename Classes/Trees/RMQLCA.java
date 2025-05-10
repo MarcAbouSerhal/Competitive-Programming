@@ -1,5 +1,3 @@
-import java.util.*;
-
 class Tree{
     private int tick = -1;
     private final int[][] d;

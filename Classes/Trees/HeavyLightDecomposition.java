@@ -1,4 +1,3 @@
-import java.util.*;
 class HeavyLightDecomposition{
     private final int[] p, d, idx, root;
     private final DS[] ds;
@@ -30,7 +29,7 @@ class HeavyLightDecomposition{
         chain = null;
         heavyChild = null; // trash unused arrays
     }
-    // sets a[u] to x (O(T(DS)))
+    // sets value[u] or value[u, p(u)] to x (O(T(DS)))
     public final void set(int u, X x) { ds[root[u]].set(idx[u], x); }
     // returns property of the path from u to v (O(log(n)T(DS)))
     public final X get(int u, int v) {
