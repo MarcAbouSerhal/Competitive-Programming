@@ -1,6 +1,18 @@
 class NTT{
     private final static long mod = 998244353;
     private final static long root = 15311432; // 2^23rd root of 998244353
+    // (O(nlog(n)))
+    public final static long[] multiply(long[] a, long[] b){
+        int n = 1, d = a.length + b.length - 1;
+        while(n <= d) n <<= 1;
+        long[] fa = DFT(copy(a, n), n, false);
+        long[] fb = DFT(copy(b, n), n, false);
+        for(int i = 0; i < n; ++i) fa[i] = (fa[i] * fb[i]) % mod;
+        fa = DFT(fa, n, true);
+        long inv = inv(n);
+        for(int i = 0; i < d; ++i) fb[i] = (fa[i] * inv) % mod;
+        return fb;
+    }
     private final static long pow(long x, long n){
         if(n == 0) return 1;
         long res = pow(x, n >> 1);
@@ -41,17 +53,5 @@ class NTT{
             }
         }
         return p;
-    }
-    // (O(nlog(n)))
-    public final static long[] multiply(long[] a, long[] b){
-        int n = 1;
-        while(n < a.length + b.length) n <<= 1;
-        long[] fa = DFT(copy(a, n), n, false);
-        long[] fb = DFT(copy(b, n), n, false);
-        for(int i = 0; i < n; ++i) fa[i] = (fa[i] * fb[i]) % mod;
-        fa = DFT(fa, n, true);
-        long inv = inv(n);
-        for(int i = 0; i < d; ++i) fb[i] = (fa[i] * inv) % mod;
-        return fb;
     }
 }
