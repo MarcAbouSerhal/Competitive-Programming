@@ -1,11 +1,9 @@
-class DoubleHash{
-    private final static long pow(long x, long n, long m){
-        if(n == 0) return 1;
-        long res = pow(x, n>>1, m);
-        res = (res * res)%m;
-        if(n % 2 == 1) res = (res * x)%m;
-        return res;
-    }
+class StringDoubleHash{
+    private static final long m1 = 3030000073l, m2 = 3030000097l;
+    private static final long p1 = 29, p2 = 31;
+    private static long[] inv_p1_pow, inv_p2_pow;
+    private static long[] p1_pow, p2_pow;
+    private final long[] h1, h2;
     // call this to initialize prime powers, n is size of biggest string
     public final static void init(int n){
         inv_p1_pow = new long[n]; 
@@ -21,12 +19,7 @@ class DoubleHash{
             inv_p2_pow[i] = (inv_p2_pow[i-1] * inv_p2)%m2;
         }
     }
-    private static final long m1 = 3030000073l, m2 = 3030000097l;
-    private static final long p1 = 29, p2 = 31;
-    private static long[] inv_p1_pow, inv_p2_pow;
-    private static long[] p1_pow, p2_pow;
-    private final long[] h1, h2;
-    public DoubleHash(char[] s){
+    public StringDoubleHash(char[] s){
         int n = s.length;
         h1 = new long[n]; h2 = new long[n];
         h1[0] = h2[0] = s[0] - 'a' + 1;
@@ -65,5 +58,12 @@ class DoubleHash{
             res.append((char)('z' + 1));
         }
         return res.toString().toCharArray();
+    }
+    private final static long pow(long x, long n, long m){
+        if(n == 0) return 1;
+        long res = pow(x, n>>1, m);
+        res = (res * res)%m;
+        if(n % 2 == 1) res = (res * x)%m;
+        return res;
     }
 }
