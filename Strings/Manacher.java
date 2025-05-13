@@ -1,9 +1,7 @@
 class Manacher{
-    private final static int min(int x, int y){ return x < y ? x : y; }
-    private final static int max(int x, int y){ return x > y ? x : y; }
     private final int[] d;
-    // O(n)
-    public Manacher(char[] t){
+    // (O(n))
+    public Manacher(char[] t) {
         int n = t.length;
         char[] s = new char[(n << 1) + 3];
         d = new int[(n << 1) + 3];
@@ -20,8 +18,22 @@ class Manacher{
             }
         }
     }
-    // returns whether s[l...r] is a palindrome (O(1))
-    public final boolean isPalindrome(int l, int r){
-        return d[l + r + 2] > r - l;
+    public Manacher(String t) { this(t.toCharArray()); }
+    // returns whether t[l...r] is a palindrome (O(1))
+    public final boolean isPalindrome(int l, int r) { return d[l + r + 2] > r - l; }
+    // returns [l, r] that is the longest palindromic substring of t (O(n))
+    public final int[] maxPalindrome() {
+        int center = 0;
+        for(int i = 1; i + 1 < d.length; ++i)
+            if(d[i] > d[center])
+                center = i;
+        int maxLen = d[center] - 1, start = (center - maxLen) >> 1;
+        return new int[] {start, start + maxLen - 1};
     }
+    // returns length of longest palindromic substring centered at i (O(1))
+    public final int maxOddAt(int i) { return d[(i + 1) << 1] - 1; }
+    // returns length of longest palindromic substring centered at i,i+1 (O(1))
+    public final int maxEvenAt(int i) { return d[3 + (i << 1)] - 1; }
+    private final static int min(int x, int y){ return x < y ? x : y; }
+    private final static int max(int x, int y){ return x > y ? x : y; }
 }
