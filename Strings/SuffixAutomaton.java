@@ -1,4 +1,4 @@
-lass SuffixAutomaton {
+class SuffixAutomaton {
     static final int k = 26;
     static final char ID = 'a';
     final ArrayList<Node> d = new ArrayList<>();
