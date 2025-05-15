@@ -41,5 +41,5 @@ class SuffixArray {
         }
         return p;
     }
-    public static final int[] sort(String s) { return sort(s.toCharArray()); }
+    public static final int[] sortCyclicShifts(String s) { return sortCyclicShifts(s.toCharArray()); }
 }
