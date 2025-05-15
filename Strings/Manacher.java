@@ -41,11 +41,11 @@ class Manacher{
         int n = (d.length - 3) >> 1, last = 0;
         int[] res = new int[n];
         for(int i = 0; i < n; ++i)
-            for(int j = max(last, i); j < min(n, i + (d[(i + 1) << 1] >> 1)); last = ++j)
+            for(int j = max(last, i); j < i + (d[(i + 1) << 1] >> 1); last = ++j)
                 res[j] = 1 + ((j - i) << 1); 
         last = 0;
         for(int i = 1; i < n; ++i)
-            for(int j = max(last, i); j < min(n, i + (d[1 + (i << 1)] >> 1)); last = ++j)
+            for(int j = max(last, i); j < i + (d[1 + (i << 1)] >> 1); last = ++j)
                 res[j] = max(res[j], (j - i + 1) << 1);
         return res;
     }
