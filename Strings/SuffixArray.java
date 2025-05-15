@@ -4,8 +4,9 @@ class SuffixArray {
     public static final int[] suffixArray(char[] s) {
         char[] s_ = new char[s.length + 1];
         for(int i = 0; i < s.length; ++i) s_[i] = s[i];
-        s_[s.length] = 65000;
-        return sortCyclicShifts(s_);
+        int[] res = sortCyclicShifts(s_);
+        for(int i = 0; i < s.length; ++i) res[i] = res[i + 1];
+        return res;
     }
     public static final int[] suffixArray(String s) { return suffixArray(s.toCharArray()); }
     // returns p where p[i] is the start of the ith smallest cyclic shift of s (O(nlog(n)))
