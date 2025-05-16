@@ -1,5 +1,5 @@
 class SuffixArray {
-    private final static int alphabet = 256;
+    private final static int alphabet = 128;
     // returns p where p[i] is the start of the ith smallest suffix of s (O(nlog(n)))
     public static final int[] suffixArray(char[] s) {
         char[] s_ = new char[s.length + 1];
@@ -43,4 +43,36 @@ class SuffixArray {
         return p;
     }
     public static final int[] sortCyclicShifts(String s) { return sortCyclicShifts(s.toCharArray()); }
+    // returns string t where t[i] is end of ith smallest cyclic shift of s + '$' (O(nlog(n)))
+    public static final char[] BWT(char[] s) {
+        int n = s.length;
+        char[] s_ = new char[n + 1], t = new char[n + 1];
+        for(int i = 0; i < n; ++i) s_[i] = s[i];
+        s_[n] = '$';
+        int[] res = sortCyclicShifts(s_);
+        for(int i = 0; i < n + 1; ++i)
+            t[i] = s_[(res[i] + n) % (n + 1)];
+        return t;
+    }
+    public static final char[] BWT(String s) { return BWT(s.toCharArray()); }
+    // returns s where t = bwt(s) (O(nlog(n)))
+    public static final char[] inverseBWT(char[] t) {
+        int lenT = t.length;
+        char[] sortedT = new char[lenT];
+        int[] lShift = new int[lenT];
+        for(int i = 0; i < lenT; ++i) sortedT[i] = t[i];
+        Arrays.sort(sortedT);
+        int x;
+        for(x = 0; t[x] != '$'; ++x);
+        LinkedList<Integer>[] arr = new LinkedList[alphabet];
+        for(int i = 0; i < alphabet; ++i) arr[i] = new LinkedList<>();
+        for(int i = 0; i < lenT; ++i) arr[t[i]].add(i);
+        for(int i = 0; i < lenT; ++i) {
+            lShift[i] = arr[sortedT[i]].get(0);
+            arr[sortedT[i]].remove(0);
+        }
+        char[] s = new char[lenT - 1];
+        for(int i = 0; i < lenT - 1; ++i) s[i] = t[x = lShift[x]];
+        return s;
+    }
 }
