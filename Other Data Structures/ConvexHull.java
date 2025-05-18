@@ -14,52 +14,59 @@ class ConvexHull{
         lines = new ArrayList<>();
         ranges = new ArrayList<>();
     }
-    // adds the line [m, b] to the hull (O(1) amortized)
-    public final void add(long m, long b){
-        if(lines.isEmpty()){
-            lines.add(new Line(m, b));
-            ranges.add(new Range(-inf, inf));
-        }
-        else{
-            for(int i = lines.size() - 1; i >= 0; --i){
-                long m2 = lines.get(i).m, b2 = lines.get(i).b;
-                if(m == m2){
-                    if(b <= b2) return; 
-                    // make this <= if we don't care about a lower line (slopes are increasing)
-                    // and make it >= if we don't care about a higher line (slopes are decreasing)
-                    ranges.remove(i);
-                    lines.remove(i);
-                    continue;
-                }
-                double x = (b2 - b + 0.0) / (m - m2);
-                if(ranges.get(i).l < x){
-                    ranges.get(i).r = x;
-                    lines.add(new Line(m,b));
-                    ranges.add(new Range(x,inf));
-                    return;
-                }
-                else{
-                    ranges.remove(i);
-                    lines.remove(i);
-                }
+    // adds the Line to the hull (O(1) amortized)
+    public final void add(Line l){
+        for(int i = lines.size() - 1; i >= 0; --i){
+            long m2 = lines.get(i).m, b2 = lines.get(i).b;
+            if(l.m == m2){
+                if(l.b <= b2) return; 
+                // make this <= if we don't care about a lower line (slopes are increasing)
+                // and make it >= if we don't care about a higher line (slopes are decreasing)
+                ranges.remove(i);
+                lines.remove(i);
+                continue;
+            }
+            double x = (b2 - l.b + 0.0) / (l.m - m2);
+            if(ranges.get(i).l < x){
+                ranges.get(i).r = x;
+                lines.add(l);
+                ranges.add(new Range(x, inf));
+                return;
+            }
+            else{
+                ranges.remove(i);
+                lines.remove(i);
             }
         }
+        if(lines.isEmpty()){
+            lines.add(l);
+            ranges.add(new Range(-inf, inf));
+        }
     }
-    // returns the line that minimizes/maximizes m * x + b (O(log(# lines)))
+    // returns the line that minimizes/maximizes m*x + b (O(log(n)))
     public final Line query(double x){
         int lo = 0, hi = ranges.size() - 1;
-        double r,l;
         while(lo <= hi){
             int mid = (lo + hi) >> 1;
-            l = ranges.get(mid).l; r = ranges.get(mid).r;
-            if(l <= x && x <= r) return lines.get(mid);  
-            else if(x < l) hi = mid - 1;
+            if(ranges.get(mid).l <= x && x <= ranges.get(mid).r) return lines.get(mid);  
+            else if(x < ranges.get(mid).l) hi = mid - 1;
             else lo = mid + 1;
         }
         return null;
     }
+    // returns lines where lines[i] minimizes/maximizes m*x[i] + b where x is sorted (O(n + m))
+    public final Line[] queries(double[] x) {
+        int m = x.length, n = lines.size();
+        Line[] ans = new Line[m];
+        for(int i = 0, j = 0; i < n; ++i)
+            while(j < m && x[j] <= ranges.get(i).r)
+                ans[j++] = lines.get(i);
+        return ans;
+    }
 }
 class Line{
     final long m, b;
-    public Line(long m, long b){ this.m = m; this.b = b; }
+    final int i;
+    public Line(long m, long b){ this.m = m; this.b = b; i = -1; }
+    public Line(long m, long b, int i){ this.m = m; this.b = b; this.i = i; }
 }
