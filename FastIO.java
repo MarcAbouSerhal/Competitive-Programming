@@ -1,4 +1,3 @@
-import java.io.*;
 class FastIO{ 
     private final BufferedOutputStream bos;
     private final InputStream in;
@@ -163,12 +162,12 @@ class FastIO{
             int l = 0, r = 18;
             while(l < r) {
                 int mid = (l + r + 1) >> 1;
-                if(power[mid] >= x) l = mid;
+                if(-power[mid] >= x) l = mid;
                 else r = mid - 1;
             }
             byte[] res = new byte[l + 2];
             while(x != 0) {
-                res[1 + l--] = (byte)('0' + (x % 10));
+                res[1 + l--] = (byte)('0' - (x % 10));
                 x /= 10;
             }
             res[0] = MINUS;
