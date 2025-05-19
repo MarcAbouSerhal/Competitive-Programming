@@ -41,12 +41,12 @@ class LiChaoTree {
     }
     private final Node insertLineKnowingly(Node node, int lx, int rx, Line line) {
         if(node == null) node = new Node(ignored);
-        if(node.line.get(lx) < line.get(lx)) {
+        if(best(line, node.line, lx) == line) {
             Line temp = node.line;
             node.line = line;
             line = temp;
         }
-        if(node.line.get(rx) >= line.get(rx) || lx == rx) return node;
+        if(best(line, node.line, rx) != line || lx == rx) return node;
         int mid = lx + ((rx - lx) >> 1);
         if(best(node.line, line, mid) == node.line) node.rn = insertLineKnowingly(node.rn, mid + 1, rx, line);
         else {
