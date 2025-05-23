@@ -5,61 +5,56 @@
 class ConvexHull{
     private final static double inf = Double.MAX_VALUE;
     private final ArrayList<Line> lines;
-    private final ArrayList<Range> ranges;
-    public ConvexHull() {
+    private final ArrayList<Double> left;
+    public ConvexHull(){
         lines = new ArrayList<>();
-        ranges = new ArrayList<>();
+        left = new ArrayList<>();
     }
-    // adds l to the hull (O(1) amortized)
-    public final void add(Line l) {
+    // adds the Line to the hull (O(1) amortized)
+    public final void add(Line l){
         for(int i = lines.size() - 1; i >= 0; --i){
             long m2 = lines.get(i).m, b2 = lines.get(i).b;
             if(l.m == m2){
                 if(l.b <= b2) return; 
                 // make this <= if we don't care about a lower line (slopes are increasing)
                 // and make it >= if we don't care about a higher line (slopes are decreasing)
-                ranges.remove(i);
+                left.remove(i);
                 lines.remove(i);
                 continue;
             }
             double x = (b2 - l.b + 0.0) / (l.m - m2);
-            if(ranges.get(i).l < x){
-                ranges.get(i).r = x;
+            if(left.get(i) < x){
                 lines.add(l);
-                ranges.add(new Range(x, inf));
+                left.add(x);
                 return;
             }
             else{
-                ranges.remove(i);
+                left.remove(i);
                 lines.remove(i);
             }
         }
         lines.add(l);
-        ranges.add(new Range(-inf, inf));
+        left.add(-inf);
     }
     // returns the line that minimizes/maximizes m*x + b (O(log(n)))
     public final Line query(double x){
-        int lo = 0, hi = ranges.size() - 1;
+        int lo = 0, hi = left.size() - 1;
         while(lo <= hi){
             int mid = (lo + hi) >> 1;
-            if(ranges.get(mid).l <= x && x <= ranges.get(mid).r) return lines.get(mid);  
-            else if(x < ranges.get(mid).l) hi = mid - 1;
+            if(x >= left.get(mid)) hi = mid;
             else lo = mid + 1;
         }
-        return null;
+        return lines.get(lo);
     }
     // returns lines where lines[i] minimizes/maximizes m*x[i] + b where x is sorted (O(n + m))
     public final Line[] queries(double[] x) {
         int m = x.length, n = lines.size();
         Line[] ans = new Line[m];
-        for(int i = 0, j = 0; i < n; ++i)
-            while(j < m && x[j] <= ranges.get(i).r)
-                ans[j++] = lines.get(i);
+        for(int i = 0, j = 0; i < n; ++i) {
+            double r = i + 1 < n ? left.get(i + 1) : inf;
+            while(j < m && x[j] <= r) ans[j++] = lines.get(i);
+        }
         return ans;
-    }
-    private final static class Range{
-        double l, r;
-        public Range(double l, double r){ this.l = l; this.r = r; }
     }
 }
 class Line{
