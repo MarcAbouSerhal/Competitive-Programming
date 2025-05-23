@@ -71,20 +71,21 @@ class Tarjan{
     private static final void dfs2(int u, int p){
         tin[u] = t[u] = ++tick;
         int children = 0;
+        boolean added = false;
         for(int v: adj[u]){
             if(v == p) continue;
             if(t[v] == 0){
                 dfs2(v, u);
                 t[u] = min(t[u], t[v]);
-                if(t[v] >= tin[u] && p != -1) cutpoints.add(u);
+                added |= t[v] >= tin[u] && p != -1;
                 ++children;
             }
             else t[u] = min(t[u], tin[v]);
         }
-        if(p == -1 && children > 1) cutpoints.add(u);
+        if((p == -1 && children > 1) || added ) cutpoints.add(u);
     }
 }
 class Edge{
     final int u, v;
-    public Edge(int u, int v){ this.u=u; this.v=v; }
+    public Edge(int u, int v){ this.u = u; this.v = v; }
 }
