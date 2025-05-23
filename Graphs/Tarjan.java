@@ -3,7 +3,7 @@ class Tarjan{
     // id[u] < id[v] -> surely u can't reach v , id[n] is number of SCCs
     public static final int[] getSCCs(ArrayList<Integer>[] adj){
         tick = group_id = 0;
-        GraphUtil.adj = adj;
+        Tarjan.adj = adj;
         final int n = adj.length;
         id = new int[n + 1]; for(int i = 0; i < n; ++i) id[i] = -1;
         t = new int[n];
@@ -14,7 +14,7 @@ class Tarjan{
     }
     // returns list of bridges in undirected graph (O(n + m))
     public static final ArrayList<Edge> getBridges(ArrayList<Integer>[] adj){
-        GraphUtil.adj = adj; tick = 0;
+        Tarjan.adj = adj; tick = 0;
         final int n = adj.length;
         t = new int[n];
         bridges = new ArrayList<>();
@@ -23,7 +23,7 @@ class Tarjan{
     }
     // returns list of cutpoints in undirected graph (O(n + m))
     public static final ArrayList<Integer> getCutpoints(ArrayList<Integer>[] adj){
-        GraphUtil.adj = adj;
+        Tarjan.adj = adj;
         final int n = adj.length;
         tick = 0;
         t = new int[n]; tin = new int[n];
