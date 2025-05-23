@@ -3,19 +3,15 @@
 // if m's decreasing: it returrns [m[i],b[i]] that gives min(m*x+b)
 // Note: if m's order gives the opposite of what we want, insert [-m,-b] instead of [m,b]
 class ConvexHull{
-    private final static class Range{
-        double l, r;
-        public Range(double l, double r){ this.l = l; this.r = r; }
-    }
     private final static double inf = Double.MAX_VALUE;
     private final ArrayList<Line> lines;
     private final ArrayList<Range> ranges;
-    public ConvexHull(){
+    public ConvexHull() {
         lines = new ArrayList<>();
         ranges = new ArrayList<>();
     }
-    // adds the Line to the hull (O(1) amortized)
-    public final void add(Line l){
+    // adds l to the hull (O(1) amortized)
+    public final void add(Line l) {
         for(int i = lines.size() - 1; i >= 0; --i){
             long m2 = lines.get(i).m, b2 = lines.get(i).b;
             if(l.m == m2){
@@ -38,10 +34,8 @@ class ConvexHull{
                 lines.remove(i);
             }
         }
-        if(lines.isEmpty()){
-            lines.add(l);
-            ranges.add(new Range(-inf, inf));
-        }
+        lines.add(l);
+        ranges.add(new Range(-inf, inf));
     }
     // returns the line that minimizes/maximizes m*x + b (O(log(n)))
     public final Line query(double x){
@@ -62,6 +56,10 @@ class ConvexHull{
             while(j < m && x[j] <= ranges.get(i).r)
                 ans[j++] = lines.get(i);
         return ans;
+    }
+    private final static class Range{
+        double l, r;
+        public Range(double l, double r){ this.l = l; this.r = r; }
     }
 }
 class Line{
