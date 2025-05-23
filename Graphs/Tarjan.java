@@ -1,7 +1,6 @@
-class GraphUtil{
+class Tarjan{
     // returns SCC id for each vertex in directed graph (O(n + m))
-    // id[u] < id[v] -> surely u can't reach v 
-    // id[n] is number of SCCs
+    // id[u] < id[v] -> surely u can't reach v , id[n] is number of SCCs
     public static final int[] getSCCs(ArrayList<Integer>[] adj){
         tick = group_id = 0;
         GraphUtil.adj = adj;
@@ -9,25 +8,19 @@ class GraphUtil{
         id = new int[n + 1]; for(int i = 0; i < n; ++i) id[i] = -1;
         t = new int[n];
         s = new Stack(n);
-        for(int i=0; i < n; ++i)
-            if(t[i] == 0)
-                dfs(i);
+        for(int i=0; i < n; ++i) if(t[i] == 0) dfs(i);
         id[n] = group_id;
         return id;
     }
-
     // returns list of bridges in undirected graph (O(n + m))
     public static final ArrayList<Edge> getBridges(ArrayList<Integer>[] adj){
         GraphUtil.adj = adj; tick = 0;
         final int n = adj.length;
         t = new int[n];
         bridges = new ArrayList<>();
-        for(int i = 0; i < n; ++i)
-            if(t[i] == 0)
-                dfs(i, -1);
+        for(int i = 0; i < n; ++i) if(t[i] == 0) dfs(i, -1);
         return bridges;
     }
-    
     // returns list of cutpoints in undirected graph (O(n + m))
     public static final ArrayList<Integer> getCutpoints(ArrayList<Integer>[] adj){
         GraphUtil.adj = adj;
@@ -35,9 +28,7 @@ class GraphUtil{
         tick = 0;
         t = new int[n]; tin = new int[n];
         cutpoints = new ArrayList<>();
-        for(int i = 0; i < n; ++i)
-            if(t[i] == 0)
-                dfs2(i, -1);
+        for(int i = 0; i < n; ++i) if(t[i] == 0) dfs2(i, -1);
         return cutpoints;
     }
     private final static class Stack{
@@ -50,8 +41,7 @@ class GraphUtil{
     private static ArrayList<Integer>[] adj;
     private static int tick;
     private static int[] t;
-    private static final int min(int a, int b){ return a<b ? a : b; }
-    
+    private static final int min(int a, int b){ return a < b ? a : b; }
     private static ArrayList<Edge> bridges;
     private static final void dfs(int u, int p){
         final int currentTime = t[u] = ++tick;
@@ -62,16 +52,13 @@ class GraphUtil{
             if(currentTime < t[v]) bridges.add(new Edge(u, v));
         }
     }
-
     private static int[] id;
     private static Stack s;
     private static int group_id;
     private static final int dfs(int u){
         int low = t[u] = ++tick;
         s.add(u);
-        for(int v: adj[u])
-            if(id[v] == -1)
-                low = min(low, t[v] != 0 ? t[v] : dfs(v));
+        for(int v: adj[u]) if(id[v] == -1) low = min(low, t[v] != 0 ? t[v] : dfs(v));
         if(low == t[u]){
             int v = -1;
             while(v != u) id[v = s.pop()] = group_id;
@@ -79,7 +66,6 @@ class GraphUtil{
         }
         return low;
     }
-
     private static ArrayList<Integer> cutpoints;
     private static int[] tin;
     private static final void dfs2(int u, int p){
@@ -90,8 +76,7 @@ class GraphUtil{
             if(t[v] == 0){
                 dfs2(v, u);
                 t[u] = min(t[u], t[v]);
-                if(t[v] >= tin[u] && p != -1)
-                    cutpoints.add(u);
+                if(t[v] >= tin[u] && p != -1) cutpoints.add(u);
                 ++children;
             }
             else t[u] = min(t[u], tin[v]);
