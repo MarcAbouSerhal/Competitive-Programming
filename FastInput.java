@@ -2,13 +2,9 @@ class FastInput{
     private final InputStream in;
     private final byte[] buffer = new byte[1 << 16];
     private int pointer = 0, bytesRead = 0;
-    public FastInput() {
-        in = System.in;
-    } 
-    public FastInput(OutputStream out, InputStream in) {
-        this.in = in;
-    }
-    private byte read() throws IOException {
+    public FastInput() { in = System.in; } 
+    public FastInput(InputStream in) { this.in = in; }
+    private final byte read() throws IOException {
         if(pointer >= bytesRead) {
             pointer = 0;
             if((bytesRead = in.read(buffer)) == -1) return -1;
