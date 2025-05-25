@@ -15,46 +15,45 @@ class EulerDirected{
         return hierholzer(adj, m, start);
     }
     // gets euler path if it exists (atmost one u s.t. outdegree[u] - indegree[u] = 1, and 
-    // atmost v s.t. indegree[v] - outdegree[v] = 1, with rest having indegree[w] = outdegree[w] for every other vertex)
+    // atmost v s.t. indegree[v] - outdegree[v] = 1, with indegree[w] = outdegree[w] for every other vertex w)
     // and null if it doesn't exist (O(n + m))
     public final static int[] getPath(ArrayList<Integer>[] adj){
-        final int[] info = helper(adj);
+        int[] info = helper(adj);
         return info == null ? null : hierholzer(adj, info[2], info[0]);
-    }
-    // gets euler path from s to e if it exists and null if it doesn't exist (O(n + m))
-    public final static int[] getPath(ArrayList<Integer>[] adj, int s, int e){
-        final int[] info = helper(adj);
-        return info == null ? null : (info[0] == s && info[1] == e) || (s == e && info[0] == info[1]) ? hierholzer(adj, info[2], s) : null;
     }
     // gets euler path starting from s if it exists and null if it doesn't exist (O(n + m))
     public final static int[] getPath(ArrayList<Integer>[] adj, int s){
-        final int[] info = helper(adj);
+        int[] info = helper(adj);
         return info == null ? null : info[0] == s || info[0] == info[1] ? hierholzer(adj, info[2], s) : null;
     }
+    // gets euler path from s to e if it exists and null if it doesn't exist (O(n + m))
+    public final static int[] getPath(ArrayList<Integer>[] adj, int s, int e){
+        int[] info = helper(adj);
+        return info == null ? null : (info[0] == s && info[1] == e) || (s == e && info[0] == info[1]) ? hierholzer(adj, info[2], s) : null;
+    }
     // returns {potential start, potential end, number of edges}
-    private final static int[] helper(ArrayList<Integer>[] adj_){
-        final int n = adj_.length;
-        final int[] indegree = new int[n];
-        int m = 0;
+    private final static int[] helper(ArrayList<Integer>[] adj){
+        int n = adj.length, m = 0, nonEmpty = 0;
+        int[] indegree = new int[n];
         for(int u = 0; u < n; ++u){
-            m += adj_[u].size();
-            for(int v: adj_[u])
-                ++indegree[v];
+            m += adj[u].size();
+            for(int v: adj[u]) ++indegree[v];
+            if(adj[u].size() != 0) nonEmpty = u;
         }
         int start = -1, end = -1;
         for(int u = 0; u < n; ++u){
-            if(indegree[u] == adj_[u].size()) continue;
-            else if(indegree[u] + 1 == adj_[u].size()){
+            if(indegree[u] == adj[u].size()) continue;
+            else if(indegree[u] + 1 == adj[u].size()){
                 if(start == -1) start = u;
                 else return null;
             }
-            else if(indegree[u] == adj_[u].size() + 1){
+            else if(indegree[u] == adj[u].size() + 1){
                 if(end == -1) end = u;
                 else return null;
             }
             else return null;
         }
-        return start == -1 ? new int[] {0, 0, m} : new int[] {start, end, m};
+        return start == -1 ? new int[] {nonEmpty, nonEmpty, m} : new int[] {start, end, m};
     }
     private final static int[] hierholzer(ArrayList<Integer>[] adj_, int m, int start){
         final Stack[] adj = copy(adj_);
