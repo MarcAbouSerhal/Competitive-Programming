@@ -13,8 +13,8 @@ class PRMaxFlow{
         for(int u = 0; u < n; ++u) adj[u] = new ArrayList<>();
     }
     public final void addEdge(int from, int to, long cap){
-        adj[from].add(new Edge(from, to, cap, 0, adj[to].size() + (from == to ? 1 : 0)));
-        adj[to].add(new Edge(to, from, 0, 0, adj[from].size() - 1));
+        adj[from].add(new Edge(to, cap, 0, adj[to].size() + (from == to ? 1 : 0)));
+        adj[to].add(new Edge(from, 0, 0, adj[from].size() - 1));
     }
     // returns max-flow (O(n^2.sqrt(m)))
     public final long getMaxFlow(int s, int t){
@@ -153,8 +153,8 @@ class PRMaxFlow{
             b = max(b, dist[u]);
         }
     }
-    private final void push(Edge e){
-        final int to = e.to, from = e.from;;
+    private final void push(int from, Edge e){
+        final int to = e.to;
         final long amt = min(excess[from], e.cap - e.flow);
         if(dist[from] == dist[to] + 1 && amt > 0){
             e.flow += amt;
@@ -184,7 +184,7 @@ class PRMaxFlow{
     }
     private final void discharge(int u){
         for(Edge e: adj[u])
-            if(excess[u] > 0) push(e);
+            if(excess[u] > 0) push(u, e);
             else break;
         if(excess[u] > 0){
             if(count[dist[u]] == 1) gap(dist[u]);
@@ -192,10 +192,9 @@ class PRMaxFlow{
         }
     }
     static final class Edge{
-        int from, to, index;
+        final int to, index;
         long cap, flow;
-        public Edge(int from, int to, long cap, long flow, int index) {
-            this.from = from;
+        public Edge(int to, long cap, long flow, int index) {
             this.to = to;
             this.index = index;
             this.cap = cap;
