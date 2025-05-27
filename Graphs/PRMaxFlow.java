@@ -13,8 +13,8 @@ class PRMaxFlow{
         for(int u = 0; u < n; ++u) adj[u] = new ArrayList<>();
     }
     public final void addEdge(int from, int to, long cap){
-        adj[from].add(new Edge(to, cap, 0, adj[to].size() + (from == to ? 1 : 0)));
-        adj[to].add(new Edge(from, 0, 0, adj[from].size() - 1));
+        adj[from].add(new Edge(to, cap, adj[to].size() + (from == to ? 1 : 0)));
+        adj[to].add(new Edge(from, 0, adj[from].size() - 1));
     }
     // returns max-flow (O(n^2.sqrt(m)))
     public final long getMaxFlow(int s, int t){
@@ -193,12 +193,11 @@ class PRMaxFlow{
     }
     static final class Edge{
         final int to, index;
-        long cap, flow;
-        public Edge(int to, long cap, long flow, int index) {
+        long cap, flow = 0;
+        public Edge(int to, long cap, int index) {
             this.to = to;
             this.index = index;
             this.cap = cap;
-            this.flow = flow;
         }
     }
     private static final int min(int x, int y){ return x < y ? x : y; }
