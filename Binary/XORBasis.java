@@ -39,15 +39,14 @@ class XORBasis{
     }
     // returns the max xor of a subset of elements (O(log))
     public final long maxSubsequence(){ return maxSubsequenceWith(0); }
-    // returns the kth biggest xor of a subset of elements (1-indexed) (O(log))
+    // returns the kth biggest xor of a subset of elements (1-indexed )(O(log))
     public final long kthSmallestSubsequence(int k){
         long x = 0, tot = 1 << size;
         for(int i = log - 1; i >= 0; --i)
             if(basis[i] != 0){
-                long low = tot >> 1;
-                if((low < k && (x & (1 << i)) == 0) || (low >= k && (x & (1 << i)) > 0)) x ^= basis[i];
-                if(low < k) k -= low;
                 tot >>= 1;
+                if((tot < k && (x & (1 << i)) == 0) || (tot >= k && (x & (1 << i)) > 0)) x ^= basis[i];
+                if(tot < k) k -= tot;
             }
         return x;
     }
