@@ -3,9 +3,7 @@ class XORBasis{
     int size = 0;
     private final long[] basis;
     // means all elements are in [0 .. (1 << log) - 1]
-    public XORBasis(int log){
-        basis = new long[this.log = log];
-    }
+    public XORBasis(int log){ basis = new long[this.log = log]; }
     // adds x to the set (O(log))
     public final void add(long x){
         for(int i = log - 1; i >= 0; --i){
@@ -41,9 +39,9 @@ class XORBasis{
     }
     // returns the max xor of a subset of elements (O(log))
     public final long maxSubsequence(){ return maxSubsequenceWith(0); }
-    // returns the kth biggest xor of a subset of elements (O(log))
-    public final long kthBiggestSubsequence(long k){
-        long x = 0, tot = 1<<size;
+    // returns the kth biggest xor of a subset of elements (1-indexed) (O(log))
+    public final long kthSmallestSubsequence(int k){
+        long x = 0, tot = 1 << size;
         for(int i = log - 1; i >= 0; --i)
             if(basis[i] != 0){
                 long low = tot >> 1;
