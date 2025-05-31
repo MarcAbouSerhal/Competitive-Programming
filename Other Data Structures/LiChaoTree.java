@@ -25,7 +25,7 @@ class LiChaoTree {
         }
         return ans;
     }
-    // adds line to [l, r] (O(log(range)) amortized)
+    // adds line to [l, r] (O(log^2(range)))
     public final void add(Line line, int l, int r) { root = insertLine(root, min, max, l, r, line); }
     // switch MIN with MAX and > with < to get minimum instead of maximum
     private static final Line ignored = new Line(0, Long.MIN_VALUE, -1);
