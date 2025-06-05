@@ -43,13 +43,9 @@ class Tree{
         return up[a][0];
     }
     // returns whether u is an ancestor of v (or u == v) O(log(n))
-    public final boolean isAncestor(int u, int v) {
-        return depth[u] <= depth[v] && kthAncestor(u, depth[v] - depth[u]) == v;
-    }
+    public final boolean isAncestor(int u, int v) { return depth[u] <= depth[v] && kthAncestor(v, depth[v] - depth[u]) == u; }
     // returns whether w is on the path from u to v (O(log(n)))
-    public final boolean isOnPath(int u, int v, int w) {
-        return depth[w] >= depth[lca(u, v)] && (isAncestor(w, u) || isAncestor(w, v));
-    }
+    public final boolean isOnPath(int u, int v, int w) { return depth[w] >= depth[lca(u, v)] && (isAncestor(w, u) || isAncestor(w, v)); }
     // returns ith vertex on the simple path from u to v (0-indexed) (O(log(n)))
     public final int ithOnPath(int u, int v, int i) {
         int d = depth[lca(u, v)];
