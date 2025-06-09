@@ -57,9 +57,16 @@ class TwoSat{
             ++aux;
         }  
     }
+    // returns vertex corresponding to complement of u (O(1))
+    public final int NOT(int u) { return u < n ? u + n : u - n; }
     // returns valid configuration if there exists one, null if there isn't (O(n + m))
     public final boolean[] answer(){
-        int[] id = getSCCs();
+        tick = group_id = 0;
+        id = new int[n << 1]; for(int i = 0; i < n << 1; ++i) id[i] = -1;
+        t = new int[n << 1];
+        s = new Stack(n << 1);
+        for(int i = 0; i < n << 1; ++i)
+            if(t[i] == 0) dfs(i);
         boolean[] ans = new boolean[vars];
         for(int u = 0; u < vars; ++u){
             if(id[u] == id[u + n]) return null;
@@ -67,23 +74,11 @@ class TwoSat{
         }
         return ans;
     }
-    // returns vertex corresponding to complement of u (O(1))
-    public final int NOT(int u) { return u < n ? u + n : u - n; }
     private static int tick;
     private static int[] t;
     private static int[] id;
     private static Stack s;
     private static int group_id;
-    public final int[] getSCCs(){
-        tick = group_id = 0;
-        int n = adj.length;
-        id = new int[n]; for(int i=0; i<n; ++i) id[i] = -1;
-        t = new int[n];
-        s = new Stack(n);
-        for(int i=0; i < n; ++i)
-            if(t[i] == 0) dfs(i);
-        return id;
-    }
     private final int dfs(int u){
         int low = t[u] = ++tick;
         s.add(u);
