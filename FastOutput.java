@@ -75,6 +75,7 @@ class FastOutput {
     public final void print(char[] s) { for(char c: s) print(c); }
     public final void print(int[] a) { for(int i: a) { print(i); print(' '); } }
     public final void print(long[] a) { for(long i: a) { print(i); print(' '); } }
+    public final void println(char c) { print(c); print('\n'); }
     public final void println(int x) { print(x); print('\n'); }
     public final void println(long x) { print(x); print('\n'); }
     public final void println(boolean b) { print(b); print('\n'); }
