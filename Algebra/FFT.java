@@ -21,6 +21,36 @@ class FFT{
         for(int i = 0; i < d; ++i) res[i] = Math.round(re[i]);
         return res;
     }
+    // O(nlog(n))
+    public static final long[] multiply(long[] a, long[] b, long mod) {
+        int n = 1, d = a.length + b.length - 1, mask = (1 << 15) - 1;
+        while(n < d) n <<= 1;
+        double[] aRe = new double[n], aIm = new double[n], bRe = new double[n], bIm = new double[n];
+        for(int i = 0; i < a.length; ++i) {
+            aRe[i] = a[i] >> 15;
+            aIm[i] = a[i] & mask;
+        }
+        for(int i = 0; i < b.length; ++i) {
+            bRe[i] = b[i] >> 15;
+            bIm[i] = b[i] & mask;
+        }
+        DFT(aRe, aIm, n);
+        DFT(bRe, bIm, n);
+        double[] aaRe = new double[n], aaIm = new double[n], bbRe = new double[n], bbIm = new double[n];
+        for(int i = 0; i < n; ++i) {
+            int j = (-i) & (n - 1);
+            aaRe[j] = ((aRe[i] + aRe[j]) * bRe[i] - (aIm[i] - aIm[j]) * bIm[i]) / (n << 1);
+            aaIm[j] = ((aRe[i] + aRe[j]) * bIm[i] + (aIm[i] - aIm[j]) * bRe[i]) / (n << 1);
+            bbRe[j] = ((aRe[i] - aRe[j]) * bIm[i] + (aIm[i] + aIm[j]) * bRe[i]) / (n << 1);
+            bbIm[j] = ((aRe[j] - aRe[i]) * bRe[i] + (aIm[i] + aIm[j]) * bIm[i]) / (n << 1);
+        }
+        DFT(aaRe, aaIm, n);
+        DFT(bbRe, bbIm, n);
+        long[] res = new long[d];
+        for(int i = 1; i < d; ++i) 
+            res[i] = ((((((Math.round(aaRe[i]) % mod) << 15) + Math.round(aaIm[i]) + Math.round(bbRe[i])) % mod) << 15) + Math.round(bbIm[i])) % mod;
+        return res;
+    }
     private static final void DFT(double[] pRe, double[] pIm, int n){
         int bit;
         double temp;
