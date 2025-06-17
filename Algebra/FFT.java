@@ -3,30 +3,33 @@ class FFT{
     // (O(nlog(n)))
     public static final long[] multiply(long[] a, long[] b){
         int n = 1, d = a.length + b.length - 1;
-        while(n <= d) n <<= 1;
-        double[] aRe = new double[n], bRe = new double[n], aIm = new double[n], bIm = new double[n];
-        for(int i = 0; i < a.length; ++i) aRe[i] = a[i];
-        for(int i = 0; i < b.length; ++i) bRe[i] = b[i];
-        DFT(aRe, aIm, n, false);
-        DFT(bRe, bIm, n, false);
-        double temp;
-        for(int i = 0; i < n; ++i){
-            temp = aRe[i] * bRe[i] - aIm[i] * bIm[i];
-            aIm[i] = aIm[i] * bRe[i] + aRe[i] * bIm[i];
-            aRe[i] = temp;
+        while(n < d) n <<= 1;
+        double[] re = new double[n], im = new double[n];
+        for(int i = 0; i < a.length; ++i) re[i] = a[i];
+        for(int i = 0; i < b.length; ++i) im[i] = b[i];
+        DFT(re, im, n);
+        double r = -0.25 / n, temp;
+        for(int i = 0; i <= (n >> 1); ++i){
+            int j = (n - i) & (n - 1);
+            temp = -2 * r * (re[i] * im[i] + re[j] * im[j]); 
+            im[i] = r * (re[j] * re[j] - im[j] * im[j] - (re[i] * re[i] - im[i] * im[i]));
+            re[i] = temp;
+            if(i != j) {
+                re[j] = re[i];
+                im[j] = -im[i];
+            }
         }
-        DFT(aRe, aIm, n,true);
+        DFT(re, im, n);
         long[] res = new long[d];
-        for(int i = 0; i < d; ++i)
-            res[i] = Math.round(aRe[i] / n);
+        for(int i = 0; i < d; ++i) res[i] = Math.round(re[i]);
         return res;
     }
-    private static final void DFT(double[] pRe, double[] pIm, int n, boolean inverse){
+    private static final void DFT(double[] pRe, double[] pIm, int n){
         int bit;
         double temp;
-        for(int i = 1, j = 0; i<n; ++i){
-            bit = n>>1;
-            for(;(j & bit) != 0; bit >>= 1) j ^= bit;
+        for(int i = 1, j = 0; i < n; ++i){
+            bit = n >> 1;
+            for(; (j & bit) != 0; bit >>= 1) j ^= bit;
             j ^= bit;
             if(i < j){
                 temp = pRe[i];
@@ -37,9 +40,9 @@ class FFT{
                 pIm[j] = temp;
             }
         }
-        for(int len = 2; len<=n; len <<= 1){
+        for(int len = 2; len <= n; len <<= 1){
             int halfLen = len >> 1;
-            double ang = inverse ? (-2 * pi) / len : (2 * pi) / len;
+            double ang = 2 * pi / len;
             double w_deltaRe = Math.cos(ang), w_deltaIm = Math.sin(ang);
             for(int i = 0; i < n; i += len){
                 double wRe = 1, wIm = 0;
