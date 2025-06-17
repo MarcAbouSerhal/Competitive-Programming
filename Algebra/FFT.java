@@ -9,15 +9,12 @@ class FFT{
         for(int i = 0; i < b.length; ++i) im[i] = b[i];
         DFT(re, im, n);
         double r = -0.25 / n, temp;
-        for(int i = 0; i <= (n >> 1); ++i){
-            int j = (n - i) & (n - 1);
+        re[0] *= im[0] / n;
+        im[0] = 0;
+        for(int i = 1, j = n - 1; i <= n >> 1; ++i, --j){
             temp = -2 * r * (re[i] * im[i] + re[j] * im[j]); 
-            im[i] = r * (re[j] * re[j] - im[j] * im[j] - (re[i] * re[i] - im[i] * im[i]));
-            re[i] = temp;
-            if(i != j) {
-                re[j] = re[i];
-                im[j] = -im[i];
-            }
+            im[j] = -(im[i] = r * (re[j] * re[j] + im[i] * im[i] - im[j] * im[j] - re[i] * re[i]));
+            re[i] = re[j] = temp;
         }
         DFT(re, im, n);
         long[] res = new long[d];
