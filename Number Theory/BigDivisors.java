@@ -5,17 +5,18 @@ class BigDivisors{
         public Pair(int x, int y){ this.x = x; this.y = y; }
     }
     private final ArrayList<Integer> primes = new ArrayList<>();
-    // here n is the square root of the max value of x
-    public BigDivisors(int n){ 
-        BitSet isPrime = new BitSet(n + 1);
-        isPrime.set(0, n);
+    // (O(sqrt(x)))
+    public BigDivisors(int x){ 
+        x = (int)Math.sqrt(x) + 5;
+        BitSet isPrime = new BitSet(x + 1);
+        isPrime.set(0, x);
         primes.add(2);
-        for(int i = 4; i <= n; i += 2) isPrime.clear(i);
-        for(int i = 3; i * i <= n; i += 2)
+        for(int i = 4; i <= x; i += 2) isPrime.clear(i);
+        for(int i = 3; i * i <= x; i += 2)
             if(isPrime.get(i))
-                for(int j = i * i; j <= n; j += i << 1)
+                for(int j = i * i; j <= x; j += i << 1)
                     isPrime.clear(j);
-        for(int i = 3; i <= n; i += 2)
+        for(int i = 3; i <= x; i += 2)
             if(isPrime.get(i)) primes.add(i);
     }
     // returns list of (p,e) where x = sum(p^e) (O(sqrt(x) / log(x)))
