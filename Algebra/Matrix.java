@@ -5,7 +5,10 @@ class Matrix{
         for(int i = 0; i < a.length; ++i)
             for(int k = 0; k < b.length; ++k)
                 for(int j = 0; j < b[0].length; ++j)
-                    c[i][j] = (c[i][j] + a[i][k] * b[k][j])%mod;
+                    c[i][j] = (c[i][j] + a[i][k] * b[k][j]) % mod;
+        for(int i = 0; i < a.length; ++i)
+            for(int j = 0; j < b[0].length; ++j)
+                if(c[i][j] < 0) c[i][j] += mod;       
         return c;
     }
     // finds A^n (O(k^3.log(n)))
@@ -13,7 +16,7 @@ class Matrix{
         int k = a.length;
         long[][] res = new long[k][k];
         for(int i = 0; i < k; ++i) res[i][i] = 1;
-        while(n > 0){
+        while(n != 0){
             if((n & 1) != 0) res = mul(res, a, mod);
             a = mul(a, a, mod);
             n >>= 1;
@@ -21,9 +24,7 @@ class Matrix{
         return res;
     }
     // finds sum(0 <= i <= n){ A^i } (O(k^3.log(n)))
-    public final static long[][] sumPows(long[][] a, long n, long mod){
-        return sumPowsHelper(a, n, mod)[0];
-    }
+    public final static long[][] sumPows(long[][] a, long n, long mod){ return sumPowsHelper(a, n, mod)[0]; }
     private final static long[][][] sumPowsHelper(long[][] a, long n, long mod){
         int k = a.length;
         if(n == 0){
@@ -39,7 +40,7 @@ class Matrix{
             for(int j = 0; j < k; ++j)
                 res[0][i][j] = (res[0][i][j] - res[1][i][j] + mod) % mod;
         res[1] = mul(res[1], res[1], mod);
-        if(n % 2 == 1){
+        if((n & 1) == 1){
             res[1] = mul(res[1], a, mod);
             for(int i = 0; i < k; ++i)
                 for(int j = 0; j < k; ++j)
@@ -58,13 +59,12 @@ class Matrix{
     // or generally, if c is the characteristic polynomial of T (O(k^2.log(n)))
     public final static long[][] TpowN(long[] c, long n, long mod){
         int k = c.length;
-        long[][] ans = new long[k][]; 
-        ans[0] = xPowNModG(n, c, k, mod);
+        long[][] ans = new long[k][k]; 
+        long[] temp = xPowNModG(n, c, k, mod);
+        for(int i = 0; i < k; ++i) ans[0][i] = (temp[i] + mod) % mod;
         for(int i = 1; i < k; ++i){
-            ans[i] = new long[k];
             long m = ans[i - 1][k - 1];
-            for(int j = 1; j < k; ++j) 
-                ans[i][j] = (ans[i - 1][j - 1] + m * c[k - 1 - j]) % mod;
+            for(int j = 1; j < k; ++j) ans[i][j] = (ans[i - 1][j - 1] + m * c[k - 1 - j]) % mod;
             ans[i][0] = (m * c[k - 1]) % mod;
         }
         return ans;
@@ -80,25 +80,25 @@ class Matrix{
         for(int i = 0; i < k; ++i)
             for(int j = 0; j < k; ++j)
                 last[i + j] = (last[i + j] + half[i] * half[j]) % mod;
-        if(n % 2 == 1){
+        if((n & 1) == 1){
             for(int i = (k << 1) - 1; i > 0; --i) last[i] = last[i - 1];
             last[0] = 0;
         }
         for(int i = (k << 1) - 1; i >= k; --i)  
             if(last[i] != 0){
                 long m = last[i];
-                for(int j = 1; j <= k; ++j)
-                    last[i - j] = (last[i - j] + m * g[j - 1]) % mod;
+                for(int j = 1; j <= k; ++j) last[i - j] = (last[i - j] + m * g[j - 1]) % mod;
             }
-        for(int i = 0; i < k; ++i) half[i] = last[i] % mod;
-        return half;
+        return last;
     }
     private final static int max(int a, int b){ return a > b ? a : b; }
     private final static long pow(long x, long n, long m){
-        if(n == 0) return 1;
-        long res =  pow(x, n >> 1, m);
-        res = (res * res) % m;
-        if(n % 2 == 1) res = (res * x) % m;
+        long res = 1;
+        while(n != 0){
+            if((n & 1) != 0) res = (res * x) % m;
+            x = (x * x) % m;
+            n >>= 1;
+        }
         return res;
     }
      // returns smallest possible linear recurrence for s
