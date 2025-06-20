@@ -1,10 +1,10 @@
 class ConvexHull {
-    // returns convex hull of pts in clockwise order starting from leftmost bottommost point (O(nlog(n)))
+    // returns convex hull of pts in CCW order starting from leftmost bottommost point (O(nlog(n)))
     public static final ArrayList<Point> convexHull(Point[] pts, boolean includeCollinear) {
         Arrays.sort(pts, (x, y) -> comp(x, y));
         int n = pts.length, tol = includeCollinear ? 0 : 1;
         ArrayList<Point> hull = new ArrayList<>();
-        for(int i = 0; i < n; ++i) {
+        for(int i = 0; i < n; ++i) { // lower hull
             while(hull.size() > 1 && cross(hull.get(hull.size() - 2), hull.get(hull.size() - 1), pts[i]) < tol) hull.remove(hull.size() - 1);
             hull.add(pts[i]);
         }
