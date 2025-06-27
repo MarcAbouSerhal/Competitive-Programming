@@ -17,20 +17,19 @@ class TwoSat{
         adj = new ArrayList[n_];
         for(int i = 0; i < n_; ++i) adj[i] = new ArrayList<>();
     }
-    // adds the clause (u -> v) (O(1))
-    public final void implies(int u, int v) { adj[u].add(v); adj[NOT(v)].add(NOT(u)); }
-    // adds the clause (u OR v) (O(1))
+    public final void IMPLIES(int u, int v) { adj[u].add(v); adj[NOT(v)].add(NOT(u)); }
     public final void OR(int u, int v){ adj[NOT(u)].add(v); adj[NOT(v)].add(u); }
-    // adds the clause (u XOR v) (O(1))
     public final void XOR(int u, int v) { adj[NOT(u)].add(v); adj[NOT(v)].add(u); adj[u].add(NOT(v)); adj[v].add(NOT(u)); }
-    // adds the clause (u) (O(1))
+    public final void IFF(int u, int v) { adj[u].add(v); adj[v].add(u); adj[NOT(u)].add(NOT(v)); adj[NOT(v)].add(NOT(u)); }
+    public final void NAND(int u, int v) { adj[u].add(NOT(v)); adj[v].add(NOT(u)); }
+    public final void NOR(int u, int v) { force(u); force(v); }
     public final void force(int u) { adj[NOT(u)].add(u); }
     // removes the clause (u) (O(1)) (assumes last thing added to adj[NOT(u)] was u)
     public final void remove(int u) { adj[NOT(u)].remove(adj[NOT(u)].size() - 1); }
     // adds the clause (at most one of u[0], u[1], ..., u[k - 1] is true) (O(k))
     public final void atMostOneTrue(ArrayList<Integer> u) {
         if(u.size() <= 1) return;
-        if(u.size() == 2) OR(NOT(u.get(0)), NOT(u.get(1)));
+        if(u.size() == 2) NAND(u.get(0), u.get(1));
         else {
             int k = u.size();
             OR(NOT(u.get(0)), aux);
@@ -70,7 +69,7 @@ class TwoSat{
         boolean[] ans = new boolean[vars];
         for(int u = 0; u < vars; ++u){
             if(id[u] == id[u + n]) return null;
-            ans[u] = id[u] > id[u + n];
+            ans[u] = id[u] < id[u + n];
         }
         return ans;
     }
