@@ -22,7 +22,7 @@ class TwoSat{
     public final void XOR(int u, int v) { adj[NOT(u)].add(v); adj[NOT(v)].add(u); adj[u].add(NOT(v)); adj[v].add(NOT(u)); }
     public final void IFF(int u, int v) { adj[u].add(v); adj[v].add(u); adj[NOT(u)].add(NOT(v)); adj[NOT(v)].add(NOT(u)); }
     public final void NAND(int u, int v) { adj[u].add(NOT(v)); adj[v].add(NOT(u)); }
-    public final void NOR(int u, int v) { force(u); force(v); }
+    public final void NOR(int u, int v) { force(NOT(u)); force(NOT(v)); }
     public final void force(int u) { adj[NOT(u)].add(u); }
     // removes the clause (u) (O(1)) (assumes last thing added to adj[NOT(u)] was u)
     public final void remove(int u) { adj[NOT(u)].remove(adj[NOT(u)].size() - 1); }
