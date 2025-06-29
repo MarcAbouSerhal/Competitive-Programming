@@ -4,7 +4,7 @@ class FastOutput {
     private int c1 = 0, c2 = 0;
     public FastOutput() { out = System.out; buffers[0] = new char[bufferSize]; }
     public FastOutput(OutputStream out) { this.out = new PrintStream(out); buffers[0] = new char[bufferSize]; }
-    private static final int bufferSize = 1 << 16, bufferCount = 1 << 10;
+    private static final int bufferSize = 1 << 18, bufferCount = 1 << 12;
     public final void print(char c) { buffers[c1][c2++] = c; if(c2 == bufferSize) { buffers[++c1] = new char[bufferSize]; c2 = 0; } }
     private static final long[] power = {
         1L, 10L, 100L, 1000L, 10000L, 100000L, 1000000L, 10000000L, 100000000L, 1000000000L,
