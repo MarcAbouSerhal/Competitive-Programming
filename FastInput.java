@@ -1,4 +1,4 @@
-class FastInput { 
+class FastInput{ 
     private static final int bufferSize = 1 << 18;
     private final InputStream in;
     private final byte[] buffer = new byte[bufferSize];
@@ -8,20 +8,18 @@ class FastInput {
     private final byte read() throws IOException {
         if(pointer >= bytesRead) {
             pointer = 0;
-            if((bytesRead = in.read(buffer)) == -1) return -1;
+            if((bytesRead = in.read(buffer)) == -1) throw new IOException("EOF character was encountered.");
         }
         return buffer[pointer++];
     }
     public final char nextChar() throws IOException { 
         byte b;
-        while ((b = read()) <= ' ') 
-            if (b == -1) throw new IOException("EOF character was encountered.");
+        while ((b = read()) <= ' ');
         return (char)b;
     }
     public final char[] next() throws IOException { 
         byte b;
-        while ((b = read()) <= ' ')
-            if (b == -1) throw new IOException("EOF character was encountered.");
+        while ((b = read()) <= ' ');
         char[] token = new char[10];
         int len = 0;
         do {
@@ -43,8 +41,7 @@ class FastInput {
     public final int nextInt() throws IOException { 
         int num = 0, sign = 1;
         byte b;
-        while ((b = read()) <= ' ')
-            if (b == -1) throw new IOException("EOF character was encountered.");
+        while ((b = read()) <= ' ');
         if (b == '-') {
             sign = -1;
             b = read();
@@ -58,8 +55,7 @@ class FastInput {
         long num = 0;
         int sign = 1;
         byte b;
-        while ((b = read()) <= ' ')
-            if (b == -1) throw new IOException("EOF character was encountered.");
+        while ((b = read()) <= ' ');
         if (b == '-') {
             sign = -1;
             b = read();
@@ -72,7 +68,6 @@ class FastInput {
     public final double nextDouble() throws IOException { return Double.parseDouble(new String(next())); } 
     public final char[] nextLine() throws IOException { 
         byte b = read();
-        if(b == -1) throw new IOException("EOF character was encountered.");
         char[] token = new char[128];
         int len = 0;
         do {
@@ -82,7 +77,7 @@ class FastInput {
                 token = newToken;
             }
             token[len++] = (char)b;
-        } while((b = read()) != '\n' && b != -1);
+        } while((b = read()) != '\n');
         if(len == token.length) return token;
         else {
             char[] resizedToken = new char[len];
@@ -101,9 +96,7 @@ class FastInput {
         return array;
     }
     public final void skipToken() throws IOException {
-        byte b;
-        while ((b = read()) <= ' ')
-            if (b == -1) throw new IOException("EOF character was encountered.");
-        while((b = read()) > ' ');
+        while (read() <= ' ');
+        while (read() > ' ');
     }
 }
