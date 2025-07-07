@@ -1,9 +1,9 @@
-class FastInput{ 
+class FastInput { 
     private static final int bufferSize = 1 << 18;
     private final InputStream in;
     private final byte[] buffer = new byte[bufferSize];
     private int pointer = 0, bytesRead = 0;
-    public FastInput() { in = System.in; } 
+    public FastInput() { this.in = System.in; } 
     public FastInput(InputStream in) { this.in = in; }
     private final byte read() throws IOException {
         if(pointer >= bytesRead) {
