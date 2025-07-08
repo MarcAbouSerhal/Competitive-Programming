@@ -72,16 +72,7 @@ class Reroot{
         }
     }
     // CHANGE THESE FUNCTIONS
-    // return what property of subtree of u of would be knowing that u is a leaf node
-    private static final X leaf_prop(int u){
-        
-    }
-    // return merging of properties x and y as 1 property
-    private static final X merge(X x, X y){
-        
-    }
-    // return property of subtree of u knowing that rest is merging of properties of all its child subtrees
-    private static final X combine(int u, X rest){
-        
-    }
+    private static final X leaf_prop(int u){ /* return what property of subtree of u of would be knowing that u is a leaf node */ }
+    private static final X merge(X x, X y){ /* return merging of properties x and y as 1 property */ }
+    private static final X combine(int u, X rest){ /* return property of subtree of u knowing that rest is merging of properties of all its child subtrees */ }
 }

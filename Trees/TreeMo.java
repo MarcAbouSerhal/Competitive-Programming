@@ -48,12 +48,8 @@ class TreeMo{
         }
         return res;
     }
-    public final static void add(int u){
-        // adds vertex u
-    }
-    public final static void remove(int u){
-        // removes vertex u
-    }
+    public final static void add(int u){ /*  adds vertex u */ }
+    public final static void remove(int u){ /* removes vertex u */ }
     public final static void handle(int u, boolean insert){
         u = id[u];
         if(insert){

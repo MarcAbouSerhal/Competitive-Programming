@@ -18,5 +18,4 @@ class Booth {
         }
         return k;
     }
-    public final static int leastRotation(String s) { return leastRotation(s.toCharArray()); }
 }

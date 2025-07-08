@@ -46,11 +46,7 @@ class Tree{
         return op(d[a][x], d[b + 1 - (1 << x)][x]);
     }
     // returns whether u is an ancestor of v (O(1))
-    public final boolean isAncestor(int u, int v) {
-        return in[u] <= in[v] && out[u] >= out[v];
-    }
+    public final boolean isAncestor(int u, int v) { return in[u] <= in[v] && out[u] >= out[v]; }
     // returns whether w is on the path from u to v (O(1))
-    public final boolean isOnPath(int u, int v, int w) {
-        return depth[w] >= depth[lca(u, v)] && (isAncestor(w, u) || isAncestor(w, v));
-    }
+    public final boolean isOnPath(int u, int v, int w) { return depth[w] >= depth[lca(u, v)] && (isAncestor(w, u) || isAncestor(w, v)); }
 }

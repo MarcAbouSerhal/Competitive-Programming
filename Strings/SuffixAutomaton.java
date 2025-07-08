@@ -1,14 +1,9 @@
 class SuffixAutomaton {
-    static final int k = 26;
-    static final char ID = 'a';
+    private static final int k = 26, base = 'a';
     final ArrayList<Node> d = new ArrayList<>();
     private int last = 0;
     public SuffixAutomaton() { d.add(new Node()); }
     // (O(n))
-    public SuffixAutomaton(String s) {
-        d.add(new Node());
-        for(char c: s.toCharArray()) addChar(c);
-    }
     public SuffixAutomaton(char[] s) {
         d.add(new Node());
         for(char c: s) addChar(c);
@@ -18,13 +13,13 @@ class SuffixAutomaton {
         d.add(new Node());
         int curr = d.size() - 1, p = last;
         d.get(curr).sz = d.get(p).sz + 1;
-        while (p != -1 && d.get(p).adj[c - ID] == -1) {
-            d.get(p).adj[c - ID] = curr;
+        while (p != -1 && d.get(p).adj[c - base] == -1) {
+            d.get(p).adj[c - base] = curr;
             p = d.get(p).link;
         }
         if (p == -1) d.get(curr).link = 0;
         else {
-            int q = d.get(p).adj[c - ID];
+            int q = d.get(p).adj[c - base];
             if (d.get(p).sz + 1 == d.get(q).sz)  d.get(curr).link = q;
             else {
                 d.add(new Node());
@@ -33,8 +28,8 @@ class SuffixAutomaton {
                 cloneNode.sz = d.get(p).sz + 1;
                 cloneNode.adj = copy(qNode.adj);
                 cloneNode.link = qNode.link;
-                while (p != -1 && d.get(p).adj[c - ID] == q) {
-                    d.get(p).adj[c - ID] = clone;
+                while (p != -1 && d.get(p).adj[c - base] == q) {
+                    d.get(p).adj[c - base] = clone;
                     p = d.get(p).link;
                 }
                 qNode.link = d.get(curr).link = clone;

@@ -37,15 +37,13 @@ class HeavyLightDecomposition{
             u = p[root[u]];
         }
         if(u == v && edgeProp == 1) return ans;
-        return op(ans, ds.get(min(in[u], in[v]) + edgeProp, max(in[u], in[v])));
+        return op(ans, ds.get(Math.min(in[u], in[v]) + edgeProp, Math.max(in[u], in[v])));
     }
     // returns property of subtree of u (O(T(DS)))
     public final X getSubtreeProperty(int u) { return ds.get(in[u] + edgeProp, out[u]); }
     // CHANGE THESE
     private static final X id;
-    private static final X op(X a, X b){
-        // define associative operation here (f(f(a,b),c)=f(a,f(b,c)))
-    }
+    private static final X op(X a, X b){ /* define associative operation here (f(f(a,b),c)=f(a,f(b,c))) */ }
     private final int dfs1(int u, int par) {
         p[u] = par;
         int size = 1, heavySize = 0;
@@ -70,6 +68,4 @@ class HeavyLightDecomposition{
         }
         out[u] = tick - 1;
     }
-    private static final int min(int x, int y) { return x < y ? x : y; }
-    private static final int max(int x, int y) { return x > y ? x : y; }
 }

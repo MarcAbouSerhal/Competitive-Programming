@@ -17,5 +17,4 @@ class Kasai {
         }
         return lcp;
     }
-    public final static int[] lcp(String s, int[] p) { return lcp(s.toCharArray(), p); } 
 }

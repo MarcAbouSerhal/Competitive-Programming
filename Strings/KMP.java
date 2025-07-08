@@ -11,5 +11,4 @@ class KMP {
         }
         return pi;
     }
-    public final static int[] kmp(String s){ return kmp(s.toCharArray()); }
 }

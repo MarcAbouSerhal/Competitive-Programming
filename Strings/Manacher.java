@@ -18,7 +18,6 @@ class Manacher{
             }
         }
     }
-    public Manacher(String t) { this(t.toCharArray()); }
     // returns whether t[l...r] is a palindrome (O(1))
     public final boolean isPalindrome(int l, int r) {
         return d[l + r + 2] > r - l;

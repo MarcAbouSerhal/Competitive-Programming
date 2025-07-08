@@ -33,22 +33,17 @@ class StringDoubleHash{
     // because loop doesnt't % the prefix hash
 
     // below 2 functios are O(1)
-    public final long get(int l, int r){
-        if(l == 0) return ((h1[r] % m1) << 32) | (h2[r] % m2);
-        return ((((h1[r] - h1[l - 1]) % m1 * inv_p1_pow[l]) % m1) << 32) | ((h2[r] - h2[l - 1]) % m2 * inv_p2_pow[l]) % m2; 
-    }
-    public final long get(int l1, int r1, int l2, int r2){
-        return ((((l1 == 0 ? h1[r1] : (h1[r1] - h1[l1 - 1]) % m1 * inv_p1_pow[l1]) % m1 + (h1[r2] - h1[l2 - 1]) % m1 * inv_p1_pow[l2 - (r1 + 1)]) % m1) << 32)  | ((l1 == 0 ? h2[r1] : (h2[r1] - h2[l1 - 1]) % m2 * inv_p2_pow[l1])%m2 + (h2[r2] - h2[l2 -1])%m2 * inv_p2_pow[l2 - (r1 + 1)]) % m2;
-    } 
+    public final long get(int l, int r){ return l == 0 ? ((h1[r] % m1) << 32) | (h2[r] % m2) : ((((h1[r] - h1[l - 1]) % m1 * inv_p1_pow[l]) % m1) << 32) | ((h2[r] - h2[l - 1]) % m2 * inv_p2_pow[l]) % m2;  }
+    public final long get(int l1, int r1, int l2, int r2){ return ((((l1 == 0 ? h1[r1] : (h1[r1] - h1[l1 - 1]) % m1 * inv_p1_pow[l1]) % m1 + (h1[r2] - h1[l2 - 1]) % m1 * inv_p1_pow[l2 - (r1 + 1)]) % m1) << 32)  | ((l1 == 0 ? h2[r1] : (h2[r1] - h2[l1 - 1]) % m2 * inv_p2_pow[l1])%m2 + (h2[r2] - h2[l2 -1])%m2 * inv_p2_pow[l2 - (r1 + 1)]) % m2; } 
     
     // this is way more accurate than hashing list itself but uses 5x more memory
-    public final static char[] listToString(ArrayList<Integer> list){
+    public final static char[] arrayToString(int[] array){
         // 'a'->'z' represent digits 0->25 (base 26),  'z'+1 represents a comma
         // note that there's a comma at beginning and end of string (unless list is empty, returns 1 comma)
-        StringBuilder res = new StringBuilder(5 * list.size() + 1);
+        StringBuilder res = new StringBuilder(5 * array.length + 1);
         res.append((char)('z' + 1));
-        for(int i = 0; i < list.size(); ++i){
-            int x = list.get(i);
+        for(int i = 0; i < array.length; ++i){
+            int x = array[i];
             String base26x = x == 0 ? "a" : "";
             while(x > 0){
                 base26x = (char)((x % 26) + 'a') + base26x;
@@ -59,11 +54,13 @@ class StringDoubleHash{
         }
         return res.toString().toCharArray();
     }
-    private final static long pow(long x, long n, long m){
-        if(n == 0) return 1;
-        long res = pow(x, n>>1, m);
-        res = (res * res)%m;
-        if(n % 2 == 1) res = (res * x)%m;
+    private static final long pow(long x, long n, long m){
+        long res = 1;
+        while(n != 0) {
+            if((n & 1) == 1) res = (res * x) % m;
+            x = (x * x) % m;
+            n >>= 1;
+        }
         return res;
     }
 }

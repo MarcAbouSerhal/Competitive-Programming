@@ -4,7 +4,7 @@ class Z {
         final int[] z = new int[s.length];
         int l = 0, r = 0;
         for(int i = 1; i < s.length; ++i){
-            if(i < r) z[i] = min(r - i, z[i - l]);
+            if(i < r) z[i] = Math.min(r - i, z[i - l]);
             while(i + z[i] < s.length && s[z[i]] == s[i + z[i]]) ++z[i];
             if(i + z[i] > r){
                 l = i;
@@ -14,5 +14,4 @@ class Z {
         return z;
     }   
     public final static int[] z(String s){ return z(s.toCharArray()); } 
-    private static int min(int a, int b){ return a<b ? a : b; }
 }

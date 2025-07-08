@@ -1,29 +1,18 @@
 class Trie{
-    static  final class Node{
-        final Node[] children;
-        int ends;
-        int pref;
-        public Node(){
-            children = new Node[26];
-            ends=0;
-            pref=0;
-        }
-    }
+    private static final int k = 26, base = 'a';
     final Node head;
-    public Trie(){
-        head = new Node();
-    }
+    public Trie(){ head = new Node(); }
     // adds s to T (O(len(s)))
     public final void add(String s){
         Node[] curr = head.children;
         final int n = s.length();
         for(int i = 0; i < n; ++i){
-            if(curr[s.charAt(i) - 'a'] == null)
-                curr[s.charAt(i) - 'a'] = new Node();
-            ++curr[s.charAt(i) - 'a'].pref;
+            if(curr[s.charAt(i) - base] == null)
+                curr[s.charAt(i) - base] = new Node();
+            ++curr[s.charAt(i) - base].pref;
             if(i == n - 1)
-                ++curr[s.charAt(i) - 'a'].ends;
-            curr = curr[s.charAt(i) - 'a'].children;
+                ++curr[s.charAt(i) - base].ends;
+            curr = curr[s.charAt(i) - base].children;
         }
     }
     // removes s from T (assumes it's in it) (O(len(s)))
@@ -31,14 +20,14 @@ class Trie{
         Node[] curr = head.children;
         final int n = s.length();
         for(int i = 0; i < n; ++i){
-            if(curr[s.charAt(i) - 'a'].pref == 1){
-                curr[s.charAt(i) - 'a'] = null;
+            if(curr[s.charAt(i) - base].pref == 1){
+                curr[s.charAt(i) - base] = null;
                 return;
             }
-            --curr[s.charAt(i) - 'a'].pref;
+            --curr[s.charAt(i) - base].pref;
             if(i == n - 1)
-                --curr[s.charAt(i) - 'a'].ends;
-            curr = curr[s.charAt(i) - 'a'].children;
+                --curr[s.charAt(i) - base].ends;
+            curr = curr[s.charAt(i) - base].children;
         }
     }
     // returns # strings with s as a prefix (O(len(s)))
@@ -46,11 +35,11 @@ class Trie{
         Node[] curr = head.children;
         final int n = s.length();
         for(int i = 0; i < n; ++i){
-            if(curr[s.charAt(i) - 'a'] == null)
+            if(curr[s.charAt(i) - base] == null)
                 return 0;
             if(i == n - 1)
-                return curr[s.charAt(i) - 'a'].pref;
-            curr = curr[s.charAt(i) - 'a'].children;
+                return curr[s.charAt(i) - base].pref;
+            curr = curr[s.charAt(i) - base].children;
         }
         return 0;
     }
@@ -59,9 +48,9 @@ class Trie{
         Node[] curr = head.children;
         final int n = s.length();
         for(int i = 0; i < n; ++i){
-            if(curr[s.charAt(i) - 'a'] == null || (isInTrie && curr[s.charAt(i) - 'a'].pref < 2))
+            if(curr[s.charAt(i) - base] == null || (isInTrie && curr[s.charAt(i) - base].pref < 2))
                 return i;
-            curr = curr[s.charAt(i) - 'a'].children;
+            curr = curr[s.charAt(i) - base].children;
         }
         return n;
     } 
@@ -70,7 +59,7 @@ class Trie{
         if(l == 1)
             return curr.pref >= k;
         boolean ans = false;
-        for(int i = 0; i < 26; ++i){
+        for(int i = 0; i < k; ++i){
             ans |= contains(k, l - 1, curr.children[i]);
         }
         return ans;
@@ -78,20 +67,13 @@ class Trie{
     // returns if there are >=k strings with LCP >= l (O(sum( s in T ){ len(s) }))
     public final boolean contains(int k, int l){
         boolean ans = false;
-        for(int i = 0; i < 26; ++i)
+        for(int i = 0; i < k; ++i)
             ans |= contains(k, l, head.children[i]);
         return ans;
     }
-    private static final int prefixes(Node node){
-        int count = 1;
-        for(Node child: node.children){
-            if(child == null) continue;
-            count += prefixes(child);
-        }
-        return count;
-    }
-    // returns # unique prefixes (# nodes) (O(sum( s in T ){ len(s) }))
-    public final int prefixes(){
-        return prefixes(head)-1;
+    static  final class Node{
+        final Node[] children = new Node[k];
+        int end = 0, prefs = 0;
+        public Node() { }
     }
 }
