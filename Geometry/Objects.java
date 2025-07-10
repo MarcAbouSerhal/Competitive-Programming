@@ -64,7 +64,8 @@ class SimplePolygon {
         }
         return wn == 0 ? -1 : 1;
     }
-    // returns polygon of points q, where [qc] intersects p once for every point c on [ab] (O(n)) (Make sure p.pts are in CCW order)
+    // returns polygon of points q, where [qc] intersects p once for every point c on [ab] (O(n)) 
+    // (Make sure p.pts are in CCW order, and for every segment of p is either fully visible or fully invisible from [ab])
     public static final SimplePolygon visible(SimplePolygon p, Point a, Point b) {
         ArrayList<Point> pts = new ArrayList<>(p.n << 1);
         Vector v = new Vector(a, b);
