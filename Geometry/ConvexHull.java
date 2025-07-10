@@ -22,11 +22,11 @@ class ConvexHull {
         int n = hull.size();
         if(n == 1) return null;
         if(n == 2) return new Point[] {hull.get(0), hull.get(1)};
-        long maxDist = 0;
+        double maxDist = 0;
         Point[] res = {hull.get(0), hull.get(1)};
         for(int i = 0, j = 1; i < n; ++i) {
             while(squareDist(hull.get(i), hull.get((j + 1) % n)) > squareDist(hull.get(i), hull.get(j))) j = (j + 1) % n;
-            long dist = squareDist(hull.get(i), hull.get(j));
+            double dist = squareDist(hull.get(i), hull.get(j));
             if(dist > maxDist) {
                 res[0] = hull.get(i);
                 res[1] = hull.get(j);
@@ -35,8 +35,8 @@ class ConvexHull {
         }
         return res;
     }
-    private static final long cross(Point a, Point b, Point c) { return (b.x - a.x) * (c.y - a.y) - (c.x - a.x) * (b.y - a.y); }
-    private static final int comp(Point a, Point b){ return a.x == b.x ? Long.compare(a.y, b.y) : Long.compare(a.x, b.x); }
-    private static final long square(long x) { return x * x; } 
-    private static final long squareDist(Point p, Point q) { return square(p.x - q.x) + square(p.y - q.y); }
+    private static final double cross(Point a, Point b, Point c) { return (b.x - a.x) * (c.y - a.y) - (c.x - a.x) * (b.y - a.y); }
+    private static final int comp(Point a, Point b){ return a.x == b.x ? Double.compare(a.y, b.y) : Double.compare(a.x, b.x); }
+    private static final double square(double x) { return x * x; } 
+    private static final double squareDist(Point p, Point q) { return square(p.x - q.x) + square(p.y - q.y); }
 }

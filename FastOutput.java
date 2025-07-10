@@ -67,6 +67,7 @@ class FastOutput {
             for(char c: digits) print(c);
         }
     }
+    public final void print(double x) { print(Double.toString(x)); }
     public final void print(boolean b) {
         if(b) { print('t'); print('r'); print('u'); print('e'); }
         else { print('f'); print('a'); print('l'); print('s'); print('e'); }
@@ -78,6 +79,7 @@ class FastOutput {
     public final void println(char c) { print(c); print('\n'); }
     public final void println(int x) { print(x); print('\n'); }
     public final void println(long x) { print(x); print('\n'); }
+    public final void println(double x) { print(Double.toString(x)); print('\n'); }
     public final void println(boolean b) { print(b); print('\n'); }
     public final void println(String s) { print(s); print('\n'); }
     public final void println(char[] s) { print(s); print('\n'); }
