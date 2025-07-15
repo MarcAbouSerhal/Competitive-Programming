@@ -19,9 +19,7 @@ class Manacher{
         }
     }
     // returns whether t[l...r] is a palindrome (O(1))
-    public final boolean isPalindrome(int l, int r) {
-        return d[l + r + 2] > r - l;
-    }
+    public final boolean isPalindrome(int l, int r) { return d[l + r + 2] > r - l; }
     // returns [l, r] that is the longest palindromic substring of t (O(n))
     public final int[] maxPalindrome() {
         int center = 0;

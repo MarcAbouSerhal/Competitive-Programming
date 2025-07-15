@@ -13,5 +13,4 @@ class Z {
         }
         return z;
     }   
-    public final static int[] z(String s){ return z(s.toCharArray()); } 
 }

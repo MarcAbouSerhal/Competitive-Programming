@@ -3,61 +3,61 @@ class Trie{
     final Node head;
     public Trie(){ head = new Node(); }
     // adds s to T (O(len(s)))
-    public final void add(String s){
+    public final void add(char[] s){
         Node[] curr = head.children;
-        final int n = s.length();
+        int n = s.length;
         for(int i = 0; i < n; ++i){
-            if(curr[s.charAt(i) - base] == null)
-                curr[s.charAt(i) - base] = new Node();
-            ++curr[s.charAt(i) - base].pref;
+            if(curr[s[i] - base] == null)
+                curr[s[i] - base] = new Node();
+            ++curr[s[i] - base].prefs;
             if(i == n - 1)
-                ++curr[s.charAt(i) - base].ends;
-            curr = curr[s.charAt(i) - base].children;
+                ++curr[s[i] - base].ends;
+            curr = curr[s[i] - base].children;
         }
     }
     // removes s from T (assumes it's in it) (O(len(s)))
-    public final void remove(String s){
+    public final void remove(char[] s){
         Node[] curr = head.children;
-        final int n = s.length();
+        int n = s.length;
         for(int i = 0; i < n; ++i){
-            if(curr[s.charAt(i) - base].pref == 1){
-                curr[s.charAt(i) - base] = null;
+            if(curr[s[i] - base].prefs == 1){
+                curr[s[i] - base] = null;
                 return;
             }
-            --curr[s.charAt(i) - base].pref;
+            --curr[s[i] - base].prefs;
             if(i == n - 1)
-                --curr[s.charAt(i) - base].ends;
-            curr = curr[s.charAt(i) - base].children;
+                --curr[s[i] - base].ends;
+            curr = curr[s[i] - base].children;
         }
     }
     // returns # strings with s as a prefix (O(len(s)))
-    public final int haveAsPref(String s){
+    public final int haveAsPref(char[] s){
         Node[] curr = head.children;
-        final int n = s.length();
+        int n = s.length;
         for(int i = 0; i < n; ++i){
-            if(curr[s.charAt(i) - base] == null)
+            if(curr[s[i] - base] == null)
                 return 0;
             if(i == n - 1)
-                return curr[s.charAt(i) - base].pref;
-            curr = curr[s.charAt(i) - base].children;
+                return curr[s[i] - base].prefs;
+            curr = curr[s[i] - base].children;
         }
         return 0;
     }
     // returns LCP of s and some string in the trie (other than s if s is in the trie) (O(len(s)))
-    public final int LCP(String s, boolean isInTrie){
+    public final int LCP(char[] s, boolean isInTrie){
         Node[] curr = head.children;
-        final int n = s.length();
+        int n = s.length;
         for(int i = 0; i < n; ++i){
-            if(curr[s.charAt(i) - base] == null || (isInTrie && curr[s.charAt(i) - base].pref < 2))
+            if(curr[s[i] - base] == null || (isInTrie && curr[s[i] - base].prefs < 2))
                 return i;
-            curr = curr[s.charAt(i) - base].children;
+            curr = curr[s[i] - base].children;
         }
         return n;
     } 
     private final boolean contains(int k, int l, Node curr){
         if(curr == null) return false;
         if(l == 1)
-            return curr.pref >= k;
+            return curr.prefs >= k;
         boolean ans = false;
         for(int i = 0; i < k; ++i){
             ans |= contains(k, l - 1, curr.children[i]);
@@ -73,7 +73,7 @@ class Trie{
     }
     static  final class Node{
         final Node[] children = new Node[k];
-        int end = 0, prefs = 0;
+        int ends = 0, prefs = 0;
         public Node() { }
     }
 }
