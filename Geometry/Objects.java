@@ -3,6 +3,7 @@ class Point {
     public Point(double x, double y) { this.x = x; this.y = y; }
     public Point(Point p) { this(p.x, p.y); }
     public final double distanceTo(Point other) { return Math.sqrt((x - other.x) * (x - other.x) + (y - other.y) * (y - other.y)); }
+    public final Point reflection(Point p) { return new Point(2 * x - p.x, 2 * y - p.y); }
     public final static Point translate(Point p, Vector v) { return new Point(p.x + v.x, p.y + v.y); }
     public final static Point intersection(Line l1, Line l2) {
         int intersects = l1.intersects(l2);
@@ -27,18 +28,24 @@ class Vector {
     public final static Vector minus(Vector v) { return new Vector(-v.x, -v.y); }
 }
 class Line {
+    static final double eps = 1e9;
     final double a, b, c; // a.x + b.y = c
-    final int i;
-    public Line(double a, double b, double c, int i) { this.a = a; this.b = b; this.c = c; this.i = i; }
-    public Line(double a, double b, double c) { this(a, b, c, -1); }
-    public Line(Point p1, Point p2, int i) { a = p1.y - p2.y; b = p2.x - p1.x; c = a * p1.x + b * p1.y; this.i=i; }
-    public Line(Point p1, Point p2) { this(p1, p2, -1); }
-    public Line(Point p, Vector v, int i) { a = -v.y; b = v.x; c = a * p.x + b * p.y; this.i = i; }
-    public Line(Point p, Vector v) { this(p, v, -1); }
+    public Line(double a, double b, double c) { this.a = a; this.b = b; this.c = c; }
+    public Line(Point p1, Point p2) { a = p1.y - p2.y; b = p2.x - p1.x; c = a * p1.x + b * p1.y; }
+    public Line(Point p, Vector v) { a = -v.y; b = v.x; c = a * p.x + b * p.y; }
     // 0 if no intersection, 1 if 1 intersection, 2 if infinitely many
     public final int intersects(Line other) { return a * other.b != other.a * b ? 1 : a * other.c == other.a * c && b * other.c == other.b * c ? 2 : 0; }
     public final double distanceFrom(Point p) { return Math.abs(a * p.x + b * p.y - c) / Math.sqrt(a * a + b * b); }
     public final Point randomPoint() { return b == 0 ? new Point(c / a, 0) : new Point(0, c / b); }
+    public final Point reflection(Point p) {
+        double d = (a * p.x + b * p.y - c) / Math.sqrt(a * a + b * b);
+        return new Point(p.x - 2 * a * d, p.y - 2 * b * d);
+    }
+    public final Point ricochetPoint(Point p1, Point p2) { return Point.intersection(this, new Line(p1, reflection(p2))); }
+    public final boolean areOnSameSide(Point p1, Point p2) {
+        double f1 = a * p1.x + b * p1.y - c, f2 = a * p2.x + b * p2.y - c;
+        return Math.abs(f1) < eps || Math.abs(f2) < eps || f1 * f2 > eps;
+    }
     public final Vector direction() { return new Vector(b, -a); }
 } 
 class SimplePolygon {
