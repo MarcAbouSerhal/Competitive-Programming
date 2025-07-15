@@ -2,7 +2,6 @@ class AhoCorasick {
     private static final int k = 26, base = 'a';
     final ArrayList<Vertex> trie = new ArrayList<>();
     public AhoCorasick() { trie.add(new Vertex()); }
-    // adds s to the trie (O(k.|s|))
     public final void add(char[] s) { 
         int i = 0;
         Vertex v = trie.get(0);
@@ -10,33 +9,41 @@ class AhoCorasick {
             int c = ch - base;
             if (v.next[c] == -1) {
                 v.next[c] = trie.size();
-                trie.add(new Vertex(i, c));
+                trie.add(new Vertex(c, v.len + 1, i));
             }
             v = trie.get(i = v.next[c]);
         }
-        ++v.output;
+        v.terminal = true;
     }
     public final void add(String s) { add(s.toCharArray()); }
-    public final int get_link(int i) {
+    public final int link(int i) {
         Vertex v = trie.get(i);
-        if(v.link == -1) {
-            if(i == 0 || v.p == 0) v.link = 0;
-            else v.link = go(get_link(v.p), v.pch);
-        }
+        if(v.link == -1)  v.link = v.p == 0 ? 0 : next(link(v.p), v.c);
         return v.link;
     }
-    public final int go(int i, int c) {
+    public final int next_terminal(int i) {
         Vertex v = trie.get(i);
-        if(v.go[c] == -1) {
-            if(v.next[c] != -1) v.go[c] = v.next[c];
-            else v.go[c] = i == 0 ? 0 : go(get_link(i), c);
-        }
-        return v.go[c];
+        if(v.next_terminal == -1) v.next_terminal = trie.get(link(i)).terminal ? v.link : next_terminal(v.link);
+        return v.next_terminal;
+    }
+    public final int next(int i, int c) {
+        Vertex v = trie.get(i);
+        if(v.next[c] == -1) v.next[c] = next(link(i), c);
+        return v.next[c];
     }
     public static final class Vertex {
-        final int[] next = new int[k], go = new int[k];
-        int output = 0, p = -1, link = -1, pch = '$';
-        public Vertex() { for(int i = 0; i < k; ++i) next[i] = go[i] = -1; }
-        public Vertex(int p, int ch) { this(); this.p = p; pch = ch; }
+        final int[] next = new int[k];
+        boolean terminal = false;
+        int len = 0, link = -1, next_terminal = -1, c, p;
+        public Vertex() {
+            terminal = true;
+            link = next_terminal = 0;
+        }
+        public Vertex(int c, int len, int p) {
+            for(int i = 0; i < k; ++i) next[i] = -1; 
+            this.c = c; 
+            this.len = len; 
+            this.p = p; 
+        }
     }
 }
