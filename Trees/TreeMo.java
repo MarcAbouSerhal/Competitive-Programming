@@ -1,3 +1,5 @@
+import java.util.ArrayList;
+
 class TreeMo{
     // extra stuff here
     private static int[] a;
@@ -11,7 +13,7 @@ class TreeMo{
         //extra stuff here 
         TreeMo.a = a;
 
-        final int n = adj.length;
+        int n = adj.length;
         Tree tree = new Tree(adj);
         TreeMo.adj = adj;
         in = new int[n];
@@ -34,7 +36,7 @@ class TreeMo{
             q.index = hilbert_order(q.l, q.r);
         }
         Arrays.sort(queries, (x, y) -> Long.compare(x.index, y.index));
-        final int[] res = new int[queries.length];
+        int[] res = new int[queries.length];
         int curr_l = 0, curr_r = 0;
         for(Query q: queries){
             while(curr_r < q.r) handle(curr_r++, true);
@@ -48,7 +50,7 @@ class TreeMo{
         }
         return res;
     }
-    public final static void add(int u){ /*  adds vertex u */ }
+    public final static void add(int u){ /* adds vertex u */ }
     public final static void remove(int u){ /* removes vertex u */ }
     public final static void handle(int u, boolean insert){
         u = id[u];
@@ -74,9 +76,7 @@ class TreeMo{
             boolean rx = (x & s) != 0, ry = (y & s) != 0;
             res = (res << 2) | (rx ? ry ? 2 : 1 : ry ? 3 : 0);
             if(!rx){
-                if(ry){
-                    x ^= maxn; y ^= maxn;
-                }
+                if(ry){ x ^= maxn; y ^= maxn; }
                 x = x ^ y; y = x ^ y; x = x ^ y;
             }
         }
@@ -85,47 +85,36 @@ class TreeMo{
     private final static class Tree{
         private int tick = -1;
         private final int[][] d;
-        private final int[] depth;
-        private final int[] in;
-        private final int[] floorPow;
+        private final int[] depth, in;
         private final ArrayList<Integer>[] adj;
         private final int op(int l, int r){ return depth[l] < depth[r] ? l : r; }
         // (O(nlog(n)))
         public Tree(ArrayList<Integer>[] adj){
             this.adj = adj;
-            final int n = adj.length;
+            int n = adj.length, size = (n << 1) - 1, log = 32 - Integer.numberOfLeadingZeros(size);
             depth = new int[n];
             in = new int[n];
-            final int size = (n << 1) - 1;
-            floorPow = new int[size + 1];
-            floorPow[0] = -1;
-            for(int i = 1; i <= size; ++i){
-                floorPow[i] = floorPow[i - 1];
-                if((i & (i - 1)) == 0) ++floorPow[i];
-            }
-            final int log = floorPow[size] + 1;
-            d = new int[size][log];
+            d = new int[log][size];
             dfs(0, -1);
             for(int j = 1; j < log; ++j)
                 for(int i = 0; i + (1 << j) <= size; ++i)
-                    d[i][j] = op(d[i][j - 1], d[i + (1 << (j - 1))][j - 1]);
+                    d[j][i] = op(d[j - 1][i], d[j - 1][i + (1 << (j - 1))]);
         }
         public final void dfs(int u, int p){
-            d[in[u] = ++tick][0] = u;
+            d[0][in[u] = ++tick] = u;
             for(int v: adj[u])
                 if(v != p){
                     depth[v] = depth[u] + 1;
                     dfs(v, u);
-                    d[++tick][0] = u;
+                    d[0][++tick] = u;
                 }
         }
-        // (O(1))
         public final int lca(int a, int b){
             a = in[a]; 
             b = in[b];
             if(a > b){ a = a ^ b; b = a ^ b; a = a ^ b; }
-            int x = floorPow[b - a + 1];
-            return op(d[a][x], d[b + 1 - (1 << x)][x]);
+            int x = 31 - Integer.numberOfLeadingZeros(b - a + 1);
+            return op(d[x][a], d[x][b + 1 - (1 << x)]);
         }
     }
 }

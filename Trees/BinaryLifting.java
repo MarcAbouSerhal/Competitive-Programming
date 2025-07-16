@@ -8,26 +8,25 @@ class Tree{
     // (O(nlog(n)))
     public Tree(ArrayList<Integer>[] adj) {
         this.adj = adj;
-        final int n = adj.length;
+        int n = adj.length;
         log = 32 - Integer.numberOfLeadingZeros(n);
-        up = new int[n][log];
+        up = new int[log][n];
         depth = new int[n];
         dfs(0, -1);
         for(int j = 1; j < log; ++j)
             for(int i = 0; i < n; ++i)
-                up[i][j] = up[i][j - 1] == -1 ? -1 : up[up[i][j - 1]][j - 1];
+                up[j][i] = up[j - 1][i] == -1 ? -1 : up[j - 1][up[i][j - 1]];
         // if we're finding op(vertices): 
         // opUp[u][i] is op(vertices on u -> up[u][i] excluding up[u][i])
         // if we're finding op(edges):
         // opUp[u][i] is op(edges on u -> up[u][i])
     }
-    // returns kth ancestor of u
-    // or -1 if there's no such node (O(log(n)))
+    // returns kth ancestor of u or -1 if there's no such node (O(log(n)))
     public final int kthAncestor(int u, int k) {
         if(depth[u] < k) return -1;
         for(int i = 0; i < log; ++i)
             if((k & (1 << i)) != 0)
-                u = up[u][i];
+                u = up[i][u];
         return u;
     }
     // returns lca(u, v) (O(log(n)))
@@ -36,11 +35,11 @@ class Tree{
         a = kthAncestor(a, depth[a] - depth[b]);
         if(a == b) return a;
         for(int i = log - 1; i >= 0; --i)
-            if(up[a][i] != up[b][i]){
-                a = up[a][i];
-                b = up[b][i];
+            if(up[i][a] != up[i][b]){
+                a = up[i][a];
+                b = up[i][b];
             }
-        return up[a][0];
+        return up[0][a];
     }
     // returns whether u is an ancestor of v (or u == v) O(log(n))
     public final boolean isAncestor(int u, int v) { return depth[u] <= depth[v] && kthAncestor(v, depth[v] - depth[u]) == u; }
@@ -64,25 +63,25 @@ class Tree{
     //     res = identity;
     //     for(int i = 0; i < log; ++i)
     //         if((k & (1 << i)) != 0){
-    //             res = op(res, opUp[u][i]);
-    //             u = up[u][i];
+    //             res = op(res, opUp[i][u]);
+    //             u = up[i][u];
     //         }
     //     if(u == v){
     //         // if we're finding op(vertices), include u
     //         return res;
     //     }
     //     for(int i = log - 1; i >= 0; --i)
-    //         if(up[u][i]!=up[v][i]){
-    //             res = op(res, op(opUp[u][i], opUp[v][i]));
-    //             u = up[u][i];
-    //             v = up[v][i];
+    //         if(up[i][u]!=up[i][v]){
+    //             res = op(res, op(opUp[i][u], opUp[i][v]));
+    //             u = up[i][u];
+    //             v = up[i][v];
     //         }
-    //     // if we're finding op(vertices), include up[u][0]
+    //     // if we're finding op(vertices), include up[0][u]
     //     return res;
     // }
     // private methods
     private final void dfs(int u, int p) {
-        up[u][0] = p; 
+        up[0][u] = p; 
         for(int v: adj[u])
             if(v != p){
                 depth[v] = depth[u] + 1;
