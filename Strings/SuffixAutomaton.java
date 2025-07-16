@@ -26,7 +26,7 @@ class SuffixAutomaton {
                 int clone = d.size() - 1;
                 Node cloneNode = d.get(clone), qNode = d.get(q);
                 cloneNode.sz = d.get(p).sz + 1;
-                cloneNode.adj = copy(qNode.adj);
+                cloneNode.adj = Arrays.copyOf(qNode.adj, k);
                 cloneNode.link = qNode.link;
                 while (p != -1 && d.get(p).adj[c - base] == q) {
                     d.get(p).adj[c - base] = clone;
@@ -36,11 +36,6 @@ class SuffixAutomaton {
             }
         }
         last = curr;
-    }
-    private static final int[] copy(int[] a) {
-        int[] b = new int[k];
-        for(int i = 0; i < k; ++i) b[i] = a[i];
-        return b;
     }
     static final class Node {
         int sz = 0, link = -1;

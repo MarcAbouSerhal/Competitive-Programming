@@ -3,20 +3,13 @@
 class Reroot{
     static private X[][] dp;
     static private ArrayList<Integer>[] adj;
-    static private int[] p_index;
-    // p_index[u] is index of p(u) in adj[u]
-
-    // extra stuff here
-
+    static private int[] p_index; // p_index[u] is index of p(u) in adj[u]
     // dp[u][i] is property of subtree of adj[u][i] if tree is rooted at u (O(n))
     public static final X[][] compute(ArrayList<Integer>[] adj){ // pass extra stuff as parameters
         Reroot.adj = adj;
         int n = adj.length;
         dp = new X[n][];
         p_index = new int[n];
-
-        // extra stuff here
-
         for(int i = 0; i < n; ++i) dp[i] = new X[adj[i].size()];
         dfs1(0, -1);
         dfs2(0, -1);
@@ -72,7 +65,7 @@ class Reroot{
         }
     }
     // CHANGE THESE FUNCTIONS
-    private static final X leaf_prop(int u){ /* return what property of subtree of u of would be knowing that u is a leaf node */ }
-    private static final X merge(X x, X y){ /* return merging of properties x and y as 1 property */ }
-    private static final X combine(int u, X rest){ /* return property of subtree of u knowing that rest is merging of properties of all its child subtrees */ }
+    private static final X leaf_prop(int u) { /* return what property of subtree of u of would be knowing that u is a leaf node */ }
+    private static final X merge(X x, X y) { /* return merging of properties x and y as 1 property */ }
+    private static final X combine(int u, X rest) { /* return property of subtree of u knowing that rest is merging of properties of all its child subtrees */ }
 }
