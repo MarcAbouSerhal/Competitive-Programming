@@ -9,6 +9,7 @@ class Geometry {
     }
     public final static double d(Point p1, Point p2) { return Math.sqrt((p1.x - p2.x) * (p1.x - p2.x) + (p1.y - p2.y) * (p1.y - p2.y)); }
     public static final double orient(Point a, Point b, Point c) { return (b.x - a.x) * (c.y - a.y) - (c.x - a.x) * (b.y - a.y); }
+    public static final boolean between(Point a, Point b, Point c) { return Math.min(a.x, c.x) <= b.x + eps && b.x <= Math.max(a.x, c.x) + eps && Math.min(a.y, c.y) <= b.y + eps && b.y <= Math.max(a.y, c.y) + eps; }
     public final static class Vector {
         final double x, y;
         public Vector(double x, double y) { this.x = x; this.y = y; }
@@ -20,11 +21,13 @@ class Geometry {
         public final Vector add(Vector other) { return new Vector(x + other.x, y + other.y); }
     }
     public final static double det(Vector a, Vector b) { return a.x * b.y - a.y * b.x; }
+    public final static double angle(Vector a, Vector b) { return Math.atan2(det(a, b), a.dot(b)); }
     public final static Vector minus(Vector v) { return new Vector(-v.x, -v.y); }
     public final static class Line {
         final double a, b, c; // a.x + b.y = c
         public Line(double a, double b, double c) { this.a = a; this.b = b; this.c = c; }
         public Line(Point p1, Point p2) { a = p1.y - p2.y; b = p2.x - p1.x; c = a * p1.x + b * p1.y; }
+        public Line(Line l) { this(l.a, l.b, l.c); }
         public Line(Segment s) { this(s.p1, s.p2); }
         public Line(Point p, Vector v) { a = -v.y; b = v.x; c = a * p.x + b * p.y; }
         // 0 if no intersection, 1 if 1 intersection, 2 if infinitely many
@@ -51,6 +54,7 @@ class Geometry {
     public final static class Segment {
         final Point p1, p2;
         public Segment(Point p1, Point p2) { this.p1 = p1; this.p2 = p2; }
+        public Segment(Segment s) { this(s.p1, s.p2); }
         public final double length() { return d(p1, p2); }
     }
     public final static Point intersection(Segment s1, Segment s2) {
@@ -83,17 +87,16 @@ class Geometry {
             }
             return wn == 0 ? -1 : 1;
         }
-        private static final boolean between(Point a, Point b, Point c) { return Math.min(a.x, c.x) <= b.x && b.x <= Math.max(a.x, c.x) && Math.min(a.y, c.y) <= b.y && b.y <= Math.max(a.y, c.y); }
     }
-    // returns polygon of points q, where [qc] intersects p once for every point c on [ab] (O(n)) 
-    // (Make sure p.pts are in CCW order, and for every segment of p is either fully visible or fully invisible from [ab])
-    public static final SimplePolygon visible(SimplePolygon p, Point a, Point b) {
+    // returns polygon of points q, where [qc] intersects p once for every point c on s (O(n)) 
+    // (Make sure p.pts are in CCW order, and for every segment of p is either fully visible or fully invisible from s)
+    public static final SimplePolygon visible(SimplePolygon p, Segment s) {
         ArrayList<Point> pts = new ArrayList<>(p.n << 1);
-        Vector v = new Vector(a, b);
-        Line l = new Line(a, b);
+        Line l = new Line(s);
+        Vector v = new Vector(s.p1, s.p2);
         for(int i = 0; i < p.n; ++i) {
             int j = (i + 1) % p.n;
-            boolean in1 = sign(det(v, new Vector(a, p.pts.get(i)))) == 1, in2 = sign(det(v, new Vector(a, p.pts.get(j)))) == 1;
+            boolean in1 = sign(det(v, new Vector(s.p1, p.pts.get(i)))) == 1, in2 = sign(det(v, new Vector(s.p1, p.pts.get(j)))) == 1;
             if(in1) pts.add(p.pts.get(i));
             if(in1 ^ in2) pts.add(intersection(l, new Line(p.pts.get(i), p.pts.get(j))));
         }
