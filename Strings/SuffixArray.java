@@ -1,78 +1,62 @@
 class SuffixArray {
     private final static int alphabet = 128;
-    // returns p where p[i] is the start of the ith smallest suffix of s (O(nlog(n)))
-    public static final int[] suffixArray(char[] s) {
-        char[] s_ = new char[s.length + 1];
-        for(int i = 0; i < s.length; ++i) s_[i] = s[i];
-        int[] res = sortCyclicShifts(s_);
-        for(int i = 0; i < s.length; ++i) res[i] = res[i + 1];
-        return res;
-    }
-    public static final int[] suffixArray(String s) { return suffixArray(s.toCharArray()); }
-    // returns p where p[i] is the start of the ith smallest cyclic shift of s (O(nlog(n)))
-    public static final int[] sortCyclicShifts(char[] s) {
-        int n = s.length, classes = 1;
-        int[] p = new int[n], c = new int[n], cnt = new int[n > alphabet ? n : alphabet], pn = new int[n], cn = new int[n];
-        for (int i = 0; i < n; ++i) ++cnt[s[i]];
-        for (int i = 1; i < alphabet; ++i) cnt[i] += cnt[i - 1];
-        for (int i = 0; i < n; ++i) p[--cnt[s[i]]] = i;
-        c[p[0]] = 0;
-        for (int i = 1; i < n; ++i) {
-            if (s[p[i]] != s[p[i - 1]]) ++classes;
-            c[p[i]] = classes - 1;
+    int n;
+    final char[] s;
+    final int[] sa, lcp; // sa[i] is position of ith smallest suffix of s
+    final int[][] g;
+    // O(nlog(n))
+    public SuffixArray(char[] s_) {
+        n = s_.length + 1;
+        int log = 31 - Integer.numberOfLeadingZeros(n), k = 0, cls = 1;
+        s = new char[n];
+        for(int i = 0; i + 1 < n; ++i) s[i] = s_[i];
+        s[n - 1] = '$';
+        sa = new int[n];
+        lcp = new int[n - 2];
+        g = new int[log + 2][]; g[0] = new int[n];
+        int[] cnt = new int[Math.max(n, alphabet)], np = new int[n], rank = new int[n - 1], ng;
+        for(char c: s) ++cnt[c];
+        for(int i = 1; i < alphabet; ++i) cnt[i] += cnt[i - 1];
+        for(int i = 0; i < n; ++i) sa[--cnt[s[i]]] = i;
+        for(int i = 1; i < n; ++i) {
+            if(s[sa[i]] != s[sa[i - 1]]) ++cls;
+            g[0][sa[i]] = cls - 1;
         }
-        for (int h = 0; (1 << h) < n; ++h) {
-            for (int i = 0; i < n; ++i) {
-                pn[i] = p[i] - (1 << h);
-                if (pn[i] < 0) pn[i] += n;
+        for(int h = 0, po = 1; h <= log; ++h, po <<= 1) {
+            ng = new int[n];
+            for(int i = 0; i < n; ++i) {
+                np[i] = sa[i] - po;
+                if(np[i] < 0) np[i] += n;
             }
-            for (int i = 0; i < classes; ++i) cnt[i] = 0;
-            for (int i = 0; i < n; ++i) ++cnt[c[pn[i]]];
-            for (int i = 1; i < classes; ++i) cnt[i] += cnt[i-1];
-            for (int i = n - 1; i >= 0; --i) p[--cnt[c[pn[i]]]] = pn[i];
-            cn[p[0]] = 0;
-            classes = 1;
-            for (int i = 1; i < n; ++i) {
-                if(c[p[i]] != c[p[i - 1]] || c[(p[i] + (1 << h)) % n] != c[(p[i - 1] + (1 << h)) % n]) ++classes;
-                cn[p[i]] = classes - 1;
+            for(int i = 0; i < cls; i++) cnt[i] = 0;
+            for(int x: np) ++cnt[g[h][x]];
+            for(int i = 1; i < cls; ++i) cnt[i] += cnt[i - 1];
+            for(int i = n - 1; i >= 0; --i) sa[--cnt[g[h][np[i]]]] = np[i];
+            ng[sa[0]] = 0;
+            cls = 1;
+            for(int i = 1; i < n; ++i) {
+                int x = sa[i], y = sa[i - 1];
+                if(g[h][x] != g[h][y] || g[h][(x + po) % n] != g[h][(y + po) % n]) ++cls;
+                ng[x] = cls - 1;
             }
-            int[] temp = c;
-            c = cn;
-            cn = temp;
+            g[h + 1] = ng;
         }
-        return p;
-    }
-    public static final int[] sortCyclicShifts(String s) { return sortCyclicShifts(s.toCharArray()); }
-    // returns string t where t[i] is end of ith smallest cyclic shift of s + '$' (O(nlog(n)))
-    public static final char[] BWT(char[] s) {
-        int n = s.length;
-        char[] s_ = new char[n + 1], t = new char[n + 1];
-        for(int i = 0; i < n; ++i) s_[i] = s[i];
-        s_[n] = '$';
-        int[] res = sortCyclicShifts(s_);
-        for(int i = 0; i < n + 1; ++i)
-            t[i] = s_[(res[i] + n) % (n + 1)];
-        return t;
-    }
-    public static final char[] BWT(String s) { return BWT(s.toCharArray()); }
-    // returns s where t = bwt(s) (O(nlog(n)))
-    public static final char[] inverseBWT(char[] t) {
-        int lenT = t.length;
-        char[] sortedT = new char[lenT];
-        int[] lShift = new int[lenT];
-        for(int i = 0; i < lenT; ++i) sortedT[i] = t[i];
-        Arrays.sort(sortedT);
-        int x;
-        for(x = 0; t[x] != '$'; ++x);
-        LinkedList<Integer>[] arr = new LinkedList[alphabet];
-        for(int i = 0; i < alphabet; ++i) arr[i] = new LinkedList<>();
-        for(int i = 0; i < lenT; ++i) arr[t[i]].add(i);
-        for(int i = 0; i < lenT; ++i) {
-            lShift[i] = arr[sortedT[i]].get(0);
-            arr[sortedT[i]].remove(0);
+        --n;
+        for(int i = 0; i < n; ++i) rank[sa[i] = sa[i + 1]] = i;
+        for(int i = 0; i < n; ++i) {
+            if(rank[i] == n - 1) {
+                k = 0;
+                continue;
+            }
+            int j = sa[rank[i] + 1];
+            while (i + k < n && j + k < n && s[i + k] == s[j + k]) ++k;
+            lcp[rank[i]] = k;
+            if (k != 0) --k;
         }
-        char[] s = new char[lenT - 1];
-        for(int i = 0; i < lenT - 1; ++i) s[i] = t[x = lShift[x]];
-        return s;
+    }
+    // compares s[i...i + l - 1] and s[j...j + l - 1] (O(1)) -1 if <, 1 if >, 0 if =
+    public final int compare(int i, int j, int l) {
+        int k = 31 - Integer.numberOfLeadingZeros(l), nextI = i + l - (1 << k), nextJ = j + l - (1 << k);
+        return g[k][i] < g[k][j] ? -1 : g[k][i] > g[k][j] ? 1 : g[k][nextI] < g[k][nextJ] ? -1 : g[k][nextI] > g[k][nextJ] ? 1 : 0;
     }
 }
