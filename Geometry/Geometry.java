@@ -32,16 +32,21 @@ class Geometry {
         public Line(Point p, Vector v) { a = -v.y; b = v.x; c = a * p.x + b * p.y; }
         // 0 if no intersection, 1 if 1 intersection, 2 if infinitely many
         public final int intersects(Line other) { return a * other.b != other.a * b ? 1 : a * other.c == other.a * c && b * other.c == other.b * c ? 2 : 0; }
-        public final double distanceFrom(Point p) { return Math.abs(a * p.x + b * p.y - c) / Math.sqrt(a * a + b * b); }
         public final Point randomPoint() { return b == 0 ? new Point(c / a, 0) : new Point(0, c / b); }
         public final Point reflection(Point p) {
             double d = (a * p.x + b * p.y - c) / (a * a + b * b);
             return new Point(p.x - 2 * a * d, p.y - 2 * b * d);
         }
+        public final Point projection(Point p) {
+            double d = (a * p.x + b * p.y - c) / (a * a + b * b);
+            return new Point(p.x - a * d, p.y - b * d);
+        }
         public final Point ricochetPoint(Point p1, Point p2) { return intersection(this, new Line(p1, reflection(p2))); }
+        public final boolean contains(Point p) { return sign(a * p.x + b * p.y - c) == 0; }
         public final boolean onSameSide(Point p1, Point p2) { return sign(a * p1.x + b * p1.y - c) * sign(a * p2.x + b * p2.y - c) >= 0; }
         public final Vector direction() { return new Vector(b, -a); }
     } 
+    public final static double d(Line l, Point p) { return Math.abs(l.a * p.x + l.b * p.y - l.c) / Math.sqrt(l.a * l.a + l.b * l.b); }
     public final static Point intersection(Line l1, Line l2) {
         int intersects = l1.intersects(l2);
         if(intersects == 0) return null;
@@ -56,6 +61,7 @@ class Geometry {
         public Segment(Point p1, Point p2) { this.p1 = p1; this.p2 = p2; }
         public Segment(Segment s) { this(s.p1, s.p2); }
         public final double length() { return d(p1, p2); }
+        public final boolean contains(Point p) { return between(p1, p, p2) && sign((p.x - p1.x) * (p2.y - p1.y) + (p.y - p1.y) * (p1.x - p2.x)) == 0; } 
     }
     public final static Point intersection(Segment s1, Segment s2) {
         double oa = orient(s2.p1, s2.p2, s1.p1), ob = orient(s2.p1, s2.p2, s1.p2),
