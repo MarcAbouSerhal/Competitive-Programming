@@ -1,5 +1,5 @@
 class Geometry {
-    private static final double eps = 1e-9;
+    private static final double eps = 1e-9, pi = Math.PI;
     public final static class Point {
         final double x, y;
         public Point(double x, double y) { this.x = x; this.y = y; }
@@ -21,8 +21,12 @@ class Geometry {
         public final Vector add(Vector other) { return new Vector(x + other.x, y + other.y); }
     }
     public final static double det(Vector a, Vector b) { return a.x * b.y - a.y * b.x; }
-    public final static double angle(Vector a, Vector b) { return Math.atan2(det(a, b), a.dot(b)); }
+    public final static double angle(Vector a, Vector b) { return fix(Math.atan2(det(a, b), a.dot(b))); }
     public final static Vector minus(Vector v) { return new Vector(-v.x, -v.y); }
+    public final static Vector rotate(Vector v, double a) {
+        double sin = Math.sin(a), cos = Math.cos(a);
+        return new Vector(v.x * cos - v.y * sin, v.x * sin + v.y * cos);
+    }
     public final static class Line {
         final double a, b, c; // a.x + b.y = c
         public Line(double a, double b, double c) { this.a = a; this.b = b; this.c = c; }
@@ -108,5 +112,34 @@ class Geometry {
         }
         return new SimplePolygon(pts);
     }
+    public final static class Circle {
+        final Point c;
+        final double r;
+        public Circle(Point c, double r) { this.c = c; this.r = r; }
+        public final double angle(Point p) { return Geometry.angle(new Vector(1, 0), new Vector(c, p)); }
+        public final Point at(double a) { return new Point(c.x + r * Math.cos(a), c.y + r * Math.sin(a)); }
+        // -1 if p is outside, 0 if p is on the boundary, 1 if p is inside 
+        public final int position(Point p) { return sign(r - d(p, c)); }
+        public final double arclength(double a1, double a2) { return r * smallestArcBetween(a1, a2); }
+        // Finds points q1 q2 such that [pq1] and [pq2] are tangent to the circle
+        public final Point[] tangentPoints(Point p) {
+            double d = d(c, p), sqrt = Math.sqrt(d * d - r * r), dx = c.x - p.x, dy = c.y - p.y;
+            double dxsqrt = dx * sqrt, dxr = dx * r, dysqrt = dy * sqrt, dyr = dy * r;
+            Point q1 = new Point(p.x + sqrt * (dxsqrt - dyr) / (d * d), p.y + sqrt * (dxr + dysqrt) / (d * d));
+            Point q2 = new Point(p.x + sqrt * (dxsqrt + dyr) / (d * d), p.y + sqrt * (dysqrt - dxr) / (d * d));
+            return new Point[] {q1, q2};
+        }
+    }
+    public static final double smallestArcBetween(double a1, double a2) {
+        double diff = Math.abs(fix(a1) -  fix(a2));
+        return diff >= pi ? 2 * pi - diff : diff;
+    }
+    public static final boolean between(double a1, double b, double a2) {
+        a1 = fix(a1);
+        a2 = fix(a2);
+        b = fix(b);
+        return sign(a2 - a1) == -1 ? sign(a2 - b) >= 0 || sign(b - a1) >= 0 : sign(b - a1) >= 0 && sign(a2 - b) >= 0;
+    }
+    private static final double fix(double a) { return a < -eps ? a + 2 * pi : a; } 
     private static final int sign(double x) { return Math.abs(x) < eps ? 0 : x > 0 ? 1 : -1; } 
 }
