@@ -1,13 +1,14 @@
 class SuffixArray {
     private final static int alphabet = 128;
-    int n;
+    int n, log;
     final char[] s;
-    final int[] sa, lcp; // sa[i] is position of ith smallest suffix of s
-    final int[][] g;
+    final int[] sa, lcp; // sa[i] is position of ith smallest suffix of s, lcp[i] = length of lcp(s[sa[i] ... n - 1], s[sa[i + 1] ... n - 1])
+    final int[][] g; // g[k][i] = index of s[i ... i + 2^k - 1] in ordered list of unique 2^k-length substrings
     // O(nlog(n))
     public SuffixArray(char[] s_) {
         n = s_.length + 1;
-        int log = 31 - Integer.numberOfLeadingZeros(n), k = 0, cls = 1;
+        log = 31 - Integer.numberOfLeadingZeros(n);
+        int k = 0, cls = 1;
         s = new char[n];
         for(int i = 0; i + 1 < n; ++i) s[i] = s_[i];
         s[n - 1] = '$';
@@ -42,7 +43,12 @@ class SuffixArray {
             g[h + 1] = ng;
         }
         --n;
-        for(int i = 0; i < n; ++i) rank[sa[i] = sa[i + 1]] = i;
+        cls = 0; // to check if sa[i] = n was seen, has to be skipped
+        for(int i = 0; i < n; ++i) { 
+            if(sa[i] == n) cls = 1;
+            rank[sa[i] =  sa[i + cls]] = i;
+        }
+        sa[n] = n;
         for(int i = 0; i < n; ++i) {
             if(rank[i] == n - 1) {
                 k = 0;
@@ -54,9 +60,27 @@ class SuffixArray {
             if (k != 0) --k;
         }
     }
-    // compares s[i...i + l - 1] and s[j...j + l - 1] (O(1)) -1 if <, 1 if >, 0 if =
+    // compares s[i ... i + l - 1] and s[j ... j + l - 1] (O(1)) -1 if <, 1 if >, 0 if =
     public final int compare(int i, int j, int l) {
         int k = 31 - Integer.numberOfLeadingZeros(l), nextI = i + l - (1 << k), nextJ = j + l - (1 << k);
         return g[k][i] < g[k][j] ? -1 : g[k][i] > g[k][j] ? 1 : g[k][nextI] < g[k][nextJ] ? -1 : g[k][nextI] > g[k][nextJ] ? 1 : 0;
+    }
+    // compares s[l1 ... r1] and s[l2 ... r2] (O(1)) -1 if <, 1 if >, 0 if =
+    public final int compare(int l1, int r1, int l2, int r2) {
+        int len1 = r1 - l1 + 1, len2 = r2 - l2 + 1;
+        if(len1 == len2) return compare(l1, l2, len1);
+        else if(len1 < len2) return compare(l1, l2, len1) <= 0 ? -1 : 1;
+        else return compare(l1, l2, len2) == -1 ? -1 : 1;
+    }
+    // finds length of lcp(s[i ... n - 1], s[j ... n - 1]) (O(log(n)))
+    public final int lcp(int i, int j) { 
+        int ans = 0;
+        for(int k = log; k >= 0; --k)
+            if(g[k][i] == g[k][j] && Math.max(i, j) + (1 << k) < n) {
+                ans |= 1 << k;
+                i += 1 << k;
+                j += 1 << k;
+            }
+        return ans;
     }
 }
