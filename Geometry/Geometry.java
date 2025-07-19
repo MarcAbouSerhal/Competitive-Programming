@@ -5,7 +5,7 @@ class Geometry {
         public Point(double x, double y) { this.x = x; this.y = y; }
         public Point(Point p) { this(p.x, p.y); }
         public final Point reflection(Point p) { return new Point(2 * x - p.x, 2 * y - p.y); }
-        public final static Point translate(Point p, Vector v) { return new Point(p.x + v.x, p.y + v.y); }
+        public final Point translation(Vector v) { return new Point(x + v.x, y + v.y); }
     }
     public final static double d(Point p1, Point p2) { return Math.sqrt((p1.x - p2.x) * (p1.x - p2.x) + (p1.y - p2.y) * (p1.y - p2.y)); }
     public static final double orient(Point a, Point b, Point c) { return (b.x - a.x) * (c.y - a.y) - (c.x - a.x) * (b.y - a.y); }
@@ -17,16 +17,16 @@ class Geometry {
         public Vector(Point end) { this(end.x, end.y); }
         public Vector(Point start, Point end) { this(end.x - start.x, end.y - start.y); }
         public final double norm() { return Math.sqrt(x * x + y * y); }
-        public final double dot(Vector other) { return x * other.x + y * other.y; }
-        public final Vector add(Vector other) { return new Vector(x + other.x, y + other.y); }
+        public final Vector rotation(double a) {
+            double sin = Math.sin(a), cos = Math.cos(a);
+            return new Vector(x * cos - y * sin, x * sin + y * cos);
+        }
+        public final Vector negative() { return new Vector(-x, -y); }
     }
+    public final static Vector add(Vector a, Vector b) { return new Vector(a.x + b.x, a.y + b.y); }
+    public final static double dot(Vector a, Vector b) { return a.x * b.x + a.y * b.y; }
     public final static double det(Vector a, Vector b) { return a.x * b.y - a.y * b.x; }
-    public final static double angle(Vector a, Vector b) { return fix(Math.atan2(det(a, b), a.dot(b))); }
-    public final static Vector minus(Vector v) { return new Vector(-v.x, -v.y); }
-    public final static Vector rotate(Vector v, double a) {
-        double sin = Math.sin(a), cos = Math.cos(a);
-        return new Vector(v.x * cos - v.y * sin, v.x * sin + v.y * cos);
-    }
+    public final static double angle(Vector a, Vector b) { return fix(Math.atan2(det(a, b), dot(a, b))); }
     public final static class Line {
         final double a, b, c; // a.x + b.y = c
         public Line(double a, double b, double c) { this.a = a; this.b = b; this.c = c; }
