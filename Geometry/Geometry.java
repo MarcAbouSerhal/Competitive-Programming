@@ -1,5 +1,5 @@
-class Geometry {
-    private static final double eps = 1e-10, pi = Math.PI;
+interface Geometry {
+    static final double EPS = 1e-10, PI = Math.PI;
     public final static class Point {
         final double x, y;
         public Point(double x, double y) { this.x = x; this.y = y; }
@@ -7,9 +7,9 @@ class Geometry {
         public final Point reflection(Point p) { return new Point(2 * x - p.x, 2 * y - p.y); }
         public final Point translation(Vector v) { return new Point(x + v.x, y + v.y); }
     }
-    public final static double d(Point p1, Point p2) { return Math.sqrt((p1.x - p2.x) * (p1.x - p2.x) + (p1.y - p2.y) * (p1.y - p2.y)); }
-    public static final double orient(Point a, Point b, Point c) { return (b.x - a.x) * (c.y - a.y) - (c.x - a.x) * (b.y - a.y); }
-    public static final boolean between(Point a, Point b, Point c) { return Math.min(a.x, c.x) <= b.x + eps && b.x <= Math.max(a.x, c.x) + eps && Math.min(a.y, c.y) <= b.y + eps && b.y <= Math.max(a.y, c.y) + eps; }
+    public static double d(Point p1, Point p2) { return Math.sqrt((p1.x - p2.x) * (p1.x - p2.x) + (p1.y - p2.y) * (p1.y - p2.y)); }
+    public static double orient(Point a, Point b, Point c) { return (b.x - a.x) * (c.y - a.y) - (c.x - a.x) * (b.y - a.y); }
+    public static boolean between(Point a, Point b, Point c) { return Math.min(a.x, c.x) <= b.x + EPS && b.x <= Math.max(a.x, c.x) + EPS && Math.min(a.y, c.y) <= b.y + EPS && b.y <= Math.max(a.y, c.y) + EPS; }
     public final static class Vector {
         final double x, y;
         public Vector(double x, double y) { this.x = x; this.y = y; }
@@ -23,10 +23,10 @@ class Geometry {
         }
         public final Vector negative() { return new Vector(-x, -y); }
     }
-    public final static Vector add(Vector a, Vector b) { return new Vector(a.x + b.x, a.y + b.y); }
-    public final static double dot(Vector a, Vector b) { return a.x * b.x + a.y * b.y; }
-    public final static double det(Vector a, Vector b) { return a.x * b.y - a.y * b.x; }
-    public final static double angle(Vector a, Vector b) { return fix(Math.atan2(det(a, b), dot(a, b))); }
+    public static Vector add(Vector a, Vector b) { return new Vector(a.x + b.x, a.y + b.y); }
+    public static double dot(Vector a, Vector b) { return a.x * b.x + a.y * b.y; }
+    public static double det(Vector a, Vector b) { return a.x * b.y - a.y * b.x; }
+    public static double angle(Vector a, Vector b) { return fix(Math.atan2(det(a, b), dot(a, b))); }
     public final static class Line {
         final double a, b, c; // a.x + b.y = c
         public Line(double a, double b, double c) { this.a = a; this.b = b; this.c = c; }
@@ -52,8 +52,8 @@ class Geometry {
         public final int side(Point p) { return sign(a * p.x + b * p.y - c); }
         public final Vector direction() { return new Vector(b, -a); }
     } 
-    public final static double d(Line l, Point p) { return Math.abs(l.a * p.x + l.b * p.y - l.c) / Math.sqrt(l.a * l.a + l.b * l.b); }
-    public final static Point intersection(Line l1, Line l2) {
+    public static double d(Line l, Point p) { return Math.abs(l.a * p.x + l.b * p.y - l.c) / Math.sqrt(l.a * l.a + l.b * l.b); }
+    public static Point intersection(Line l1, Line l2) {
         int intersects = l1.intersects(l2);
         if(intersects == 0) return null;
         else if(intersects == 2) return l1.randomPoint();
@@ -65,11 +65,12 @@ class Geometry {
     public final static class Segment {
         final Point p1, p2;
         public Segment(Point p1, Point p2) { this.p1 = p1; this.p2 = p2; }
+        public Segment(Point p, Vector v) { this(p, p.translation(v)); }
         public Segment(Segment s) { this(s.p1, s.p2); }
         public final double length() { return d(p1, p2); }
         public final boolean contains(Point p) { return between(p1, p, p2) && sign((p.x - p1.x) * (p2.y - p1.y) + (p.y - p1.y) * (p1.x - p2.x)) == 0; } 
     }
-    public final static Point intersection(Segment s1, Segment s2) {
+    public static Point intersection(Segment s1, Segment s2) {
         double oa = orient(s2.p1, s2.p2, s1.p1), ob = orient(s2.p1, s2.p2, s1.p2),
             oc = orient(s1.p1, s1.p2, s2.p1), od = orient(s1.p1, s1.p2, s2.p2), denom = ob - oa;
         if(sign(oa) * sign(ob) == -1 && sign(oc) * sign(od) == -1)
@@ -107,7 +108,7 @@ class Geometry {
     }
     // returns polygon of points q, where [qc] intersects p once for every point c on s (O(n)) 
     // (Make sure p.pts are in CCW order, and for every segment of p is either fully visible or fully invisible from s)
-    public static final SimplePolygon visible(SimplePolygon p, Segment s) {
+    public static SimplePolygon visible(SimplePolygon p, Segment s) {
         ArrayList<Point> pts = new ArrayList<>(p.n << 1);
         Line l = new Line(s);
         Vector v = new Vector(s.p1, s.p2);
@@ -123,8 +124,8 @@ class Geometry {
         final Point c;
         final double r;
         public Circle(Point c, double r) { this.c = c; this.r = r; }
-        public final double area() { return pi * r * r; }
-        public final double perimeter() { return 2 * pi * r; }
+        public final double area() { return PI * r * r; }
+        public final double perimeter() { return 2 * PI * r; }
         public final double angle(Point p) { return Geometry.angle(new Vector(1, 0), new Vector(c, p)); }
         public final Point at(double a) { return new Point(c.x + r * Math.cos(a), c.y + r * Math.sin(a)); }
         // -1 if p is outside, 0 if p is on the boundary, 1 if p is inside (O(1))
@@ -139,10 +140,21 @@ class Geometry {
             return new Point[] {q1, q2};
         }
     }
+    public static Point[] intersections(Circle c, Line l) {
+        double d = d(l, c.c);
+        int sign = sign(d - c.r);
+        if(sign == 1) return new Point[] {};
+        else if(sign == 0) return new Point[] {l.projection(c.c)};
+        else {
+            double h = Math.sqrt(c.r * c.r - d * d), sqrt = Math.sqrt(l.a * l.a + l.b * l.b),
+                dx = -l.b / sqrt, dy = l.a / sqrt;
+            return new Point[] {new Point(c.c.x + h * dx, c.c.y + h * dy), new Point(c.c.x - h * dx, c.c.y - h * dy)};
+        }
+    }
     public final static class ConvexPolygon extends SimplePolygon {
         public ConvexPolygon(ArrayList<Point> pts) { super(pts); }
     }
-    public static final ConvexPolygon[] cut(ConvexPolygon p, Line l) {
+    public static ConvexPolygon[] cut(ConvexPolygon p, Line l) {
         ArrayList<Point> neg = new ArrayList<>(), pos = new ArrayList<>();
         for(int i = 0; i < p.n; ++i) {
             Point p1 = p.pts.get(i), p2 = p.pts.get((i + 1) % p.n);
@@ -158,16 +170,16 @@ class Geometry {
         }
         return neg.size() <= 2 || pos.size() <= 2 ? new ConvexPolygon[] {p} : new ConvexPolygon[] {new ConvexPolygon(neg), new ConvexPolygon(pos)};
     }
-    public static final double smallestArc(double a1, double a2) {
+    public static double smallestArc(double a1, double a2) {
         double diff = Math.abs(fix(a1) -  fix(a2));
-        return diff >= pi ? 2 * pi - diff : diff;
+        return diff >= PI ? 2 * PI - diff : diff;
     }
-    public static final boolean between(double a1, double b, double a2) {
+    public static boolean between(double a1, double b, double a2) {
         a1 = fix(a1);
         a2 = fix(a2);
         b = fix(b);
         return sign(a2 - a1) == -1 ? sign(a2 - b) >= 0 || sign(b - a1) >= 0 : sign(b - a1) >= 0 && sign(a2 - b) >= 0;
     }
-    private static final double fix(double a) { return a < -eps ? a + 2 * pi : a; } 
-    private static final int sign(double x) { return Math.abs(x) < eps ? 0 : x > 0 ? 1 : -1; } 
+    private static double fix(double a) { return a < -EPS ? a + 2 * PI : a; } 
+    public static int sign(double x) { return Math.abs(x) < EPS ? 0 : x > 0 ? 1 : -1; } 
 }
