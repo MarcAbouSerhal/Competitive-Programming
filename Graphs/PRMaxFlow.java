@@ -1,5 +1,5 @@
 class PRMaxFlow{
-    // highest-label push-relabel max flow with gap relabeling heuristic (fancy words that idk the meaning of)
+    // highest-label push-relabel Math.max flow with gap relabeling heuristic (fancy words that idk the meaning of)
     private final int n;
     final ArrayList<Edge>[] adj;
     private long[] excess;
@@ -16,7 +16,16 @@ class PRMaxFlow{
         adj[from].add(new Edge(to, cap, adj[to].size() + (from == to ? 1 : 0)));
         adj[to].add(new Edge(from, 0, adj[from].size() - 1));
     }
-    // returns max-flow (O(n^2.sqrt(m)))
+    public final void removeEdge(int from, int to) {
+        adj[from].removeLast();
+        adj[to].removeLast();
+    }
+    public final void reset() {
+        for(int u = 0; u < n; ++u)
+            for(Edge e: adj[u])
+                e.flow = 0; // reset all flows to 0
+    }
+    // returns Math.max-flow (O(n^2.sqrt(m)))
     public final long getMaxFlow(int s, int t){
         dist = new int[n];
         excess = new long[n];
@@ -25,9 +34,7 @@ class PRMaxFlow{
         B = new Stack[n]; for(int i = 0; i < n; ++i) B[i] = new Stack();
         b = 0;
 
-        for(int u = 0; u < n; ++u)
-            for(Edge e: adj[u])
-                e.flow = 0; // reset all flows to 0
+        reset();
 
         for(Edge e: adj[s]) excess[s] += e.cap;
         count[0] = n;
@@ -44,7 +51,7 @@ class PRMaxFlow{
         }
         return excess[t];
     }
-    // returns max-flow and stores minimal cut in .cut where:
+    // returns Math.max-flow and stores minimal cut in .cut where:
     // cut[u] = 0 if u in S and cut[u] = 1 if u in T
     // calls recoverFlow by itself
     public final long getMinCut(int s, int t){
@@ -66,7 +73,7 @@ class PRMaxFlow{
         return ret;
     }
     private final static int WHITE = 0, GREY = 1, BLACK = 2;
-    // after having called max-flow, call this function to recover flow of each edge
+    // after having called Math.max-flow, call this function to recover flow of each edge
     // do for(int u = 0; u < n; ++u) for(PRMaxFlow.Edge edge: g.adj[u]) 
     // to go through all edges
     public final void recoverFlow(int s, int t){
@@ -92,7 +99,7 @@ class PRMaxFlow{
                                 long amt = e.cap - e.flow;
                                 do{
                                     Edge e_ = adj[v].get(current[v]);
-                                    amt = min(amt, e_.cap - e_.flow);
+                                    amt = Math.min(amt, e_.cap - e_.flow);
                                     if(u != v) v = e_.to;
                                 } while (u != v);
 
@@ -135,7 +142,7 @@ class PRMaxFlow{
             int i = 1;
             while(excess[u] > 0){
                 if(e.cap == 0 && e.flow < 0){
-                    long amt = min(excess[u], e.cap - e.flow);
+                    long amt = Math.min(excess[u], e.cap - e.flow);
                     e.flow += amt;
                     adj[e.to].get(e.index).flow -= amt;
                     excess[u] -= amt;
@@ -150,12 +157,12 @@ class PRMaxFlow{
         if(!active[u] && excess[u] > 0 && dist[u] < n){
             active[u] = true;
             B[dist[u]].add(u);
-            b = max(b, dist[u]);
+            b = Math.max(b, dist[u]);
         }
     }
     private final void push(int from, Edge e){
         final int to = e.to;
-        final long amt = min(excess[from], e.cap - e.flow);
+        final long amt = Math.min(excess[from], e.cap - e.flow);
         if(dist[from] == dist[to] + 1 && amt > 0){
             e.flow += amt;
             adj[to].get(e.index).flow -= amt;
@@ -168,7 +175,7 @@ class PRMaxFlow{
         for(int u = 0; u < n; ++u)
             if(dist[u] >= k){
                 --count[dist[u]];
-                dist[u] = max(dist[u], n);
+                dist[u] = Math.max(dist[u], n);
                 ++count[dist[u]];
                 enqueue(u);
             }
@@ -178,7 +185,7 @@ class PRMaxFlow{
         dist[u] = n;
         for(Edge e: adj[u])
             if(e.cap > e.flow)
-                dist[u] = min(dist[u], dist[e.to] + 1);
+                dist[u] = Math.min(dist[u], dist[e.to] + 1);
         ++count[dist[u]];
         enqueue(u);
     }
@@ -200,9 +207,6 @@ class PRMaxFlow{
             this.cap = cap;
         }
     }
-    private static final int min(int x, int y){ return x < y ? x : y; }
-    private static final int max(int x, int y){ return x > y ? x : y; }
-    private static final long min(long x, long y){ return x < y ? x : y; }
     private static final class Node{
         final int x;
         final Node next;
