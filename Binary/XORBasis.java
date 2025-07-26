@@ -27,14 +27,12 @@ class XORBasis{
     }
     // returns the min value of s ^ x where s is the xor of a subset of elements (O(log))
     public final long minSubsequenceWith(long x){
-        for(int i = log - 1; i >= 0; --i)
-            if((x & (1 << i)) > 0) x ^= basis[i];
+        for(int i = log - 1; i >= 0; --i) x = Math.min(x, x ^ basis[i]);
         return x;
     }
     // returns the max value of s ^ x where s is the xor of a subset of elements (O(log))
     public final long maxSubsequenceWith(long x){
-        for(int i = log - 1; i >= 0; --i)
-            if((x & (1 << i)) == 0) x ^= basis[i];
+        for(int i = log - 1; i >= 0; --i) x = Math.max(x, x ^ basis[i]);
         return x;
     }
     // returns the max xor of a subset of elements (O(log))
