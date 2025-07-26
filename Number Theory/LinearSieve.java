@@ -18,7 +18,7 @@ class LinearSieve{
         }
         return res;
     }
-    // (O(2 ^ pf[x])
+    // (O(2 ^ pf[x]))
     public final int[] uniquePrimeProductDivisors(int x){
         ArrayList<Integer> primes = new ArrayList<>();
         while(x != 1){
