@@ -1,6 +1,6 @@
 // use this for divisors of numbers <= 1e7
 class LinearSieve{
-    final int[] gp; // sp[i] = smallest prime divisor of i
+    final int[] gp; // gp[i] = greatest prime divisor of i
     // (O(c))
     public LinearSieve(int c){
         gp = new int[c + 1];
