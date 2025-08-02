@@ -23,7 +23,7 @@ class SegmentTree{
         return op(lOp, rOp);
     }
     // sets a[x] to v (O(log(n)*T(op)))
-    public final void set(int x, int v) {
+    public final void set(int x, X v) {
         x += leaves - 1;
         tree[x] = v;
         while(x != 0){
