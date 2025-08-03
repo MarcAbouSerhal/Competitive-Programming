@@ -106,6 +106,18 @@ interface Polynomial {
     }
     // r(x) = a(x) mod b(x) = a(x) - b(x).floor(a(x) / b(x)) (O(nlog(n)))
     public static long[] mod(long[] a, long[] b, long mod) { return mod(minus(a, multiply(b, div(a, b, mod), mod)), b.length); }
+    // g(x) = f(x) / (m.x + b) where f(x) is assumed to be divisible by (m.x + b) (O(n))
+    public static long[] syntheticDiv(long[] a, long m, long b, long mod) {
+        long m_inv = inv(m, mod);
+        int n = a.length;
+        if(n == 1) return new long[] {0};
+        long[] a_ = new long[n - 1];
+        a_[n - 2] = (a[n - 1] * m_inv) % mod;
+        for(int i = n - 3; i >= 0; --i) 
+            a_[i] = (((a[i + 1] - b * a_[i + 1]) % mod) * m_inv) % mod;
+        // rest is (a[0] - b * a_[0]) / (m.x + b)
+        return a_;
+    }
     private static void DFT(double[] pRe, double[] pIm, int n){
         int bit;
         double temp;
