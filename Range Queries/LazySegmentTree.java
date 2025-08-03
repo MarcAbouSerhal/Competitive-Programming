@@ -5,39 +5,33 @@
 class LazySegmentTree{
     private final X[] tree;
     private final Y[] change;
-    private int leaves;
+    private final int leaves;
     // (both O(n*T(op)))
     public LazySegmentTree(int n, X v){
-        leaves = n;
-        if((leaves & (leaves - 1)) != 0)
-            leaves = Integer.highestOneBit(leaves) << 1;
+        leaves = a.length <= 1 ? 1 : 1 << (32 - Integer.numberOfLeadingZeros(a.length - 1)); 
         tree = new X[(leaves << 1) - 1];
         change = new Y[(leaves << 1) - 1];
+        for(int i = 0; i < change.length; ++i) change[i] = noUpdate;
         for(int i = 0; i < n; ++i) tree[i + leaves - 1] = v;
         for(int i = leaves - 2; i >= 0; --i) tree[i] = op(tree[(i << 1) + 1], tree[(i + 1) << 1]);
     }
     public LazySegmentTree(X[] a){
-        leaves = a.length;
-        if((leaves & (leaves - 1)) != 0)
-            leaves = Integer.highestOneBit(leaves) << 1;
+        leaves = a.length <= 1 ? 1 : 1 << (32 - Integer.numberOfLeadingZeros(a.length - 1)); 
         tree = new X[(leaves << 1) - 1];
         change = new Y[(leaves << 1) - 1];
+        for(int i = 0; i < change.length; ++i) change[i] = noUpdate;
         for(int i = 0; i < a.length; ++i) tree[i + leaves - 1] = a[i];
         for(int i = leaves - 2; i >= 0; --i) tree[i] = op(tree[(i << 1) + 1], tree[(i + 1) << 1]);
     }
     // returns f(a[l...r]) (O(log(n)*T(op)))
-    public final X get(int l, int r){
-        return get(l, r, 0, 0, leaves - 1);
-    }
+    public final X get(int l, int r){ return get(l, r, 0, 0, leaves - 1); }
     // applies update u to a[l...r] (O(log(n)*(T(op)+T(clean)))
-    public void update(int l, int r, Y u){
-        update(l, r, 0, 0, leaves - 1, u);
-    }
+    public void update(int l, int r, Y u){ update(l, r, 0, 0, leaves - 1, u); }
     // sets a[x] to v (O(log(n)*(T(op)+T(clean)))
     public final void set(int x, X v){
         x += leaves - 1;
         tree[x] = v;
-        change[x] = null;
+        change[x] = noUpdate;
         int lx = x - leaves + 1, rx = x - leaves + 1;
         while(x != 0){
             if((x & 1) == 0) lx -= rx - lx + 1;
@@ -50,13 +44,15 @@ class LazySegmentTree{
         }
     }
     private final X get(int l, int r, int x,int lx, int rx){
-        if(rx < l || lx > r) return null;
-        clean(x,lx,rx);
+        if(rx < l || lx > r) return id;
+        clean(x, lx, rx);
         if(lx >= l && rx <= r) return tree[x];
         int mid = (lx + rx) >> 1;
         return op(get(l, r, (x << 1) + 1, lx, mid), get(l, r, (x + 1) << 1, mid + 1, rx));
     }
     // CHANGE THESE FUNCTIONS
+    private static final X id;
+    private static final Y noUpdate;
     private final void update(int l, int r, int x, int lx, int rx, Y u){
         clean(x, lx, rx);
         if(rx < l || lx > r) return;
@@ -72,7 +68,7 @@ class LazySegmentTree{
         tree[x] = op(tree[(x << 1) + 1], tree[(x + 1) << 1]); 
     }
     private final void clean(int x, int lx, int rx){
-        if(change[x] != null){
+        if(change[x] != noUpdate){
             // if we care about range queries
             // apply what's in change[x] to [lx,rx] (tree[x])
             if(rx != lx){
@@ -88,12 +84,8 @@ class LazySegmentTree{
             else{
                 // apply what's in change[x] to a[lx] (tree[x])
             }
-            change[x] = null;
+            change[x] = noUpdate;
         }
     }
-    private static final X op(X a, X b){
-        if(a == null) return b;
-        if(b == null) return a;
-        // define associative operation here (f(f(a,b),c)=f(a,f(b,c)))
-    }
+    private static final X op(X a, X b){ /* define associative operation here (f(f(a,b),c)=f(a,f(b,c))) */ }
 }
