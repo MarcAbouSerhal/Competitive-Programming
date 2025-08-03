@@ -1,11 +1,11 @@
 class XORBasis{
     final int log;
     int size = 0;
-    private final long[] basis;
+    private final int[] basis;
     // means all elements are in [0 .. (1 << log) - 1]
-    public XORBasis(int log){ basis = new long[this.log = log]; }
-    // adds x to the set (O(log))
-    public final void add(long x){
+    public XORBasis(int log){ basis = new int[this.log = log]; }
+    // adds x to the basis (O(log))
+    public final void add(int x){
         for(int i = log - 1; i >= 0; --i){
             if((x & (1 << i)) == 0) continue;
             if(basis[i] == 0){
@@ -16,8 +16,8 @@ class XORBasis{
             x ^= basis[i];
         }
     }
-    // returns whether or not there is a subset of the elements such that their ^ is equal to x (O(log))
-    public final boolean contains(long x){
+    // returns whether or not there is a subset of the elements such that their XOR is equal to x (O(log))
+    public final boolean contains(int x){
         for(int i = log - 1; i >= 0; --i){
             if((x & (1 << i)) == 0) continue;
             if(basis[i] == 0) return false;
@@ -25,21 +25,21 @@ class XORBasis{
         }
         return true;
     }
-    // returns the min value of s ^ x where s is the xor of a subset of elements (O(log))
-    public final long minSubsequenceWith(long x){
+    // returns the min value of s ^ x where s is the XOR of a subset of elements (O(log))
+    public final int minSubsequenceWith(int x){
         for(int i = log - 1; i >= 0; --i) x = Math.min(x, x ^ basis[i]);
         return x;
     }
-    // returns the max value of s ^ x where s is the xor of a subset of elements (O(log))
-    public final long maxSubsequenceWith(long x){
+    // returns the max value of s ^ x where s is the XOR of a subset of elements (O(log))
+    public final int maxSubsequenceWith(int x){
         for(int i = log - 1; i >= 0; --i) x = Math.max(x, x ^ basis[i]);
         return x;
     }
-    // returns the max xor of a subset of elements (O(log))
-    public final long maxSubsequence(){ return maxSubsequenceWith(0); }
-    // returns the kth biggest xor of a subset of elements (1-indexed )(O(log))
-    public final long kthSmallestSubsequence(int k){
-        long x = 0, tot = 1 << size;
+    // returns the max XOR of a subset of elements (O(log))
+    public final int maxSubsequence(){ return maxSubsequenceWith(0); }
+    // returns the kth biggest XOR of a subset of elements (1-indexed) (O(log))
+    public final int kthSmallestSubsequence(int k){
+        int x = 0, tot = 1 << size;
         for(int i = log - 1; i >= 0; --i)
             if(basis[i] != 0){
                 tot >>= 1;
@@ -47,6 +47,12 @@ class XORBasis{
                 if(tot < k) k -= tot;
             }
         return x;
+    }
+    // returns basis for {a & x: a in the span} (O(log^2))
+    public final XORBasis and(int x) {
+        XORBasis b = new XORBasis(log);
+        for(int i: basis) if(i != 0) b.add(i & x);
+        return b;
     }
     // returns a copy of the current basis (O(log))
     public final XORBasis clone(){
@@ -58,9 +64,7 @@ class XORBasis{
     // returns the union of the two bases (O(log^2))
     public static final XORBasis merge(XORBasis b1, XORBasis b2){
         final XORBasis res = b1.clone();
-        for(long i: b2.basis)
-            if(i != 0) 
-                res.add(i);
+        for(int i: b2.basis) if(i != 0) res.add(i);
         return res;
     }
 }
