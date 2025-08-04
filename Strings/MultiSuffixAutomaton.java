@@ -1,6 +1,8 @@
 class MultiSuffixAutomaton {
     private static final int k = 26, base = 'a';
     final ArrayList<Node> d = new ArrayList<>();
+    // last: index of last non-clone Node
+    // lastIndex: index of last added string
     int last = 0, lastIndex = -1;
     public MultiSuffixAutomaton() { d.add(new Node()); }
     // (O(n))
