@@ -22,9 +22,9 @@ class SuffixAutomaton {
             int q = d.get(p).adj[c - base];
             if (d.get(p).sz + 1 == d.get(q).sz)  d.get(curr).link = q;
             else {
-                d.add(new Node());
+                Node cloneNode = new Node(), qNode = d.get(q);
+                d.add(cloneNode);
                 int clone = d.size() - 1;
-                Node cloneNode = d.get(clone), qNode = d.get(q);
                 cloneNode.sz = d.get(p).sz + 1;
                 cloneNode.adj = Arrays.copyOf(qNode.adj, k);
                 cloneNode.link = qNode.link;
