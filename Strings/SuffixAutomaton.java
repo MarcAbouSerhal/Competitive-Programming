@@ -38,6 +38,8 @@ class SuffixAutomaton {
         last = curr;
     }
     static final class Node {
+        // sz: length of longest path represented by current node
+        // link: longest proper suffix not represented by current node
         int sz = 0, link = -1;
         int[] adj = new int[k];
         public Node() { for(int i = 0; i < k; ++i) adj[i] = -1; }
