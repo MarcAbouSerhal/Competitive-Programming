@@ -70,6 +70,11 @@ interface Geometry {
         public final double length() { return d(p1, p2); }
         public final boolean contains(Point p) { return between(p1, p, p2) && sign((p.x - p1.x) * (p2.y - p1.y) + (p.y - p1.y) * (p1.x - p2.x)) == 0; } 
     }
+    public static double d(Segment s, Point p) { 
+        Point q = new Line(s).projection(p);
+        if(s.contains(q)) return d(p, q);
+        else return Math.min(d(p, s.p1), d(p, s.p2));
+    }
     public static Point intersection(Segment s1, Segment s2) {
         double oa = orient(s2.p1, s2.p2, s1.p1), ob = orient(s2.p1, s2.p2, s1.p2),
             oc = orient(s1.p1, s1.p2, s2.p1), od = orient(s1.p1, s1.p2, s2.p2), denom = ob - oa;
