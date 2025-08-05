@@ -56,6 +56,7 @@ class MultiSuffixAutomaton {
         // link: longest proper suffix not represented by current node
         // last: last string index that includes all substrings represented by current node
         // indices: # string indices that include all substrings represented by current node
+        // Note: could replace last and indices ints, by indices list (if we care about specific indices not just the count)
         int sz = 0, link = -1, last = -1, indices = 0;
         int[] adj = new int[k];
         public Node() { for(int i = 0; i < k; ++i) adj[i] = -1; }
