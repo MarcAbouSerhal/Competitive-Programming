@@ -1,5 +1,5 @@
 class StringDoubleHash{
-    private static final long m1 = 3030000073l, m2 = 3030000097l;
+    private static final long m1 = 3030000179l, m2 = 3030001067l;
     private static final long b1 = new Random().nextLong(2, m1), b2 = new Random().nextLong(2, m2);
     private static long[] inv_b1_pow, inv_b2_pow;
     private static long[] b1_pow, b2_pow;
