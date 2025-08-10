@@ -25,8 +25,7 @@ class Tree{
     public final int kthAncestor(int u, int k) {
         if(depth[u] < k) return -1;
         for(int i = 0; i < log; ++i)
-            if((k & (1 << i)) != 0)
-                u = up[i][u];
+            if((k & (1 << i)) != 0) u = up[i][u];
         return u;
     }
     // returns lca(u, v) (O(log(n)))

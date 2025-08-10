@@ -1,4 +1,3 @@
-
 class CyclicShiftSort {
     private final static int alphabet = 128;
     // returns p where p[i] is the start of the ith smallest cyclic shift of s (O(nlog(n)))

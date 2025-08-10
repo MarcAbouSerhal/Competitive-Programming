@@ -35,8 +35,7 @@ class CentroidDecompostion{
     }
     private static final int centroid(int u, int par, int l) {
         for(int v: adj[u])
-            if(v != par && sz[v] > l)
-                return centroid(v, u, l);
+            if(v != par && sz[v] > l) return centroid(v, u, l);
         return u;
     }
 }
