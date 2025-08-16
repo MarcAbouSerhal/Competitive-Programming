@@ -67,6 +67,7 @@ interface Geometry {
         public Segment(Point p1, Point p2) { this.p1 = p1; this.p2 = p2; }
         public Segment(Point p, Vector v) { this(p, p.translation(v)); }
         public Segment(Segment s) { this(s.p1, s.p2); }
+        public final Point middle() { return new Point((p1.x + p2.x) / 2, (p1.y + p2.y) / 2); }
         public final double length() { return d(p1, p2); }
         public final boolean contains(Point p) { return between(p1, p, p2) && sign((p.x - p1.x) * (p2.y - p1.y) + (p.y - p1.y) * (p1.x - p2.x)) == 0; } 
     }
@@ -156,6 +157,14 @@ interface Geometry {
             return new Point[] {new Point(c.c.x + h * dx, c.c.y + h * dy), new Point(c.c.x - h * dx, c.c.y - h * dy)};
         }
     }
+    public static Point[] intersections(Circle c1, Circle c2) { // c1 != c2
+        double dx = c2.c.x - c1.c.x, dy = c2.c.y - c1.c.y, d = Math.sqrt(dx * dx + dy * dy);
+        if(sign(d - (c1.r + c2.r)) == 1 || sign(d - Math.abs(c1.r - c2.r)) == -1) return new Point[] {};
+        double a = (c1.r * c1.r - c2.r * c2.r) / (d * 2) + d / 2, h = Math.sqrt(Math.max(0, c1.r * c1.r - a * a));
+        if(sign(h) == 0) return new Point[] { new Point(c1.c.x + a * dx / d, c1.c.y + a * dy / d) };
+        double x3 = c1.c.x + a * dx / d, y3 = c1.c.y + a * dy / d, rx = - h * dy / d, ry = h * dx / d;
+        return new Point[] { new Point(x3 + rx, y3 + ry), new Point(x3 - rx, y3 - ry) };
+    }
     public final static class ConvexPolygon extends SimplePolygon {
         public ConvexPolygon(ArrayList<Point> pts) { super(pts); }
     }
@@ -175,16 +184,38 @@ interface Geometry {
         }
         return neg.size() <= 2 || pos.size() <= 2 ? new ConvexPolygon[] {p} : new ConvexPolygon[] {new ConvexPolygon(neg), new ConvexPolygon(pos)};
     }
+    class AngleRange {
+        final double a1, a2;
+        public AngleRange(double a1, double a2) { this.a1 = fix(a1); this.a2 = fix(a2); }
+        public AngleRange(double a1, double a2, double contained) {
+            a1 = fix(a1); a2 = fix(a2); contained = fix(contained);
+            if(contained > a1) { this.a1 = a1; this.a2 = a2; }
+            else { this.a2 = a1; this.a1 = a2; }
+        }
+        public final double range() { 
+            double diff = Math.abs(a2 - a1);
+            return sign(diff) == 0 ? 0 : a2 > a1 ? diff : 2 * PI - diff;
+        }
+        public final boolean contains(double b) {
+            b = fix(b);
+            return sign(a2 - a1) == -1 ? sign(a2 - b) >= 0 || sign(b - a1) >= 0 : sign(b - a1) >= 0 && sign(a2 - b) >= 0;
+        }
+        public final boolean contains(AngleRange other) {
+            if(a1 > a2 && other.a1 <= other.a2) return sign(a2 - other.a2) >= 0;
+            else return sign(other.a1 - a1) >= 0 && sign(a2 - other.a2) >= 0;
+        }
+        public final AngleRange complement() { return new AngleRange(a2, a1); }
+        public static final AngleRange smallestRange(double a1, double a2) {
+            a1 = fix(a1); a2 = fix(a2);
+            double diff = Math.abs(a2 - a1);
+            return diff >= PI ? new AngleRange(a2, a1) : new AngleRange(a1, a2);
+        }
+        public static final AngleRange biggestRange(double a1, double a2) { return smallestRange(a1, a2).complement(); }
+    }
     public static double smallestArc(double a1, double a2) {
         double diff = Math.abs(fix(a1) -  fix(a2));
         return diff >= PI ? 2 * PI - diff : diff;
     }
-    public static boolean between(double a1, double b, double a2) {
-        a1 = fix(a1);
-        a2 = fix(a2);
-        b = fix(b);
-        return sign(a2 - a1) == -1 ? sign(a2 - b) >= 0 || sign(b - a1) >= 0 : sign(b - a1) >= 0 && sign(a2 - b) >= 0;
-    }
-    private static double fix(double a) { return a < -EPS ? a + 2 * PI : a; } 
+    private static double fix(double a) { return a < -EPS ? a + 2 * PI : a; } // -2.pi <= a <= 2.pi
     public static int sign(double x) { return Math.abs(x) < EPS ? 0 : x > 0 ? 1 : -1; } 
 }
