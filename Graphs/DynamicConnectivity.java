@@ -1,24 +1,24 @@
 class DynamicConnectivity {
     private int t = 0;
-    private final int n, leaves;
-    private final Pair[] q;
+    private final int leaves;
+    private final int[] x, y;
     private final ArrayList<Triple> e;
     private final ArrayList<Triple>[] d;
+    private final RollbackDSU dsu;
     public DynamicConnectivity(int n, int q_) {
-        this.n = n;
+        dsu = new RollbackDSU(n);
         leaves = q_ <= 1 ? 1 : 1 << (32 - Integer.numberOfLeadingZeros(q_ - 1)); 
-        q = new Pair[leaves];
+        x = new int[q_];
+        y = new int[q_];
+        for(int i = 0; i < q_; ++i) x[i] = -2;
         d = new ArrayList[(leaves << 1) - 1];
         for(int i = 0; i < d.length; ++i) d[i] = new ArrayList<>();
         e = new ArrayList<>(q_);
     }
-    public final void toggleEdge(int u, int v) {
-        if(u > v) { u ^= v; v ^= u; u ^= v; }
-        e.add(new Triple(u, v, t++));
-    }
-    public final void areConnected(int u, int v) { q[t++] = new Pair(u, v); }
-    public final void componentSize(int u) { q[t++] = new Pair(u, -1); }
-    public final void components() { q[t++] = new Pair(-1, -1); }
+    public final void toggleEdge(int u, int v) { if(u > v) { u ^= v; v ^= u; u ^= v; } e.add(new Triple(u, v, t++)); }
+    public final void areConnected(int u, int v) { x[t] = u; y[t++] = v; }
+    public final void componentSize(int u) { x[t] = u; y[t++] = -1; }
+    public final void components() { x[t] = y[t++] = -1;  }
     // -1 means connected, 0 means not connected, >0 is size of component or number of components (O(qlog^2(q)))
     public final ArrayList<Integer> solve() {
         int m = e.size();
@@ -32,7 +32,6 @@ class DynamicConnectivity {
                 else apply(t, t1);
             }
         }
-        dsu = new RollbackDSU(n);
         ans = new ArrayList<>();
         dfs(0);
         return ans;
@@ -47,7 +46,6 @@ class DynamicConnectivity {
             r = (r - 1) >> 1;
         }
     }
-    private RollbackDSU dsu;
     private ArrayList<Integer> ans;
     private final void dfs(int u) {
         for(Triple t: d[u]) dsu.join(t.u, t.v);
@@ -55,62 +53,50 @@ class DynamicConnectivity {
             dfs((u << 1) + 1);
             dfs((u + 1) << 1);
         }
-        else if(q[u - leaves + 1] != null) {
-            Pair query = q[u - leaves + 1];
-            if(query.u == -1) ans.add(dsu.components);
-            else if(query.v == -1) ans.add(dsu.size(query.u));
-            else ans.add(dsu.find(query.u) == dsu.find(query.v) ? -1 : 0);
+        else if(u - leaves + 1 < x.length && x[u - leaves + 1] != -2) {
+            if(x[u - leaves + 1] == -1) ans.add(dsu.components);
+            else if(y[u - leaves + 1] == -1) ans.add(dsu.size(x[u - leaves + 1]));
+            else ans.add(dsu.find(x[u - leaves + 1]) == dsu.find(y[u - leaves + 1]) ? -1 : 0);
         }
         for(int i = 0; i < d[u].size(); ++i) dsu.rollback();
-    }
-    private final static class Pair {
-        final int u, v;
-        public Pair(int u, int v) { this.u = u; this.v = v; }
     }
     private final static class Triple {
         final int u, v, t;
         public Triple(int u, int v, int t) { this.u = u; this.v = v; this.t = t; }
     }
-    private final static class RollbackDSU {
-        private final int[] p;
-        private Node history;
-        int components;
-        public RollbackDSU(int n) {
-            p = new int[components = n];
-            for (int i = 0; i < n; ++i) p[i] = -1;
-        }
-        // (O(log(n)))
-        public final int find(int a) { return p[a] < 0 ? a : find(p[a]); }
-        // (O(log(n)))
-        public final void join(int a, int b) {
-            a = find(a); b = find(b);
-            history = new Node(a, p[a], b, p[b], components, history);
-            if (a == b) return;
-            components--;
-            if(-p[a] > -p[b]){ a = a ^b ; b = a ^ b; a = a ^ b; }
-            p[b] += p[a];
-            p[a] = b;
-        }
-        // size of the component containing a (O(log(n)))
-        public final int size(int a) { return -p[find(a)]; }
-        // reverses effect of last join (O(1))
-        public final void rollback() {
-            components = history.components;
-            p[history.a] = history.pa;
-            p[history.b] = history.pb;
-            history = history.next;
-        }
-        private static final class Node {
-            final int a, pa, b, pb, components;
-            final Node next;
-            public Node(int a, int pa, int b, int pb, int components, Node next) {
-                this.a = a;
-                this.pa = pa;
-                this.b = b;
-                this.pb = pb;
-                this.components = components;
-                this.next = next;
-            }
-        } 
+}
+class RollbackDSU {
+    private final int[] p;
+    private Node history;
+    int components;
+    public RollbackDSU(int n) { p = new int[components = n]; for (int i = 0; i < n; ++i) p[i] = -1; }
+    public int find(int a) { return p[a] < 0 ? a : find(p[a]); }
+    public void join(int a, int b) {
+        a = find(a); b = find(b);
+        history = new Node(a, p[a], b, p[b], components, history);
+        if (a == b) return;
+        components--;
+        if(-p[a] > -p[b]){ a = a ^b ; b = a ^ b; a = a ^ b; }
+        p[b] += p[a];
+        p[a] = b;
     }
+    public int size(int a) { return -p[find(a)]; }
+    public void rollback() {
+        components = history.components;
+        p[history.a] = history.pa;
+        p[history.b] = history.pb;
+        history = history.next;
+    }
+    private static final class Node {
+        final int a, pa, b, pb, components;
+        final Node next;
+        public Node(int a, int pa, int b, int pb, int components, Node next) {
+            this.a = a;
+            this.pa = pa;
+            this.b = b;
+            this.pb = pb;
+            this.components = components;
+            this.next = next;
+        }
+    } 
 }
