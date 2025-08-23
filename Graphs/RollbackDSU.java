@@ -2,14 +2,9 @@ class RollbackDSU {
     private final int[] p;
     private Node history;
     int components;
-    public RollbackDSU(int n) {
-        p = new int[components = n];
-        for (int i = 0; i < n; ++i) p[i] = -1;
-    }
-    // (O(log(n)))
-    public final int find(int a) { return p[a] < 0 ? a : find(p[a]); }
-    // (O(log(n)))
-    public final void join(int a, int b) {
+    public RollbackDSU(int n) { p = new int[components = n]; for (int i = 0; i < n; ++i) p[i] = -1; }
+    public int find(int a) { return p[a] < 0 ? a : find(p[a]); }
+    public void join(int a, int b) {
         a = find(a); b = find(b);
         history = new Node(a, p[a], b, p[b], components, history);
         if (a == b) return;
@@ -18,10 +13,8 @@ class RollbackDSU {
         p[b] += p[a];
         p[a] = b;
     }
-    // size of the component containing a (O(log(n)))
-    public final int size(int a) { return -p[find(a)]; }
-    // reverses effect of last join (O(1))
-    public final void rollback() {
+    public int size(int a) { return -p[find(a)]; }
+    public void rollback() {
         components = history.components;
         p[history.a] = history.pa;
         p[history.b] = history.pb;
