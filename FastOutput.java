@@ -11,17 +11,10 @@ class FastOutput {
     public void print(long x) {
         if (x == 0) { print('0'); return; }
         int size = 0;
-        if (x > 0) {
-            while (x != 0) {
-                digitBuffer[size++] = (char) ('0' + (x % 10));
-                x /= 10;
-            }
-        } 
+        if (x > 0)  for(; x != 0; x /= 10)  digitBuffer[size++] = (char) ('0' + (x % 10));
         else {
-            while (x != 0) {
-                digitBuffer[size++] = (char) ('0' - (x % 10));
-                x /= 10;
-            }
+            print('-');
+            for(; x != 0; x /= 10)  digitBuffer[size++] = (char) ('0' - (x % 10));
         }
         for(--size; size >= 0; --size) print(digitBuffer[size]);
     }
