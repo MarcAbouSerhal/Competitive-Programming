@@ -1,6 +1,7 @@
 class FastOutput {
     private static final int bufferSize = 1 << 18, bufferCount = 1 << 12;
     private static final char[] digitBuffer = new char[19];
+    private static int tick = 0;
     private final PrintStream out;
     private final char[][] buffers = new char[bufferCount][];
     private int c1 = 0, c2 = 0;
@@ -9,14 +10,13 @@ class FastOutput {
     public FastOutput(String filename) { PrintStream stream; try{ stream = new PrintStream(filename); } catch(Exception e) { stream = new PrintStream(System.out); }; out = stream; }
     public void print(char c) { buffers[c1][c2++] = c; if(c2 == bufferSize) { buffers[++c1] = new char[bufferSize]; c2 = 0; } }
     public void print(long x) {
-        if (x == 0) { print('0'); return; }
-        int size = 0;
-        if (x > 0)  for(; x != 0; x /= 10)  digitBuffer[size++] = (char) ('0' + (x % 10));
+        if (x == (tick = 0)) { print('0'); return; }
+        if (x > 0)  for(; x != 0; x /= 10)  digitBuffer[tick++] = (char) ('0' + (x % 10));
         else {
             print('-');
-            for(; x != 0; x /= 10)  digitBuffer[size++] = (char) ('0' - (x % 10));
+            for(; x != 0; x /= 10)  digitBuffer[tick++] = (char) ('0' - (x % 10));
         }
-        for(--size; size >= 0; --size) print(digitBuffer[size]);
+        for(--tick; tick >= 0; --tick) print(digitBuffer[tick]);
     }
     public void print(double x) { print(Double.toString(x)); }
     public void print(double x, int places, boolean rounded) { 
@@ -44,10 +44,10 @@ class FastOutput {
     public void endl() { print('\n'); }
     public void space() { print(' '); }
     public void flush() {
-        for(int i = 0; i < c1; ++i) out.print(buffers[i]);
+        for(tick = 0; tick < c1; ++tick) out.print(buffers[tick]);
         if(c2 != 0) {
             char[] last = new char[c2];
-            for(int i = 0; i < c2; ++i) last[i] = buffers[c1][i];
+            for(tick = 0; tick < c2; ++tick) last[tick] = buffers[c1][tick];
             out.print(last);
         }
         c1 = c2 = 0;
