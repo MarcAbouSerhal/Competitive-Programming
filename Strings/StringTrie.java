@@ -54,23 +54,6 @@ class Trie{
         }
         return n;
     } 
-    private final boolean contains(int k, int l, Node curr){
-        if(curr == null) return false;
-        if(l == 1)
-            return curr.prefs >= k;
-        boolean ans = false;
-        for(int i = 0; i < k; ++i){
-            ans |= contains(k, l - 1, curr.children[i]);
-        }
-        return ans;
-    }
-    // returns if there are >=k strings with LCP >= l (O(sum( s in T ){ len(s) }))
-    public final boolean contains(int k, int l){
-        boolean ans = false;
-        for(int i = 0; i < k; ++i)
-            ans |= contains(k, l, head.children[i]);
-        return ans;
-    }
     static  final class Node{
         final Node[] children = new Node[k];
         int ends = 0, prefs = 0;
