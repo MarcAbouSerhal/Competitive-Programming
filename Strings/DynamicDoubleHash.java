@@ -1,4 +1,4 @@
-// supports updates
+// supports updates, make sure to have FenwickTree
 class DynamicDoubleHash{
     // call this to initialize prime powers, n is size of biggest string
     public final static void init(int n){
@@ -34,49 +34,9 @@ class DynamicDoubleHash{
         this.h1 = new FenwickTree(h1, m1);
         this.h2 = new FenwickTree(h2, m2);
     }
-
     // below 2 functios are O(log(n))
     public final long get(int l, int r){ return (((h1.get(l,r) * inv_p1_pow[l]) % m1) << 32) | (h2.get(l,r) * inv_p2_pow[l]) % m2; }
-    public final void set(int i, char c){
-        h1.add(i, ((c - s[i]) * p1_pow[i]) % m1);
-        h2.add(i, ((c - s[i]) * p2_pow[i]) % m2);
-        s[i] = c;
-    }
-    private static final class FenwickTree {
-        private final long[] tree;
-        private final long m;
-        public FenwickTree(long[] a, long m) {
-            this.m = m;
-            tree = a; // note that this uses the same array, not a clone!
-            for (int i = 0; i < tree.length; i++) {
-                int j = i | (i + 1);
-                if (j < tree.length) 
-                    tree[j] += tree[i];
-            }
-        }
-        public final long get(int l, int r) {
-            long result = 0;
-            while (r >= 0) {
-                result += tree[r];
-                r = (r & (r + 1)) - 1;
-            }
-            --l;
-            while (l >= 0) {
-                result -= tree[l];
-                l = (l & (l + 1)) - 1;
-            }
-            return result % m; 
-            // note that there is no checking for negative value because prefix is %ed so its non-decreasing
-            // and so result will always be positive
-            // better for performance but might be unsafe for big lengths
-        }
-        public final void add(int i, long x) {
-            while (i < tree.length) {
-                tree[i] += x;
-                i = i | (i + 1);
-            }
-        }
-    }
+    public final void set(int i, char c){ h1.add(i, ((c - s[i]) * p1_pow[i]) % m1); h2.add(i, ((c - s[i]) * p2_pow[i]) % m2); s[i] = c; }
     private static final long pow(long x, long n, long m){
         long res = 1;
         while(n != 0) {
