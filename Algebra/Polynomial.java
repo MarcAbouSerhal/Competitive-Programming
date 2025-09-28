@@ -105,7 +105,7 @@ interface Polynomial {
         return reverse(mod(multiply(reverse(a), inverse(reverse(b), mod, n - m + 1), mod), n - m + 1));
     }
     // r(x) = a(x) mod b(x) = a(x) - b(x).floor(a(x) / b(x)) (O(nlog(n)))
-    public static long[] mod(long[] a, long[] b, long mod) { return mod(minus(a, multiply(b, div(a, b, mod), mod)), b.length); }
+    public static long[] mod(long[] a, long[] b, long mod) { return mod(minus(a, multiply(b, div(a, b, mod), mod)), b.length - 1); }
     // g(x) = f(x) / (m.x + b) where f(x) is assumed to be divisible by (m.x + b) (O(n))
     public static long[] syntheticDiv(long[] a, long m, long b, long mod) {
         long m_inv = inv(m, mod);
