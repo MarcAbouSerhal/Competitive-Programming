@@ -1,23 +1,17 @@
 class MergeSortTree{
     private final int[][] tree;
-    private int leaves;
+    private final int leaves;
     // O(nlog(n))
     public MergeSortTree(int[] a){
-        leaves = a.length;
-        if((leaves & (leaves - 1)) != 0)
-            leaves = Integer.highestOneBit(leaves) << 1;
+        leaves = a.length <= 1 ? 1 : 1 << (32 - Integer.numberOfLeadingZeros(a.length - 1)); 
         tree = new int[(leaves << 1) - 1][];
         for(int i = 0; i < a.length; ++i) tree[i + leaves - 1] = new int[] { a[i] };
         for(int i = leaves - 2; i >= 0; --i) tree[i] = merge(tree[(i << 1) + 1], tree[(i + 1) << 1]);
     }
     // returns number of elements <=k in [l,r] (O(log^2(n)))
-    public final int leq(int l, int r, int k){
-        return leq(l, r, k, 0, 0, leaves - 1);
-    }
+    public final int leq(int l, int r, int k){ return leq(l, r, k, 0, 0, leaves - 1); }
     // returns number of occurences of k in [l,r] (O(log^2(n)))
-    public final int eq(int l, int r, int k){
-        return eq(l, r, k, 0, 0, leaves - 1);
-    }
+    public final int eq(int l, int r, int k){ return eq(l, r, k, 0, 0, leaves - 1); }
     // sets a[x] to v, not recommended (O(n))
     public final void set(int x, int v){ 
         x += leaves - 1;
