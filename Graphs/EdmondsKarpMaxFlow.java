@@ -22,8 +22,20 @@ class EdmondsKarpMaxFlow {
                 e.flow = 0; // reset all flows to 0
         long flow = 0;
         while(true) {
-            path(s);
+            cut[s] = true;
+            Queue<Integer> q = new LinkedList<>();
+            q.add(s);
+            while(!q.isEmpty()){
+                s = q.poll();
+                for(Edge e: adj[s])
+                    if(e.cap > e.flow && !cut[e.to]) {
+                        par[e.to] = e;
+                        q.add(e.to);
+                        cut[e.to] = true;
+                    }
+            }
             if(!cut[t]) break;
+            for(int u = 0; u < n; ++u) cut[u] = false;
             long fl = Long.MAX_VALUE;
             for(Edge x = par[t]; x != null; x = par[x.from]) fl = Math.min(fl, x.cap - x.flow);
             flow += fl;
@@ -33,21 +45,6 @@ class EdmondsKarpMaxFlow {
             }
         }
         return flow;
-    }
-    private final void path(int s) {
-        for(int u = 0; u < n; ++u) cut[u] = false;
-        cut[s] = true;
-        Queue<Integer> q = new LinkedList<>();
-        q.add(s);
-        while(!q.isEmpty()){
-            s = q.poll();
-            for(Edge e: adj[s])
-                if(e.cap > e.flow && !cut[e.to]) {
-                    par[e.to] = e;
-                    q.add(e.to);
-                    cut[e.to] = true;
-                }
-        }
     }
     public static final class Edge {
         final int from, to, rev;
