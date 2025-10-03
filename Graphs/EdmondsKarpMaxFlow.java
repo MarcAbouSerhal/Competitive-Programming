@@ -1,7 +1,7 @@
 // O(min(F, nm)m)
 class EdmondsKarpMaxFlow {
     private final int n;
-    public final ArrayList<Edge>[] adj; // for(MinCostMaxFlow.Edge e: g.adj[u])
+    public final ArrayList<Edge>[] adj; // for(EdmondsKarpMaxFlow.Edge e: g.adj[u]) if(e.cap != 0) ...
     public final boolean[] cut;
     private final Edge[] par;
     public EdmondsKarpMaxFlow(int n) {
