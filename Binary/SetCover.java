@@ -2,10 +2,11 @@ class SetCover {
     // finds minimum subsequence whose bitwise OR is the same as the whole array (O(k^2.2^k))
     public final static ArrayList<Integer> findMinCover(boolean[] available, int k) {
         int or = 0, all = (1 << k) - 1;
-        int[] a_ = new int[1 << k], s, f;
+        long[] a = new long[1 << k], f;
+        int[] s;
         for(int i = 0; i < 1 << k; ++i)
             if(available[i]) {
-                a_[i] = 1;
+                a[i] = 1;
                 or |= i;
             }
         if(or == 0) return new ArrayList<>();
@@ -16,20 +17,20 @@ class SetCover {
         }
         for(int i = 0; i < k; ++i)
             for(int j = 0; j < 1 << k; ++j)
-                if((j & (1 << i)) != 0) a_[j] += a_[j ^ (1 << i)];
+                if((j & (1 << i)) != 0) a[j] += a[j ^ (1 << i)];
         s = new int[1 << k];
-        f = new int[1 << k];
+        f = new long[1 << k];
         s[0] = 1;
-        f[0] = a_[all];
-        for(int i = 1; i < 1 << k; ++i) f[i] = (s[i] = -s[i & (i - 1)]) * a_[all ^ i];
+        f[0] = a[all];
+        for(int i = 1; i < 1 << k; ++i) f[i] = (s[i] = -s[i & (i - 1)]) * a[all ^ i];
         for(int i = 0; i < 1 << k; ++i) s[i] = available[i] ? i : 0;
         for(int i = 0; i < k; ++i)
             for(int j = 0; j < 1 << k; ++j)
                 if((j & (1 << i)) == 0 && s[j] == 0) s[j] = s[j ^ (1 << i)];
-        ArrayList<int[]> can = new ArrayList<>(k - 1);
+        ArrayList<long[]> can = new ArrayList<>(k - 1);
         for(int l = 2; l == l; ++l) {
-            int[] zeta = new int[1 << k];
-            for(int i = 0; i < 1 << k; ++i) zeta[i] = f[i] = f[i] * a_[all ^ i];
+            long[] zeta = new long[1 << k];
+            for(int i = 0; i < 1 << k; ++i) zeta[i] = f[i] = f[i] * a[all ^ i];
             for(int i = 0; i < k; ++i)
                 for(int j = 0; j < 1 << k; ++j)
                     if((j & (1 << i)) != 0) zeta[j] += zeta[j ^ (1 << i)];
