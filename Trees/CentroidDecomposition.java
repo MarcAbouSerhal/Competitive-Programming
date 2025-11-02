@@ -1,31 +1,28 @@
 class CentroidDecompostion{
-    private static TreeSet<Integer>[] adj;
-    private static int[] p, sz;
-    // returns parent array of centroid decomposition of tree (O(nlog(n)))
-    public static final int[] buildTree(ArrayList<Integer>[] adj_) {
-        int n = adj_.length;
-        adj = new TreeSet[n];
+    public int[] p;
+    private ArrayList<Integer>[] adj;
+    private int[] sz;
+    private boolean[] dead;
+    public CentroidDecompostion(ArrayList<Integer>[] adj) {
+        int n = adj.length;
         p = new int[n];
         sz = new int[n];
-        for(int i = 0; i < n; ++i) adj[i] = new TreeSet<>(adj_[i]);
+        dead = new boolean[n];
+        this.adj = adj;
         build(0, -1);
-        adj = null;
         sz = null;
-        return p;
+        dead = null;
     }
-    public static final void build(int u, int par) {
+    public final void build(int u, int par) {
         dfs(u, par); 
         int c = centroid(u, par, sz[u] >> 1);
         // do something with tree rooted at c / paths passing by c here
         p[c] = par;
-        ArrayList<Integer> temp = new ArrayList<>(adj[c]);
-        for(int v: temp) {
-            adj[c].remove(v);
-            adj[v].remove(c);
-            build(v, c);
-        }
+        dead[c] = true;
+        for(int v: adj[u])
+            if(!dead[v]) build(v, c);
     }
-    private static final void dfs(int u, int par) {
+    private final void dfs(int u, int par) {
         sz[u] = 1;
         for(int v : adj[u])
             if(v != par) {
@@ -33,7 +30,7 @@ class CentroidDecompostion{
                 sz[u] += sz[v];
             }
     }
-    private static final int centroid(int u, int par, int l) {
+    private final int centroid(int u, int par, int l) {
         for(int v: adj[u])
             if(v != par && sz[v] > l) return centroid(v, u, l);
         return u;
