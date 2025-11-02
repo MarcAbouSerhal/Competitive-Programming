@@ -20,7 +20,7 @@ class DynamicDoubleHash{
     private static long[] inv_p1_pow, inv_p2_pow;
     private static long[] p1_pow, p2_pow;
     private final char[] s;
-    private final FenwickTree h1, h2;
+    private final BIT h1, h2;
     public DynamicDoubleHash(char[] t){
         int n = t.length;
         s = new char[n];
@@ -31,8 +31,8 @@ class DynamicDoubleHash{
             h1[i] = (s[i] - 'a' + 1) * p1_pow[i];
             h2[i] = (s[i] - 'a' + 1) * p2_pow[i];
         }
-        this.h1 = new FenwickTree(h1, m1);
-        this.h2 = new FenwickTree(h2, m2);
+        this.h1 = new BIT(h1, m1);
+        this.h2 = new BIT(h2, m2);
     }
     // below 2 functios are O(log(n))
     public final long get(int l, int r){ return (((h1.get(l,r) * inv_p1_pow[l]) % m1) << 32) | (h2.get(l,r) * inv_p2_pow[l]) % m2; }
