@@ -30,31 +30,7 @@ class Trie{
             curr = curr[s[i] - base].children;
         }
     }
-    // returns # strings with s as a prefix (O(len(s)))
-    public final int haveAsPref(char[] s){
-        Node[] curr = head.children;
-        int n = s.length;
-        for(int i = 0; i < n; ++i){
-            if(curr[s[i] - base] == null)
-                return 0;
-            if(i == n - 1)
-                return curr[s[i] - base].prefs;
-            curr = curr[s[i] - base].children;
-        }
-        return 0;
-    }
-    // returns LCP of s and some string in the trie (other than s if s is in the trie) (O(len(s)))
-    public final int LCP(char[] s, boolean isInTrie){
-        Node[] curr = head.children;
-        int n = s.length;
-        for(int i = 0; i < n; ++i){
-            if(curr[s[i] - base] == null || (isInTrie && curr[s[i] - base].prefs < 2))
-                return i;
-            curr = curr[s[i] - base].children;
-        }
-        return n;
-    } 
-    static  final class Node{
+    static final class Node{
         final Node[] children = new Node[k];
         int ends = 0, prefs = 0;
         public Node() { }
