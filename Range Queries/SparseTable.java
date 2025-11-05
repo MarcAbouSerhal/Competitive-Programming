@@ -16,25 +16,8 @@ class SparseTable{
             if((i & (i - 1)) == 0) ++floorPow[i];
         }
     }
-    // CHANGE THESE FUNCTIONS
-    // returns f(a[l...r])
-    public final X get(int l, int r){
-        int x = floorPow[r - l + 1];
-
-        // if operation is idempotent (op(a,a)=a) (like min, max, gcd, lcm...)
-        return op(table[l][x], table[r - (1 << x) + 1][x]); // (O(T(op)))
-
-        // if operation is not idempotent
-        X ans = table[l][x];
-        l += 1 << x;
-        while(l <= r){
-            x = floorPow[r - l + 1];
-            ans = op(ans, table[l][x]);
-            l += 1 << x;
-        }
-        return ans; // (O(log(r - l + 1).T(op)))
-    }
-    private final static X op(X a, X b){
-        // define associative operation here (op(op(a,b).c)=op(a,op(b,c)))
-    }
+    // returns f(a[l, r])
+    public final X get(int l, int r){ int x = floorPow[r - l + 1]; return op(table[l][x], table[r - (1 << x) + 1][x]); }
+    // CHANGE THIS FUNCTION
+    private final static X op(X a, X b){ /* define associative operation here (op(op(a,b).c)=op(a,op(b,c))) */ }
 }
