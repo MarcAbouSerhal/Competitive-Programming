@@ -6,26 +6,18 @@ class LazySegmentTree{
     private final X[] tree;
     private final Y[] change;
     private final int leaves;
-    // (both O(n*T(op)))
-    public LazySegmentTree(int n, X v){
-        leaves = a.length <= 1 ? 1 : 1 << (32 - Integer.numberOfLeadingZeros(a.length - 1)); 
-        tree = new X[(leaves << 1) - 1];
-        change = new Y[(leaves << 1) - 1];
-        for(int i = 0; i < change.length; ++i) change[i] = noUpdate;
-        for(int i = 0; i < n; ++i) tree[i + leaves - 1] = v;
-        for(int i = leaves - 2; i >= 0; --i) tree[i] = op(tree[(i << 1) + 1], tree[(i + 1) << 1]);
-    }
+    // (O(n*T(op)))
     public LazySegmentTree(X[] a){
         leaves = a.length <= 1 ? 1 : 1 << (32 - Integer.numberOfLeadingZeros(a.length - 1)); 
         tree = new X[(leaves << 1) - 1];
         change = new Y[(leaves << 1) - 1];
-        for(int i = 0; i < change.length; ++i) change[i] = noUpdate;
+        for(int i = 0; i < change.length; ++i) { change[i] = noUpdate; tree[i] = id; }
         for(int i = 0; i < a.length; ++i) tree[i + leaves - 1] = a[i];
         for(int i = leaves - 2; i >= 0; --i) tree[i] = op(tree[(i << 1) + 1], tree[(i + 1) << 1]);
     }
-    // returns f(a[l...r]) (O(log(n)*T(op)))
+    // returns f(a[l, r]) (O(log(n)*T(op)))
     public final X get(int l, int r){ return get(l, r, 0, 0, leaves - 1); }
-    // applies update u to a[l...r] (O(log(n)*(T(op)+T(clean)))
+    // applies update u to a[l, r] (O(log(n)*(T(op)+T(clean)))
     public void update(int l, int r, Y u){ update(l, r, 0, 0, leaves - 1, u); }
     // sets a[x] to v (O(log(n)*(T(op)+T(clean)))
     public final void set(int x, X v){
@@ -75,12 +67,7 @@ class LazySegmentTree{
                 // push down change[x] to change[(x << 1) + 1] and change[(x + 1) << 1]
                 // either override them or try to merge them
             }
-            
             //if we don't care about range queries
-            if(rx != lx){
-                // push down change[x] to change[(x << 1) + 1] and change[(x + 1) << 1]
-                // either override them or try to merge them
-            }
             else{
                 // apply what's in change[x] to a[lx] (tree[x])
             }
