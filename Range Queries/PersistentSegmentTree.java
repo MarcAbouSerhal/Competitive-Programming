@@ -1,30 +1,18 @@
 // replace X with type of property (or Tuple of properties)
 // if X is primitive: replace null by value that will be ignored by op
 class PersistentSegmentTree{
-    private final ArrayList<Vertex> roots;
+    private final ArrayList<Vertex> roots = new ArrayList<>();
     private final int n;
     // note that a[v] means vth version of a
-    public PersistentSegmentTree(X[] a){
-        roots = new ArrayList<>();
-        roots.add(build(a, 0, n = a.length - 1));
-    }
+    public PersistentSegmentTree(X[] a){ roots.add(build(a, 0, n = a.length - 1)); }
     // returns f(a[v][l...r]) (O(log(n)*T(op)))
-    public final X get(int l, int r, int v){
-        return get(l, r, roots.get(v), 0, n);
-    }
+    public final X get(int l, int r, int v){ return get(l, r, roots.get(v), 0, n); }
     // sets a[v][pos] to val (O(log(n)*T(op)))
-    public final void set(int pos, X val, int v){
-        roots.set(v, update(roots.get(v), 0, n, pos, val));
-    }
+    public final void set(int pos, X val, int v){ roots.set(v, update(roots.get(v), 0, n, pos, val)); }
     // creates new version of a[v] with a[v][pos] = val (O(log(n)*T(op)))
-    public final void update(int v, int pos, X val){
-        roots.add(update(roots.get(v), 0, n, pos, val));
-    }
+    public final void update(int v, int pos, X val){ roots.add(update(roots.get(v), 0, n, pos, val)); }
     // copies a[v]
-    public final void copy(int v){
-        Vertex vx = roots.get(v);
-        roots.add(new Vertex(vx.l, vx.r));
-    }
+    public final void copy(int v){ Vertex vx = roots.get(v); roots.add(new Vertex(vx.l, vx.r)); }
     private final X get(int l, int r, Vertex v, int lx, int rx){
         if(rx < l || lx > r) return null;
         if(lx >= l && rx <= r) return v.x;
