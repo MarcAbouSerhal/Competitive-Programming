@@ -33,9 +33,7 @@ class SegmentTree{
     }
     // CHANGE THESE 
     private static final X id;
-    private static final X op(X a, X b) {
-        // define associative operation here (f(f(a,b),c)=f(a,f(b,c)))
-    }
+    private static final X op(X a, X b) { /* define associative operation here (f(f(a,b),c)=f(a,f(b,c))) */ }
 
     // WALKING ON SEGTREE (optional)
     // // returns smallest i in [l...r] such that prop(a[i]), -1 if there is no such element (O(log(n)))
