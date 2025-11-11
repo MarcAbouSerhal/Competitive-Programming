@@ -50,12 +50,12 @@ class Transformations {
         int n = 31 - Integer.numberOfLeadingZeros(a.length);
         for(int i = 0; i < n; ++i)
             for(int j = 0; j < 1 << n; ++j)
-                if((j >> i) == val) a[j] += a[j ^ (1 << i)];
+                if(((j >> i) & 1) == val) a[j] += a[j ^ (1 << i)];
     }
     static void undoTransform(long[] a, int val) {
         int n = 31 - Integer.numberOfLeadingZeros(a.length);
         for(int i = n - 1; i >= 0; --i)
             for(int j = (1 << n) - 1; j >= 0; --j)
-                if((j >> i) == val) a[j] -= a[j ^ (1 << i)];
+                if(((j >> i) & 1) == val) a[j] -= a[j ^ (1 << i)];
     }
 }
