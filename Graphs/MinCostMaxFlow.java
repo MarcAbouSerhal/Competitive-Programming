@@ -27,7 +27,7 @@ class MinCostMaxFlow {
             if(dist[t] == inf) break;
             long fl = inf;
             for(Edge x = par[t]; x != null; x = par[x.from])
-                fl = min(fl, x.cap - x.flow);
+                fl = Math.min(fl, x.cap - x.flow);
             flow += fl;
             for(Edge x = par[t]; x != null; x = par[x.from]) {
                 x.flow += fl;
@@ -46,21 +46,19 @@ class MinCostMaxFlow {
         for(int u = 0; u < n; ++u) dist[u] = inf;
         dist[s] = 0;
         PQ pq = new PQ(s, dist);
-        while(pq.size != 0){
-            if(dist[pq.v[0]] == inf) break;
-            s = pq.v[0];
-            pq.remove_min();
+        while(pq.size() != 0){
+            s = pq.poll();
+            if(dist[s] == inf) break;
             for(Edge e: adj[s])
                 if(e.cap > e.flow) {
                     long val = dist[s] + pi[s] - pi[e.to] + e.cost;
                     if(dist[e.to] > val){
-                        dist[e.to] = val;
                         par[e.to] = e;
-                        pq.decrease_key(e.to);
+                        pq.decrease_key(e.to, val);
                     } 
                 }          
         }
-        for(s = 0; s < n; ++s) pi[s] = min(pi[s] + dist[s], inf);
+        for(s = 0; s < n; ++s) pi[s] = Math.min(pi[s] + dist[s], inf);
     }
     private final void setpi(int s) {
         for(int u = 0; u < n; ++u) pi[u] = inf;
@@ -78,7 +76,6 @@ class MinCostMaxFlow {
                         }
         }
     }
-    public static final long min(long x, long y) { return x < y ? x : y; }
     public static final class Edge {
         final int from, to, rev;
         final long cap, cost;  
@@ -89,48 +86,6 @@ class MinCostMaxFlow {
             this.rev = rev;
             this.cap = cap;
             this.cost = cost;
-        }
-    }
-    private final static class PQ{
-        private final int[] v;
-        private final long[] d;
-        private final int[] rev;
-        private int size;
-        public PQ(int s, long[] d){
-            this.d = d;
-            v = new int[size = d.length];
-            rev = new int[size];
-            v[0] = s;
-            for(int i = 0; i < s; ++i)
-                v[rev[i] = i + 1] = i;
-            for(int i = s + 1; i < size; ++i)
-                v[rev[i] = i] = i;
-        }
-        public final void decrease_key(int x){
-            int i = rev[x], j = (i - 1) / 2, y = v[j];
-            while(i != 0 && d[y] > d[x]){
-                v[i] ^= v[j]; v[j] ^= v[i]; v[i] ^= v[j];
-                rev[x] ^= rev[y]; rev[y] ^= rev[x]; rev[x] ^= rev[y];
-                i = j;
-                j = (i - 1) / 2;
-                y = v[j];
-            }
-        }
-        public final void remove_min(){
-            rev[v[0] = v[--size]] = 0;
-            int i = 0, min = 0, l = 1, r = 2;
-            while(l < size){
-                if(d[v[l]] < d[v[min]]) min = l;
-                if(r < size && d[v[r]] < d[v[min]]) min = r;
-                if(i != min){
-                    v[i] ^= v[min]; v[min] ^= v[i]; v[i] ^= v[min];
-                    rev[v[i]] ^= rev[v[min]]; rev[v[min]] ^= rev[v[i]]; rev[v[i]] ^= rev[v[min]];
-                    i = min;
-                    l = (i << 1) + 1;
-                    r = (i + 1) << 1;
-                }
-                else break;
-            }
         }
     }
 }
