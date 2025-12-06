@@ -26,8 +26,8 @@ class EdmondsKarpMaxFlow {
             Queue<Integer> q = new LinkedList<>();
             q.add(s);
             while(!q.isEmpty()){
-                s = q.poll();
-                for(Edge e: adj[s])
+                int u = q.poll();
+                for(Edge e: adj[u])
                     if(e.cap > e.flow && !cut[e.to]) {
                         par[e.to] = e;
                         q.add(e.to);
