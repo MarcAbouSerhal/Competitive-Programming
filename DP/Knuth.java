@@ -1,11 +1,11 @@
-// Use: long[][] dp = Knuth.compute(n, (l, r) -> cost(l, r));
-// for all a <= b <= c <= d:
-// - cost(b, c) <= cost(a, d)
-// - cost(a, c) + cost(b, d) <= cost(a, d) + cost(b, c)
-// or opt(i, j - 1) <= opt(i, j) <= opt(i + 1, j) where op(i, j) is best k for [i...j]
 class Knuth {
-    // dp[i][j] = answer for [i...i + j] (O(n^2))
-    public final static long[][] compute(int n, CalcFunction a) {
+    // for all a <= b <= c <= d:
+    // - cost(b, c) <= cost(a, d)
+    // - cost(a, c) + cost(b, d) <= cost(a, d) + cost(b, c)
+    // or opt(i, j - 1) <= opt(i, j) <= opt(i + 1, j) where op(i, j) is best k for [i, j]
+    // dp[i, j] = min(i <= k < j) { dp[i, k] + dp[k + 1, j] + C(i, j) } 
+    // returns dp2 where dp2[i, j] = dp[i, i + j] (O(n^2))
+    public final static long[][] minimumConcatenationOrder(int n, CalcFunction a) {
         long[][] dp = new long[n][];
         int[][] opt = new int[n][];
         for (int i = 0; i < n; ++i) {
