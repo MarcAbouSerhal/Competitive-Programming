@@ -1,9 +1,9 @@
 class PalindromeTree {
     private static final int k = 26, base = 'a';
-    private int[][] to, link;
-    private int[] len, qlink, par, cnt;
-    private Deque<Integer> s = new Deque<>(), states = new Deque<>(), diffs = new Deque<>();
-    private int sz = 2, active = 0;
+    int[][] to, link;
+    int[] len, qlink, par, cnt;
+    Deque<Integer> s = new Deque<>(), states = new Deque<>(), diffs = new Deque<>();
+    int sz = 2, active = 0;
     public PalindromeTree(int q) {
         q += 2;
         cnt = new int[q];
@@ -17,7 +17,7 @@ class PalindromeTree {
         len[1] = -1;
         states.addFirst(0);
     }
-    void addLetter(char c, boolean right) {
+    int addLetter(char c, boolean right) {
         c -= base;
         push(s, (int)c ,right);
         int pre = get(states, 0, right), last = makeTo(pre, c, right);
@@ -34,6 +34,7 @@ class PalindromeTree {
         }
         if (!states.isEmpty()) push(diffs, D, right);
         push(states, last, right);
+        return last; // node for max suffix-palindrome of current string
     }
     void popLetter(boolean right) {
         int last = get(states, 0, right);
@@ -78,3 +79,8 @@ class PalindromeTree {
     static void pop(Deque<Integer> d, boolean right) { if(right) d.pollLast(); else d.pollFirst(); }
     static int get(Deque<Integer> d, int idx, boolean right) { return idx >= d.size() ? -1 : right ? d.getFromBack(idx) : d.get(idx); }
 }
+// to[u][c] = node for c.t_u.c
+// link[u][c] = max suffix-palindrome of t_u that can be extended with c
+// len[u] = |t_u|
+// qlink[u] = node for max suffix-palindrome of t_u
+// par[u] = node for t_u with first and last characters removed
